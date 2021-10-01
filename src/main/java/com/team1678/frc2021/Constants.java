@@ -36,6 +36,10 @@ public class Constants {
 
 	public static final boolean kDebuggingOutput = true;
 
+	// Control Board
+	public static final double kJoystickThreshold = 0.2;
+	public static final int kButtonGamepadPort = 2;
+
 	// Physical Robot Dimensions (including bumpers)
     public static final double kRobotWidth = 36.5;
     public static final double kRobotLength = 36.5;
