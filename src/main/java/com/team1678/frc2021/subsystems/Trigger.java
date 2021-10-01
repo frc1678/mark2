@@ -1,9 +1,9 @@
 package com.team1678.frc2021.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -123,9 +123,12 @@ public class Trigger extends Subsystem {
     public synchronized boolean spunUp() {
         if (mPeriodicIO.trigger_demand > 0) {
             return Util.epsilonEquals(mPeriodicIO.trigger_demand, mPeriodicIO.trigger_velocity, kTriggerTolerance);
+            // return mPeriodicIO.trigger_demand <= -550.0;
         }
         return false;
     }
+
+    boolean spunUp = spunUp();
 
     public synchronized void setPopoutSolenoid(boolean popout) {
         mPeriodicIO.popout_solenoid = popout;
@@ -171,9 +174,11 @@ public class Trigger extends Subsystem {
         if (!mRunningManual) {
             currentSafety();
             mTrigger.set(ControlMode.Velocity, mPeriodicIO.trigger_demand / kTriggerVelocityConversion);
+            // mPopoutSolenoid.set(true);
             mPopoutSolenoid.set(mPeriodicIO.popout_solenoid);
         } else {
             mTrigger.set(ControlMode.PercentOutput, mPeriodicIO.trigger_demand);
+            // mPopoutSolenoid.set(true);
             mPopoutSolenoid.set(mPeriodicIO.popout_solenoid);
         }
     }
@@ -208,6 +213,7 @@ public class Trigger extends Subsystem {
         SmartDashboard.putNumber("Trigger Current", mPeriodicIO.trigger_current);
         SmartDashboard.putNumber("Trigger Goal", mPeriodicIO.trigger_demand);
         SmartDashboard.putNumber("Trigger Temperature", mPeriodicIO.trigger_temperature);
+        SmartDashboard.putBoolean("Trigger Spun Up: ", spunUp());
 
         SmartDashboard.putBoolean("Popout Solenoid", mPeriodicIO.popout_solenoid);
         SmartDashboard.putBoolean("jam", mCurrentLimitTriggered);

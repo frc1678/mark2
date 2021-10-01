@@ -47,9 +47,12 @@ public class PolynomialRegression {
     /**
      * Performs a polynomial regression on the data points {@code (y[i], x[i])}.
      *
-     * @param x      the values of the predictor variable
-     * @param y      the corresponding values of the response variable
-     * @param degree the degree of the polynomial to fit
+     * @param x
+     *            the values of the predictor variable
+     * @param y
+     *            the corresponding values of the response variable
+     * @param degree
+     *            the degree of the polynomial to fit
      */
     public PolynomialRegression(double[] x, double[] y, int degree) {
         solve(x, y, degree);
@@ -109,7 +112,8 @@ public class PolynomialRegression {
     /**
      * Returns the {@code j}th regression coefficient.
      *
-     * @param j the index
+     * @param j
+     *            the index
      * @return the {@code j}th regression coefficient
      */
     public double beta(int j) {
@@ -142,7 +146,8 @@ public class PolynomialRegression {
     /**
      * Returns the expected response {@code y} given the value of the predictor variable {@code x}.
      *
-     * @param x the value of the predictor variable
+     * @param x
+     *            the value of the predictor variable
      * @return the expected response {@code y} given the value of the predictor variable {@code x}
      */
     public double predict(double x) {
@@ -172,7 +177,7 @@ public class PolynomialRegression {
                 s.append(String.format("%.2f x^%d + ", beta(j), j));
             j--;
         }
-        s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
+        s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
         return s.toString();
     }
 }

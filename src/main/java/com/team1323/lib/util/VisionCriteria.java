@@ -13,10 +13,10 @@ public class VisionCriteria {
             this.allowableUpdates = allowableUpdates;
             successfulUpdates = 0;
         }
-        public void addSuccessfulUpdate() {
+        public void addSuccessfulUpdate(){
             successfulUpdates++;
         }
-        public void reset() {
+        public void reset(){
             successfulUpdates = 0;
         }
     }
@@ -52,7 +52,7 @@ public class VisionCriteria {
         return 0;
     }
 
-    public void reset() {
+    public void reset(){
         for(Criterion criterion : activeCriteria){
             criterion.reset();
         }

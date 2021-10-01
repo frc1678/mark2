@@ -1,8 +1,6 @@
 package com.team254.lib.util;
 
 public class Units {
-    public static final double kGravityInPerSecSq = 386.09;
-
     public static double rpm_to_rads_per_sec(double rpm) {
         return rpm * 2.0 * Math.PI / 60.0;
     }

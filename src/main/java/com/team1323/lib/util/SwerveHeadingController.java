@@ -17,18 +17,18 @@ public class SwerveHeadingController {
 		Off, Stabilize, Snap, TemporaryDisable, Stationary
 	}
 	private State currentState = State.Off;
-	public State getState() {
+	public State getState(){
 		return currentState;
 	}
 	private void setState(State newState){
 		currentState = newState;
 	}
 	
-	public SwerveHeadingController() {
-		if(Constants.kIsUsingTractionWheels){
-			stabilizationPID = new SynchronousPIDF(0.005, 0.0, 0.0005, 0.0);
-			snapPID = new SynchronousPIDF(0.015, 0.0, 0.0, 0.0);
-			stationaryPID = new SynchronousPIDF(0.01, 0.0, 0.002, 0.0);
+	public SwerveHeadingController(){
+		if(!Constants.kIsUsingTractionWheels){
+			stabilizationPID = new SynchronousPIDF(0.05, 0.0, 0.0005, 0.0);
+			snapPID = new SynchronousPIDF(0.00, 0.0, 0.0, 0.0);
+			stationaryPID = new SynchronousPIDF(0.0, 0.0, 0.000, 0.0);
 		}else{
 			stabilizationPID = new SynchronousPIDF(0.005, 0.0, 0.0005, 0.0);
 			snapPID = new SynchronousPIDF(0.015, 0.0, 0.0, 0.0);
@@ -54,16 +54,16 @@ public class SwerveHeadingController {
 		setState(State.Stationary);
 	}
 	
-	public void disable() {
+	public void disable(){
 		setState(State.Off);
 	}
 	
-	public void temporarilyDisable() {
+	public void temporarilyDisable(){
 		setState(State.TemporaryDisable);
 		disabledTimestamp = Timer.getFPGATimestamp();
 	}
 	
-	public double getTargetHeading() {
+	public double getTargetHeading(){
 		return targetHeading;
 	}
 	

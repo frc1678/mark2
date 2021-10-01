@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * Writes data to a CSV file
  */
 public class ReflectingCSVWriter<T> {
-    private ConcurrentLinkedDeque<String> mLinesToWrite = new ConcurrentLinkedDeque<>();
-    private PrintWriter mOutput = null;
-    private Field[] mFields;
+    ConcurrentLinkedDeque<String> mLinesToWrite = new ConcurrentLinkedDeque<>();
+    PrintWriter mOutput = null;
+    Field[] mFields;
 
     public ReflectingCSVWriter(String fileName, Class<T> typeClass) {
         mFields = typeClass.getFields();
@@ -21,7 +21,7 @@ public class ReflectingCSVWriter<T> {
             e.printStackTrace();
         }
         // Write field names.
-        StringBuilder line = new StringBuilder();
+        StringBuffer line = new StringBuffer();
         for (Field field : mFields) {
             if (line.length() != 0) {
                 line.append(", ");
@@ -32,18 +32,20 @@ public class ReflectingCSVWriter<T> {
     }
 
     public void add(T value) {
-        StringBuilder line = new StringBuilder();
+        StringBuffer line = new StringBuffer();
         for (Field field : mFields) {
             if (line.length() != 0) {
                 line.append(", ");
             }
             try {
                 if (CSVWritable.class.isAssignableFrom(field.getType())) {
-                    line.append(((CSVWritable) field.get(value)).toCSV());
+                    line.append(((CSVWritable)field.get(value)).toCSV());
                 } else {
                     line.append(field.get(value).toString());
                 }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }

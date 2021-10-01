@@ -1,9 +1,9 @@
+
 package com.team1678.frc2021.subsystems;
 
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
-
 import edu.wpi.first.wpilibj.Compressor;
 
 public class Infrastructure extends Subsystem {

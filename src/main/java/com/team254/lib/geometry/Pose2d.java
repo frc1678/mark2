@@ -1,6 +1,5 @@
 package com.team254.lib.geometry;
 
-import com.team1323.lib.geometry.UnwrappablePose2d;
 import com.team254.lib.util.Util;
 
 /**
@@ -11,7 +10,7 @@ import com.team254.lib.util.Util;
 public class Pose2d implements IPose2d<Pose2d> {
     protected static final Pose2d kIdentity = new Pose2d();
 
-    public static Pose2d identity() {
+    public static final Pose2d identity() {
         return kIdentity;
     }
 
@@ -46,10 +45,6 @@ public class Pose2d implements IPose2d<Pose2d> {
 
     public static Pose2d fromRotation(final Rotation2d rotation) {
         return new Pose2d(new Translation2d(), rotation);
-    }
-
-    public UnwrappablePose2d unwrap() {
-        return new UnwrappablePose2d(translation_.unwrap(), rotation_.unwrap());
     }
 
     /**
@@ -204,11 +199,8 @@ public class Pose2d implements IPose2d<Pose2d> {
 
     @Override
     public boolean equals(final Object other) {
-        if (!(other instanceof Pose2d)) {
-            return false;
-        }
-
-        return epsilonEquals((Pose2d) other, Util.kEpsilon);
+        if (other == null || !(other instanceof Pose2d)) return false;
+        return epsilonEquals((Pose2d)other, Util.kEpsilon);
     }
 
     @Override

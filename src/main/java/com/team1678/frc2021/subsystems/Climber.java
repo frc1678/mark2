@@ -5,12 +5,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.logger.LogStorage;
-import com.team1678.frc2021.logger.LoggingSystem;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
-import com.team1678.frc2021.subsystems.Wrangler;
+
 import com.team254.lib.drivers.TalonFXFactory;
 import com.team254.lib.util.ReflectingCSVWriter;
 import com.team254.lib.util.TimeDelayedBoolean;
@@ -25,11 +24,9 @@ public class Climber extends Subsystem  {
     private static Climber mInstance = null;
 
     private static final double kIdleVoltage = 0.0;
-    private static final double kPivotVoltage = -8.0;
     private static final double kExtendVoltage = 2.0;
     private static final double kClimbVoltage = -4.0;
     private static final double kBrakeVelocity = 500.0;
-    private static final double kPivotWaitTime = 0.5;
     private double mInitialTime;
 
     private static final int kExtendDelta = (204000 - (-27600));
@@ -39,20 +36,18 @@ public class Climber extends Subsystem  {
     private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     public enum WantedAction {
-        NONE, PIVOT, EXTEND, MANUAL_EXTEND, HUG, CLIMB, MANUAL_CLIMB, BRAKE, STOP,
+        NONE, EXTEND, HUG, CLIMB, BRAKE, STOP,
     }
 
     public enum State {
-        IDLE, PIVOTING, EXTENDING, MANUAL_EXTENDING, HUGGING, CLIMBING, MANUAL_CLIMBING, BRAKING,
+        IDLE, EXTENDING, HUGGING, CLIMBING, BRAKING,
     }
 
     private State mState = State.IDLE;
 
     private final TalonFX mMaster;
-    private final TalonFX mSlave;
     private double mHoldingPos = 0.0;
     private double mZeroPos;
-    private boolean mPivoted = false;
     private boolean mExtended = false;
     private TimeDelayedBoolean brake_activation = new TimeDelayedBoolean();
 
@@ -61,7 +56,7 @@ public class Climber extends Subsystem  {
 
 
     private Climber() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kWinchMasterId);
+        mMaster = TalonFXFactory.createDefaultTalon(Constants.kClimberId);
         mMaster.set(ControlMode.PercentOutput, 0);
         mMaster.setInverted(true);
         mMaster.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
@@ -76,14 +71,9 @@ public class Climber extends Subsystem  {
         mMaster.config_kD(0, 0);
         mMaster.config_kF(0, 0.05);
 
-        mSlave = TalonFXFactory.createPermanentSlaveTalon(Constants.kWinchSlaveId, Constants.kWinchMasterId);
-        mSlave.setInverted(false);
-        mSlave.follow(mMaster);
-
         mMaster.setSelectedSensorPosition(0, 0, Constants.kLongCANTimeoutMs);
 
         mMaster.setNeutralMode(NeutralMode.Coast);
-        mSlave.setNeutralMode(NeutralMode.Coast);
 
         mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
     }
@@ -97,7 +87,6 @@ public class Climber extends Subsystem  {
 
     public synchronized void setBrakeMode(boolean brake) {
         mMaster.setNeutralMode(brake ? NeutralMode.Brake : NeutralMode.Coast);
-        mSlave.setNeutralMode(brake ? NeutralMode.Brake : NeutralMode.Coast);
     }
 
     @Override
@@ -169,7 +158,7 @@ public class Climber extends Subsystem  {
 
     public void setBrake(boolean brake) {
         mPeriodicIO.brake_solenoid = brake;
-    } 
+    }
 
     public synchronized void setOpenLoop(double percentage) {
         mPeriodicIO.demand = percentage;
@@ -182,72 +171,47 @@ public class Climber extends Subsystem  {
     public void runStateMachine() {
         final double now = Timer.getFPGATimestamp();
         switch (mState) {
-        case IDLE:
-            mPeriodicIO.demand = kIdleVoltage;
-            mPeriodicIO.arm_solenoid = true;
-            break;
-        case PIVOTING:
-            mPeriodicIO.arm_solenoid = false;
-            mPeriodicIO.demand = kPivotVoltage;
-
-            if (now - mInitialTime > kPivotWaitTime) {
-                if ((Math.abs(mPeriodicIO.velocity) < kBrakeVelocity)) {
-                    mPeriodicIO.demand = kIdleVoltage;
-                    mZeroPos = mPeriodicIO.position;
-                    mState = State.EXTENDING;
+            case IDLE:
+                mPeriodicIO.demand = kIdleVoltage;
+                mPeriodicIO.arm_solenoid = true;
+                break;
+            case EXTENDING:
+                mPeriodicIO.demand = mZeroPos + kExtendDelta;
+                if ((mPeriodicIO.position - mZeroPos) > kExtendDelta - 2000) {
+                    mExtended = true;
                 }
-            }
-
-            mPeriodicIO.brake_solenoid = false;
-            mZeroPos = mPeriodicIO.position;
-            break;
-        case EXTENDING:
-            mPeriodicIO.demand = mZeroPos + kExtendDelta;
-            if ((mPeriodicIO.position - mZeroPos) > kExtendDelta - 2000) {
-                mExtended = true;
-            }
-            mPeriodicIO.arm_solenoid = true;
-            mPeriodicIO.brake_solenoid = false;
-            break;
-        case MANUAL_EXTENDING:
-            mPeriodicIO.demand = kExtendVoltage;
-            mPeriodicIO.arm_solenoid = true;
-            mPeriodicIO.brake_solenoid = false;
-            break;
-        case HUGGING:
-            if (mExtended) {
-                mPeriodicIO.demand = mZeroPos + kHugDelta;
-            }
-            mPeriodicIO.arm_solenoid = true;
-            mPeriodicIO.brake_solenoid = false;
-            break;
-        case CLIMBING:
-            mPeriodicIO.demand = mZeroPos + kClimbDelta;
-            mPeriodicIO.arm_solenoid = true;
-            mPeriodicIO.brake_solenoid = false;
-
-            if ((Math.abs(mPeriodicIO.position - (mZeroPos + kClimbDelta)) < 5000 && Math.abs(mPeriodicIO.velocity) < kBrakeVelocity)) {
-                mHoldingPos = mPeriodicIO.position;
-                mState = State.BRAKING;
-            }
-            mPeriodicIO.brake_solenoid = false;
-            break;
-        case MANUAL_CLIMBING:
-            mPeriodicIO.demand = kClimbVoltage;
-            mPeriodicIO.arm_solenoid = true;
-            mPeriodicIO.brake_solenoid = false;
-            break;
-        case BRAKING:
-            mPeriodicIO.demand = mHoldingPos;
-            mPeriodicIO.arm_solenoid = true;
-            if (!mPeriodicIO.brake_solenoid) {
-                if (mPeriodicIO.velocity < kBrakeVelocity) {
-                    mPeriodicIO.brake_solenoid = true;
+                mPeriodicIO.arm_solenoid = true;
+                mPeriodicIO.brake_solenoid = false;
+                break;
+            case HUGGING:
+                if (mExtended) {
+                    mPeriodicIO.demand = mZeroPos + kHugDelta;
                 }
-            }
-            break;
-        default:
-            System.out.println("Fell through on Climber states!");
+                mPeriodicIO.arm_solenoid = true;
+                mPeriodicIO.brake_solenoid = false;
+                break;
+            case CLIMBING:
+                mPeriodicIO.demand = mZeroPos + kClimbDelta;
+                mPeriodicIO.arm_solenoid = true;
+                mPeriodicIO.brake_solenoid = false;
+
+                if ((Math.abs(mPeriodicIO.position - (mZeroPos + kClimbDelta)) < 5000 && Math.abs(mPeriodicIO.velocity) < kBrakeVelocity)) {
+                    mHoldingPos = mPeriodicIO.position;
+                    mState = State.BRAKING;
+                }
+                mPeriodicIO.brake_solenoid = false;
+                break;
+            case BRAKING:
+                mPeriodicIO.demand = mHoldingPos;
+                mPeriodicIO.arm_solenoid = true;
+                if (!mPeriodicIO.brake_solenoid) {
+                    if (mPeriodicIO.velocity < kBrakeVelocity) {
+                        mPeriodicIO.brake_solenoid = true;
+                    }
+                }
+                break;
+            default:
+                System.out.println("Fell through on Climber states!");
         }
     }
 
@@ -256,41 +220,26 @@ public class Climber extends Subsystem  {
             mHoldingPos = mPeriodicIO.position;
         }
 
-        if (wanted_state == WantedAction.PIVOT && mState != State.PIVOTING) {
-            mInitialTime = Timer.getFPGATimestamp();
-        }
         switch (wanted_state) {
-        case NONE:
-            if (mState == State.MANUAL_CLIMBING || mState == State.MANUAL_EXTENDING) {
+            case NONE:
+                  mState = State.IDLE;{
+                }
+                break;
+            case EXTEND:
+                mState = State.EXTENDING;
+                break;
+            case HUG:
+                mState = State.HUGGING;
+                break;
+            case CLIMB:
+                mState = State.CLIMBING;
+                break;
+            case BRAKE:
+                mState = State.BRAKING;
+                break;
+            case STOP:
                 mState = State.IDLE;
-            }
-            break;
-        case PIVOT:
-            mState = State.PIVOTING;
-            break;
-        case EXTEND:
-            mState = State.EXTENDING;
-            break;
-        case MANUAL_EXTEND:
-            mState = State.MANUAL_EXTENDING;
-            break;
-        case HUG:
-            mState = State.HUGGING;
-            break;
-        case CLIMB:
-            mState = State.CLIMBING;
-            break;
-        case MANUAL_CLIMB:
-            mState = State.MANUAL_CLIMBING;
-            break;
-        case BRAKE:
-            mState = State.BRAKING;
-            break;
-        case STOP:
-            mState = State.IDLE;
-            break;
-        default:
-            System.out.println("No climber goal!");
+                break;
         }
     }
 
@@ -298,13 +247,13 @@ public class Climber extends Subsystem  {
     public synchronized void readPeriodicInputs() {
         mPeriodicIO.position = mMaster.getSelectedSensorPosition(0);
         mPeriodicIO.velocity = mMaster.getSelectedSensorVelocity(0);
-        
+
         if (mCSVWriter != null) {
             mCSVWriter.add(mPeriodicIO);
         }
         mPeriodicIO.current = mMaster.getSupplyCurrent();
         mPeriodicIO.voltage = mMaster.getMotorOutputVoltage();
-        //LogSend();  
+        //LogSend();
     }
 
     @Override
@@ -320,7 +269,6 @@ public class Climber extends Subsystem  {
         // INPUTS
         public double position;
         public double velocity;
-        public boolean braked;
         public double current;
         public double voltage;
 

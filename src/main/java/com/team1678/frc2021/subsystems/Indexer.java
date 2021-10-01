@@ -3,17 +3,17 @@ package com.team1678.frc2021.subsystems;
 import java.util.Arrays;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.team254.lib.drivers.TalonFXFactory;
-import com.team254.lib.util.Util;
 import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.logger.LogStorage;
-import com.team1678.frc2021.logger.LoggingSystem;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
-import com.team1678.frc2021.planners.IndexerMotionPlanner;
+
 import com.team1678.frc2021.subsystems.Turret;
+import com.team254.lib.drivers.TalonFXFactory;
+import com.team254.lib.util.Util;
+import com.team1678.frc2021.planners.IndexerMotionPlanner;
 import com.team1678.lib.util.HallCalibration;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,7 +29,7 @@ public class Indexer extends Subsystem {
 
     private static final double kZoomingVelocity = 80.;
     private static final double kPassiveIndexingVelocity = 80.0;
-    private static final double kGearRatio = (60. / 16.) * (160. / 16.);
+    private static final double kGearRatio = (60. / 16.) * (154. / 16.);
     private static final boolean[] kFullSlots = {true, true, true, true, true };
     private static final boolean[] kEmptySlots = {false, false, false, false, false };
 
@@ -77,11 +77,6 @@ public class Indexer extends Subsystem {
     private boolean mHasBeenZeroed = false;
     private boolean mBackwards = false;
     private int mSlotGoal;
-    private DigitalInput mSlot0Proxy = new DigitalInput(Constants.kSlot0Proxy);
-    private DigitalInput mSlot1Proxy = new DigitalInput(Constants.kSlot1Proxy);
-    private DigitalInput mSlot2Proxy = new DigitalInput(Constants.kSlot2Proxy);
-    private DigitalInput mSlot3Proxy = new DigitalInput(Constants.kSlot3Proxy);
-    private DigitalInput mSlot4Proxy = new DigitalInput(Constants.kSlot4Proxy);
     private DigitalInput mLimitSwitch = new DigitalInput(Constants.kIndexerLimitSwitch);
     private HallCalibration calibration = new HallCalibration(-37.0);
     private double mOffset = 0;
@@ -158,6 +153,7 @@ public class Indexer extends Subsystem {
     @Override
     public void stop() {
         setOpenLoop(0);
+        mMaster.setNeutralMode(NeutralMode.Brake);
     }
 
     @Override
@@ -193,6 +189,7 @@ public class Indexer extends Subsystem {
             @Override
             public void onStop(double timestamp) {
                 mState = State.IDLE;
+                mMaster.setNeutralMode(NeutralMode.Coast);
             }
         });
     }
@@ -367,11 +364,11 @@ public class Indexer extends Subsystem {
     @Override
     public synchronized void readPeriodicInputs() {
         mPeriodicIO.timestamp = Timer.getFPGATimestamp();
-        mPeriodicIO.raw_slots[0] = mSlot0Proxy.get();
-        mPeriodicIO.raw_slots[1] = mSlot1Proxy.get();
-        mPeriodicIO.raw_slots[2] = mSlot2Proxy.get();
-        mPeriodicIO.raw_slots[3] = mSlot3Proxy.get();
-        mPeriodicIO.raw_slots[4] = mSlot4Proxy.get();
+        mPeriodicIO.raw_slots[0] = false;
+        mPeriodicIO.raw_slots[1] = false;
+        mPeriodicIO.raw_slots[2] = false;
+        mPeriodicIO.raw_slots[3] = false;
+        mPeriodicIO.raw_slots[4] = false;
         mPeriodicIO.limit_switch = !mLimitSwitch.get();
         mPeriodicIO.indexer_velocity = mMaster.getSelectedSensorVelocity(0) * 600. / 2048. / kGearRatio;
         mPeriodicIO.indexer_current = mMaster.getStatorCurrent();

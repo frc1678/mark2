@@ -42,14 +42,14 @@ public class PolyCirculationVectorField extends VectorField {
 		for(int i = 1; i < vertices.size() - 1; i++) {
 			// Translate our angle to have its center at the origin
 			Translation2d here_ = here.translateBy(vertices.get(i).inverse());
-			if(here.unwrap().isWithinAngle(
-					vertices.get(i-1).unwrap(),
-					vertices.get(i).unwrap(),
-					vertices.get(i+1).unwrap(),
+			if(here.isWithinAngle(
+					vertices.get(i-1),
+					vertices.get(i),
+					vertices.get(i+1),
 					true // check within vertical angle
 				)) {
 				if(here_.norm() <= radius) {
-					return (new Translation2d(-here_.y(),here_.x())).unwrap().normalize().wrap(); // use translated position because it will rotate about the vertex
+					return (new Translation2d(-here_.y(),here_.x())).normalize(); // use translated position because it will rotate about the vertex
 				} else {
 					return Translation2d.identity();
 				}
@@ -58,13 +58,13 @@ public class PolyCirculationVectorField extends VectorField {
 		// If we get here, we ain't in a corner region
 		// Find the region containing here
 		for(int i = 0; i < vertices.size() - 1; i++) {
-			if(here.unwrap().isWithinAngle(
-					vertices.get(i).unwrap(),
-					center.unwrap(),
-					vertices.get(i+1).unwrap()
+			if(here.isWithinAngle(
+					vertices.get(i),
+					center,
+					vertices.get(i+1)
 				)) {
-				if(here.unwrap().distanceToLine(vertices.get(i).unwrap(),vertices.get(i+1).unwrap()) <= radius) {
-					return (new Translation2d(vertices.get(i),vertices.get(i+1))).unwrap().normalize().wrap();
+				if(here.distanceToLine(vertices.get(i),vertices.get(i+1)) <= radius) {
+					return (new Translation2d(vertices.get(i),vertices.get(i+1))).normalize();
 				} else {
 					return Translation2d.identity();
 				}

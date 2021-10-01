@@ -15,6 +15,6 @@ public class LayeredVectorField extends VectorField {
 		Translation2d out = new Translation2d(0.0,0.0);
 		for(VectorField f : fields)
 			out = out.translateBy(f.getVector(here));
-		return out.unwrap().normalize().wrap();
+		return out.normalize();
 	}
 }

@@ -54,29 +54,29 @@ public class SwerveKinematics {
 	    wheelAngles[3] = rearRightSteeringAngle;
 	}
 	
-	public double frWheelSpeed() {
+	public double frWheelSpeed(){
 		return frontRightWheelSpeed;
 	}
-	public double flWheelSpeed() {
+	public double flWheelSpeed(){
 		return frontLeftWheelSpeed;
 	}
-	public double rlWheelSpeed() {
+	public double rlWheelSpeed(){
 		return rearLeftWheelSpeed;
 	}
-	public double rrWheelSpeed() {
+	public double rrWheelSpeed(){
 		return rearRightWheelSpeed;
 	}
 	
-	public double frSteeringAngle() {
+	public double frSteeringAngle(){
 		return frontRightSteeringAngle;
 	}
-	public double flSteeringAngle() {
+	public double flSteeringAngle(){
 		return frontLeftSteeringAngle;
 	}
-	public double rlSteeringAngle() {
+	public double rlSteeringAngle(){
 		return rearLeftSteeringAngle;
 	}
-	public double rrSteeringAngle() {
+	public double rrSteeringAngle(){
 		return rearRightSteeringAngle;
 	}
 }

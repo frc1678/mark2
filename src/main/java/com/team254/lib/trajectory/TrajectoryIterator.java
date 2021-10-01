@@ -1,6 +1,7 @@
 package com.team254.lib.trajectory;
 
 import com.team254.lib.geometry.State;
+import com.team254.lib.util.Util;
 
 public class TrajectoryIterator<S extends State<S>> {
     protected final TrajectoryView<S> view_;

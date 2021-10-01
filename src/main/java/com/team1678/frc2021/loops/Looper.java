@@ -1,13 +1,14 @@
 package com.team1678.frc2021.loops;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.team1678.frc2021.Constants;
-import com.team254.lib.util.CrashTrackingRunnable;
+import com.team1323.lib.util.CrashTrackingRunnable;
+
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This code runs all of the robot's loops. Loop objects are stored in a List object. They are started when the robot
@@ -16,78 +17,76 @@ import java.util.List;
 public class Looper implements ILooper {
     public final double kPeriod = Constants.kLooperDt;
 
-    private boolean mRunning;
+    private boolean running_;
 
-    private final Notifier mNotifier;
-    private final List<Loop> mLoops;
-    private final Object mTaskRunningLock = new Object();
-    private double mTimestamp = 0;
-    private double mDT = 0;
+    private final Notifier notifier_;
+    private final List<Loop> loops_;
+    private final Object taskRunningLock_ = new Object();
+    private double timestamp_ = 0;
+    private double dt_ = 0;
+    public double dt(){ return dt_; }
 
     private final CrashTrackingRunnable runnable_ = new CrashTrackingRunnable() {
         @Override
         public void runCrashTracked() {
-            synchronized (mTaskRunningLock) {
-                if (mRunning) {
+            synchronized (taskRunningLock_) {
+                if (running_) {
                     double now = Timer.getFPGATimestamp();
 
-                    for (Loop loop : mLoops) {
+                    for (Loop loop : loops_) {
                         loop.onLoop(now);
                     }
 
-                    mDT = now - mTimestamp;
-                    mTimestamp = now;
+                    dt_ = now - timestamp_;
+                    timestamp_ = now;
                 }
             }
         }
     };
 
     public Looper() {
-        mNotifier = new Notifier(runnable_);
-        mRunning = false;
-        mLoops = new ArrayList<>();
+        notifier_ = new Notifier(runnable_);
+        running_ = false;
+        loops_ = new ArrayList<>();
     }
 
     @Override
     public synchronized void register(Loop loop) {
-        synchronized (mTaskRunningLock) {
-            mLoops.add(loop);
+        synchronized (taskRunningLock_) {
+            loops_.add(loop);
         }
     }
 
     public synchronized void start() {
-        if (!mRunning) {
+        if (!running_) {
             System.out.println("Starting loops");
-
-            synchronized (mTaskRunningLock) {
-                mTimestamp = Timer.getFPGATimestamp();
-                for (Loop loop : mLoops) {
-                    loop.onStart(mTimestamp);
+            synchronized (taskRunningLock_) {
+                timestamp_ = Timer.getFPGATimestamp();
+                for (Loop loop : loops_) {
+                    loop.onStart(timestamp_);
                 }
-                mRunning = true;
+                running_ = true;
             }
-
-            mNotifier.startPeriodic(kPeriod);
+            notifier_.startPeriodic(kPeriod);
         }
     }
 
     public synchronized void stop() {
-        if (mRunning) {
+        if (running_) {
             System.out.println("Stopping loops");
-            mNotifier.stop();
-
-            synchronized (mTaskRunningLock) {
-                mRunning = false;
-                mTimestamp = Timer.getFPGATimestamp();
-                for (Loop loop : mLoops) {
+            notifier_.stop();
+            synchronized (taskRunningLock_) {
+                running_ = false;
+                timestamp_ = Timer.getFPGATimestamp();
+                for (Loop loop : loops_) {
                     System.out.println("Stopping " + loop);
-                    loop.onStop(mTimestamp);
+                    loop.onStop(timestamp_);
                 }
             }
         }
     }
 
     public void outputToSmartDashboard() {
-        SmartDashboard.putNumber("looper_dt", mDT);
+        SmartDashboard.putNumber("looper_dt", dt_);
     }
 }

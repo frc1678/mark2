@@ -1,6 +1,5 @@
 package com.team254.lib.geometry;
 
-import com.team1323.lib.geometry.UnwrappablePose2dWithCurvature;
 import com.team254.lib.util.Util;
 
 import java.text.DecimalFormat;
@@ -8,7 +7,7 @@ import java.text.DecimalFormat;
 public class Pose2dWithCurvature implements IPose2d<Pose2dWithCurvature>, ICurvature<Pose2dWithCurvature> {
     protected static final Pose2dWithCurvature kIdentity = new Pose2dWithCurvature();
 
-    public static Pose2dWithCurvature identity() {
+    public static final Pose2dWithCurvature identity() {
         return kIdentity;
     }
 
@@ -46,10 +45,6 @@ public class Pose2dWithCurvature implements IPose2d<Pose2dWithCurvature>, ICurva
         dcurvature_ds_ = dcurvature_ds;
     }
 
-    public UnwrappablePose2dWithCurvature unwrap() {
-        return new UnwrappablePose2dWithCurvature(pose_.unwrap(), curvature_);
-    }
-
     @Override
     public final Pose2d getPose() {
         return pose_;
@@ -71,9 +66,7 @@ public class Pose2dWithCurvature implements IPose2d<Pose2dWithCurvature>, ICurva
     }
 
     @Override
-    public double getDCurvatureDs() {
-        return dcurvature_ds_;
-    }
+    public double getDCurvatureDs() { return dcurvature_ds_; }
 
     @Override
     public final Translation2d getTranslation() {
@@ -99,11 +92,8 @@ public class Pose2dWithCurvature implements IPose2d<Pose2dWithCurvature>, ICurva
 
     @Override
     public boolean equals(final Object other) {
-        if (!(other instanceof Pose2dWithCurvature)) {
-            return false;
-        }
-
-        Pose2dWithCurvature p2dwc = (Pose2dWithCurvature) other;
+        if (other == null || !(other instanceof Pose2dWithCurvature)) return false;
+        Pose2dWithCurvature p2dwc = (Pose2dWithCurvature)other;
         return getPose().equals(p2dwc.getPose()) && Util.epsilonEquals(getCurvature(), p2dwc.getCurvature()) && Util.epsilonEquals(getDCurvatureDs(), p2dwc.getDCurvatureDs());
     }
 

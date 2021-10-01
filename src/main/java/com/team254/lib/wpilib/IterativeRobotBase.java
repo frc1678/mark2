@@ -8,6 +8,7 @@ package com.team254.lib.wpilib;
 /*----------------------------------------------------------------------------*/
 
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Watchdog;
@@ -269,6 +270,6 @@ public abstract class IterativeRobotBase extends RobotBase {
     }
 
     private void printLoopOverrunMessage() {
-        //DriverStation.reportWarning("Loop time of " + m_period + "s overrun\n", false);
+        DriverStation.reportWarning("Loop time of " + m_period + "s overrun\n", false);
     }
 }

@@ -11,7 +11,7 @@ public abstract class VectorField implements IVectorField {
 			public Translation2d getVector(Translation2d here) {
 			//	System.out.println("First: "+temp.getVector(here).x()+" "+temp.getVector(here).y());
 			//	System.out.println("Secnd: "+other.getVector(here).x()+" "+other.getVector(here).y());
-				return temp.getVector(here).translateBy(other.getVector(here)).unwrap().normalize().wrap();
+				return temp.getVector(here).translateBy(other.getVector(here)).normalize();
 			}
 		};
 	}

@@ -3,10 +3,9 @@ package com.team1678.frc2021.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.logger.LogStorage;
-import com.team1678.frc2021.logger.LoggingSystem;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
+
 import com.team254.lib.drivers.TalonFXFactory;
 import com.team254.lib.drivers.TalonUtil;
 import com.team254.lib.motion.MotionProfileConstraints;
@@ -550,6 +549,7 @@ public abstract class ServoMotorSubsystem extends Subsystem {
     @Override
     public void outputTelemetry() {
         SmartDashboard.putNumber(mConstants.kName + ": Position (units)", mPeriodicIO.position_units);
+        SmartDashboard.putNumber(mConstants.kName + ": goal (units)", mPeriodicIO.demand);
         SmartDashboard.putBoolean(mConstants.kName + ": Homing Location", atHomingLocation());
     }
 }

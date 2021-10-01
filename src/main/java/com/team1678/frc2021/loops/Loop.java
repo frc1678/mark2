@@ -5,9 +5,10 @@ package com.team1678.frc2021.loops;
  * calibration, etc.)
  */
 public interface Loop {
-    void onStart(double timestamp);
 
-    void onLoop(double timestamp);
+    public void onStart(double timestamp);
 
-    void onStop(double timestamp);
+    public void onLoop(double timestamp);
+
+    public void onStop(double timestamp);
 }

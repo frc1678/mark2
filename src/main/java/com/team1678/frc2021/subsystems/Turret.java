@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import com.team1678.frc2021.Constants;
 import com.team254.lib.drivers.TalonUtil;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.LatchedBoolean;
@@ -16,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.team254.lib.drivers.MotorChecker;
 import com.team254.lib.drivers.BaseTalonChecker;
-import com.team1678.frc2021.Constants;
 import com.team1678.lib.util.HallCalibration;
 
 public class Turret extends ServoMotorSubsystem {
@@ -26,7 +28,7 @@ public class Turret extends ServoMotorSubsystem {
     public static final boolean kUseManualHomingRoutine = false;
     private HallCalibration calibration = new HallCalibration(0);
     private double mOffset = 0;
-    private DigitalInput mLimitSwitch = new DigitalInput(0);
+    private DigitalInput mLimitSwitch = new DigitalInput(1);
 
     private static Canifier mCanifier = Canifier.getInstance();
     private static final SupplyCurrentLimitConfiguration CURR_LIM = new SupplyCurrentLimitConfiguration(true, 40, 60, 0.01);
@@ -100,6 +102,7 @@ public class Turret extends ServoMotorSubsystem {
         } else {
             super.writePeriodicOutputs();
         }
+        // mMaster.set(ControlMode.PercentOutput, 0.3);
     }
 
     @Override
@@ -137,10 +140,20 @@ public class Turret extends ServoMotorSubsystem {
         });
     }
 
+    public boolean getHoming() {
+        return mHoming;
+    }
+
     @Override
     public void outputTelemetry() {
         super.outputTelemetry();
 
         SmartDashboard.putBoolean(mConstants.kName + " Calibrated", !mHoming);
     }
+
+    public void setCoastMode() {
+        mMaster.setNeutralMode(NeutralMode.Coast);
+    }
+
+    
 }

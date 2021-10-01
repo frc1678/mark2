@@ -3,6 +3,7 @@ package com.team254.lib.vision;
 import com.team1678.frc2021.Constants;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
+import com.team254.lib.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -109,7 +110,7 @@ public class GoalTrack {
                 // Handle the case that all samples are older than kMaxGoalTrackSmoothingTime.
                 mSmoothedPosition = mObservedPositions.lastEntry().getValue();
             } else {
-                mSmoothedPosition = new Pose2d(x, y, new Rotation2d(c, s, true));
+                mSmoothedPosition = new Pose2d(new Translation2d(x,y), new Rotation2d(c, s, true));
             }
         }
     }

@@ -10,6 +10,7 @@ import com.team254.lib.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+// ok bois
 /* GuidingVectorField switchAvoidanceCW = new GuidingVectorField(new PolyCone(new ArrayList<Translation2d> {
 		Constants.kLeftSwitchCloseCorner,
 		Constants.kLeftSwitchFarCorner,
@@ -52,22 +53,22 @@ public class PolyCone extends Surface {
 			
 			f_ = (here -> {
 				// the following return is the value of the plane z(x,y)
-				if(here.unwrap().isWithinAngle(p1.unwrap(),p0.unwrap(),p2.unwrap()) && here.unwrap().distanceToLine(p1.unwrap(),p2.unwrap()) <= radius) return (a*(p0.x()-here.x())+b*(p0.y()-here.y()))/c - 1.0;
+				if(here.isWithinAngle(p1,p0,p2) && here.distanceToLine(p1,p2) <= radius) return (a*(p0.x()-here.x())+b*(p0.y()-here.y()))/c - 1.0;
 				else return 0.0;
 			});
 			dfdx_ = (here -> {
-				if(here.unwrap().isWithinAngle(p1.unwrap(),p0.unwrap(),p2.unwrap()) && here.unwrap().distanceToLine(p1.unwrap(),p2.unwrap()) <= radius) return a;
+				if(here.isWithinAngle(p1,p0,p2) && here.distanceToLine(p1,p2) <= radius) return a;
 				else return 0.0;
 			});
 			dfdy_ = (here -> {
-				if(here.unwrap().isWithinAngle(p1.unwrap(),p0.unwrap(),p2.unwrap()) && here.unwrap().distanceToLine(p1.unwrap(),p2.unwrap()) <= radius) return b;
+				if(here.isWithinAngle(p1,p0,p2) && here.distanceToLine(p1,p2) <= radius) return b;
 				else return 0.0;
 			});
 		}
 		public Function<Translation2d,Double> f_;
 		public Function<Translation2d,Double> dfdx_;
 		public Function<Translation2d,Double> dfdy_;
-		public Function<Translation2d, Double> f() {return f_;}
+		public Function<Translation2d,Double> f() {return f_;}
 		public Function<Translation2d,Double> dfdx() {return dfdx_;}
 		public Function<Translation2d,Double> dfdy() {return dfdy_;}
 		

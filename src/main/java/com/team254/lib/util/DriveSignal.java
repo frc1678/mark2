@@ -4,9 +4,9 @@ package com.team254.lib.util;
  * A drivetrain command consisting of the left, right motor settings and whether the brake mode is enabled.
  */
 public class DriveSignal {
-    private final double mLeftMotor;
-    private final double mRightMotor;
-    private final boolean mBrakeMode;
+    protected double mLeftMotor;
+    protected double mRightMotor;
+    protected boolean mBrakeMode;
 
     public DriveSignal(double left, double right) {
         this(left, right, false);
@@ -18,12 +18,8 @@ public class DriveSignal {
         mBrakeMode = brakeMode;
     }
 
-    public static DriveSignal fromControls(double throttle, double turn) {
-        return new DriveSignal(throttle - turn, throttle + turn);
-    }
-
-    public static final DriveSignal NEUTRAL = new DriveSignal(0, 0);
-    public static final DriveSignal BRAKE = new DriveSignal(0, 0, true);
+    public static DriveSignal NEUTRAL = new DriveSignal(0, 0);
+    public static DriveSignal BRAKE = new DriveSignal(0, 0, true);
 
     public double getLeft() {
         return mLeftMotor;

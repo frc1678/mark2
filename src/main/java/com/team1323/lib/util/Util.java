@@ -2,8 +2,6 @@ package com.team1323.lib.util;
 
 import java.util.List;
 
-import com.team1323.lib.geometry.UnwrappableRotation2d;
-
 /**
  * Contains basic functions that are used often.
  */
@@ -103,21 +101,19 @@ public class Util {
         }
         return newAngle;
     }
-
-    public static boolean shouldReverse(UnwrappableRotation2d goalAngle, UnwrappableRotation2d currentAngle) {
-        double angleDifference = Math.abs(goalAngle.distance(currentAngle));
-        double reversedAngleDifference = Math.abs(goalAngle.distance(currentAngle.rotateBy(UnwrappableRotation2d.fromDegrees(180.0))));
-        return reversedAngleDifference < angleDifference;
+    
+    public static boolean shouldReverse(double goalAngle, double currentAngle){
+    	goalAngle = boundAngle0to360Degrees(goalAngle);
+    	currentAngle = boundAngle0to360Degrees(currentAngle);
+    	double reversedAngle = boundAngle0to360Degrees(currentAngle + 180);
+    	double angleDifference = Math.abs(goalAngle - currentAngle);
+    	double reversedAngleDifference = Math.abs(goalAngle - reversedAngle);
+    	angleDifference = (angleDifference > 180) ? 360-angleDifference : angleDifference;
+    	reversedAngleDifference = (reversedAngleDifference > 180) ? 360-reversedAngleDifference : reversedAngleDifference;
+    	return reversedAngleDifference < angleDifference;
     }
     
     public static double deadBand(double val, double deadband){
         return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
-    }
-
-    public static double scaledDeadband(double value, double maxValue, double deadband){
-        double deadbandedValue = deadBand(value, deadband);
-        if(epsilonEquals(deadbandedValue, 0.0))
-            return 0.0;
-        return Math.signum(deadbandedValue) * ((Math.abs(deadbandedValue) - deadband) / (maxValue - deadband));
     }
 }

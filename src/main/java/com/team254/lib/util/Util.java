@@ -1,19 +1,19 @@
 package com.team254.lib.util;
 
-import com.team254.lib.geometry.Rotation2d;
-
 import java.util.List;
 
 /**
  * Contains basic functions that are used often.
  */
 public class Util {
+
     public static final double kEpsilon = 1e-12;
 
     /**
      * Prevent this class from being instantiated.
      */
-    private Util() {}
+    private Util() {
+    }
 
     /**
      * Limits the given input to the given magnitude.
@@ -25,7 +25,7 @@ public class Util {
     public static double limit(double v, double min, double max) {
         return Math.min(max, Math.max(min, v));
     }
-
+    
     public static boolean inRange(double v, double maxMagnitude) {
         return inRange(v, -maxMagnitude, maxMagnitude);
     }
@@ -69,16 +69,6 @@ public class Util {
         boolean result = true;
         for (Double value_in : list) {
             result &= epsilonEquals(value_in, value, epsilon);
-        }
-        return result;
-    }
-
-    public static double toTurretSafeAngleDegrees(Rotation2d rotation2d) {
-        double result = rotation2d.getDegrees() % 360.0;
-        if (result > 270) {
-            result -= 360;
-        } else if (result < -90) {
-            result += 360;
         }
         return result;
     }

@@ -59,12 +59,13 @@ public class Superstructure extends Subsystem {
     private boolean mWantsPreShot = false;
     private boolean mWantsUnjam = false;
     private boolean mWantsHoodScan = false;
+    private boolean mIndexShouldSpin = false;
 
     private double mCurrentTurret = 0.0;
     private double mCurrentHood = 0.0;
 
     private double mTurretSetpoint = 0.0;
-    private double mHoodSetpoint = 70.5;
+    private double mHoodSetpoint = 75.5;
     private double mShooterSetpoint = 4000.0;
     private boolean mGotSpunUp = false;
     private boolean mEnableIndexer = true;
@@ -143,6 +144,8 @@ public class Superstructure extends Subsystem {
         SmartDashboard.putBoolean("Shooting", mWantsShoot);
         SmartDashboard.putBoolean("Spinning Up", mWantsSpinUp);
         SmartDashboard.putBoolean("Pre Shot", mWantsPreShot);
+        SmartDashboard.putString("Turret Mode", mTurretMode.toString());
+        SmartDashboard.putNumber("Limelight Range", mCorrectedRangeToTarget);
 
         SmartDashboard.putBoolean("Test Spit", mWantsTestSpit);
         SmartDashboard.putBoolean("Fendor Shot", mWantsFendor);
@@ -268,7 +271,8 @@ public class Superstructure extends Subsystem {
         }
 
         if (mHoodSetpoint < Constants.kHoodConstants.kMinUnitsLimit) {
-            // logic for when hood fully in
+            // logic for when hood fully in]
+            System.out.println("running safety reset?");
             mHoodSetpoint = Constants.kHoodConstants.kMinUnitsLimit;
         }
         if (mHoodSetpoint > Constants.kHoodConstants.kMaxUnitsLimit) {
@@ -297,9 +301,11 @@ public class Superstructure extends Subsystem {
         }
 
         if (mWantsShoot && mGotSpunUp) {
-            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, mTrackId, Constants.kMaxGoalTrackAge);
+            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, 0, Constants.kMaxGoalTrackAge);
+            //System.out.println("ye we settin it to trackid");
         } else {
-            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, -1, Constants.kMaxGoalTrackAge);
+            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, 1, Constants.kMaxGoalTrackAge);
+            //System.out.println("ye we got it to a track -1");
         }
 
         if (mLatestAimingParameters.isPresent()) {
@@ -311,8 +317,11 @@ public class Superstructure extends Subsystem {
                     .transformBy(mLatestAimingParameters.get().getTurretToGoal());
             mCorrectedRangeToTarget = predicted_turret_to_goal.getTranslation().norm();
 
+            System.out.println("has current aiming parameters");
+
             // Don't aim if not in min distance
             if (mEnforceAutoAimMinDistance && mCorrectedRangeToTarget > mAutoAimMinDistance) {
+                System.out.println("Not meeting aiming recs");
                 return;
             }
 
@@ -328,7 +337,7 @@ public class Superstructure extends Subsystem {
             final Rotation2d turret_error = mRobotState.getVehicleToTurret(timestamp).getRotation().inverse()
                     .rotateBy(mLatestAimingParameters.get().getTurretToGoalRotation());
             
-            mTurretSetpoint = mCurrentTurret + turret_error.getDegrees();
+            mTurretSetpoint = mCurrentTurret + /* - */ turret_error.getDegrees(); // might switch to subtraction of error
             final Twist2d velocity = mRobotState.getMeasuredVelocity();
             // Angular velocity component from tangential robot motion about the goal.
             final double tangential_component = mLatestAimingParameters.get().getTurretToGoalRotation().sin()
@@ -350,6 +359,8 @@ public class Superstructure extends Subsystem {
             }
 
         } else {
+            
+            //System.out.println("No aiming paramenters :O");
             mHasTarget = false;
             mOnTarget = false;
         }
@@ -368,10 +379,12 @@ public class Superstructure extends Subsystem {
             return;
         }
         final double kLookaheadTime = 4.0;
-        Rotation2d turret_error = mRobotState.getPredictedFieldToVehicle(kLookaheadTime)
+        Rotation2d turret_error = mRobotState.getPredictedFieldToVehicle(timestamp + kLookaheadTime) // getPredictedFieldToVehicle
                 .transformBy(mRobotState.getVehicleToTurret(timestamp)).getRotation().inverse()
                 .rotateBy(mFieldRelativeTurretGoal);
-        mTurretSetpoint = mCurrentTurret + turret_error.getDegrees();
+        // System.out.println("Turret Error" + turret_error);
+        mTurretSetpoint = /* - */ turret_error.getDegrees();
+        // System.out.println("turret error " + turret_error.toDegrees());
         safetyReset();
     }
 
@@ -405,6 +418,7 @@ public class Superstructure extends Subsystem {
         boolean real_popout = false;
 
         if (Intake.getInstance().getState() == Intake.State.INTAKING) {
+            mIndexShouldSpin = true;
             indexerAction = Indexer.WantedAction.PASSIVE_INDEX;
             real_trigger = -600.0;
         }
@@ -413,6 +427,7 @@ public class Superstructure extends Subsystem {
             real_shooter = mShooterSetpoint;
             indexerAction = Indexer.WantedAction.PASSIVE_INDEX;
             real_trigger = -600.0;
+            enableIndexer(true);
         } else if (mWantsPreShot) {
             real_shooter = mShooterSetpoint;
             indexerAction = Indexer.WantedAction.HELLA_ZOOM;
@@ -434,11 +449,18 @@ public class Superstructure extends Subsystem {
 
             if (mGotSpunUp) {
                 real_popout = true;
+                enableIndexer(true);
             }
 
             if (mShooter.spunUp() && mTrigger.spunUp()) {
                 mGotSpunUp = true;
             }
+        } else if(mWantsTestSpit){
+            real_shooter = 1200;
+            indexerAction = Indexer.WantedAction.SLOW_ZOOM;
+            real_trigger = 4000.0;
+            real_popout = true;
+            enableIndexer(true);
         }
 
         
@@ -448,7 +470,7 @@ public class Superstructure extends Subsystem {
             real_trigger = -5000;
         }
 
-        if (mEnableIndexer) {
+        if (mEnableIndexer && mIndexShouldSpin) {
             mIndexer.setState(indexerAction);
         } else {
             mIndexer.setState(Indexer.WantedAction.PREP);
@@ -462,6 +484,7 @@ public class Superstructure extends Subsystem {
             mShooter.setVelocity(1500);
         } else if (mWantsTestSpit) {
             mShooter.setVelocity(1200);
+            System.out.println("is doing the test spit");
         } else {
             mShooter.setVelocity(real_shooter);
         }
@@ -491,7 +514,7 @@ public class Superstructure extends Subsystem {
         } else {
             mTurret.setSetpointMotionMagic(mTurretSetpoint);
         }
-        // mTurret.setOpenLoop(0);
+        //mTurret.setOpenLoop(0);
         // mHood.setOpenLoop(0);
         estim_popout = trigger_popout.update(real_popout, 0.2);
     }
@@ -527,11 +550,16 @@ public class Superstructure extends Subsystem {
         mWantsPreShot = false;
     }
 
+    // This is deprecated -Cameron
     public synchronized void setWantPreShot(boolean pre_shot) {
         mWantsSpinUp = false;
         mWantsShoot = false;
         mGotSpunUp = false;
         mWantsPreShot = pre_shot;
+    }
+
+    public synchronized void setWantDisableIndexer() {
+        mIndexShouldSpin = false;
     }
 
     public synchronized void setWantSpinUp() {
@@ -583,6 +611,7 @@ public class Superstructure extends Subsystem {
 
     public synchronized void setWantTestSpit() {
         mWantsTestSpit = !mWantsTestSpit;
+        System.out.println("Test Spit Status" + mWantsTestSpit);
     }
 
     public synchronized void setWantInnerTarget(boolean inner) {

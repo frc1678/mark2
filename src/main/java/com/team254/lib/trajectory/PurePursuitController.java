@@ -1,9 +1,8 @@
 package com.team254.lib.trajectory;
 
 import com.team254.lib.geometry.*;
-import com.team254.lib.util.Util;
 
-public class PurePursuitController<S extends ITranslation2d<S>> implements IPathFollower {
+public class PurePursuitController<S extends ITranslation2d<S>>{
     protected final TrajectoryIterator<S> iterator_;
     protected final double sampling_dist_;
     protected final double lookahead_;
@@ -17,11 +16,11 @@ public class PurePursuitController<S extends ITranslation2d<S>> implements IPath
         iterator_ = new TrajectoryIterator<S>(path);
     }
 
-    public Twist2d steer(final Pose2d current_pose) {
+    public Translation2d steer(final Pose2d current_pose) {
         done_ = done_ || (iterator_.isDone()
                 && current_pose.getTranslation().distance(iterator_.getState().getTranslation()) <= goal_tolerance_);
         if (isDone()) {
-            return new Twist2d(0.0, 0.0, 0.0);
+            return new Translation2d();
         }
 
         final double remaining_progress = iterator_.getRemainingProgress();
@@ -44,12 +43,7 @@ public class PurePursuitController<S extends ITranslation2d<S>> implements IPath
             }
         }
         iterator_.advance(goal_progress);
-        final Arc<S> arc = new Arc<S>(current_pose, iterator_.getState());
-        if (arc.length < Util.kEpsilon) {
-            return new Twist2d(0.0, 0.0, 0.0);
-        } else {
-            return new Twist2d(arc.length, 0.0,arc.length / arc.radius);
-        }
+        return new Translation2d(current_pose.getTranslation(), iterator_.getState().getTranslation());
     }
 
     public boolean isDone() {

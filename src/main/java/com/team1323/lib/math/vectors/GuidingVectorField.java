@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import com.team254.lib.geometry.Translation2d;
 
-
 public class GuidingVectorField extends VectorField {
 	// Implement as e.g.
 	// GuidingVectorField(Translation2d here -> here.x()+here.y(), ... )
@@ -60,6 +59,6 @@ public class GuidingVectorField extends VectorField {
 		return tv;
 	}
 	public Translation2d getVector(Translation2d here) {
-		return (new Translation2d(n(here).scale(-k.apply(here)*e(here)),tau(here))).unwrap().normalize().wrap();
+		return (new Translation2d(n(here).scale(-k.apply(here)*e(here)),tau(here))).normalize();
 	}
 }

@@ -6,7 +6,7 @@ package com.team254.lib.util;
 public class DelayedBoolean {
     private boolean mLastValue;
     private double mTransitionTimestamp;
-    private final double mDelay;
+    private double mDelay;
 
     public DelayedBoolean(double timestamp, double delay) {
         mTransitionTimestamp = timestamp;

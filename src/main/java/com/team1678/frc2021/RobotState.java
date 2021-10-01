@@ -1,6 +1,7 @@
 package com.team1678.frc2021;
 
 import com.team1678.frc2021.subsystems.Limelight;
+import com.team1678.frc2021.vision.*;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.geometry.Translation2d;
@@ -82,17 +83,17 @@ public class RobotState {
 
     private GoalTracker vision_target_ = new GoalTracker();
 
-    List<Translation2d> mCameraToVisionTargetPoses = new ArrayList<>();
+    List<com.team254.lib.geometry.Translation2d> mCameraToVisionTargetPoses = new ArrayList<>();
 
     private RobotState() {
-        reset(0.0, Pose2d.identity(), Rotation2d.identity(), Rotation2d.identity());
+        reset(0.0, new com.team254.lib.geometry.Pose2d(), new Rotation2d(), new Rotation2d());
     }
 
     /**
      * Resets the field to robot transform (robot's position on the field)
      */
     public synchronized void reset(double start_time, Pose2d initial_field_to_vehicle,
-            Rotation2d initial_vehicle_to_turret, Rotation2d initial_vehicle_to_hood) {
+            com.team254.lib.geometry.Rotation2d initial_vehicle_to_turret, Rotation2d initial_vehicle_to_hood) {
         reset(start_time, initial_field_to_vehicle);
 
         turret_rotation_ = new InterpolatingTreeMap<>(kObservationBufferSize);
@@ -112,7 +113,7 @@ public class RobotState {
     }
 
     public synchronized void reset() {
-        reset(Timer.getFPGATimestamp(), Pose2d.identity(), Rotation2d.identity(), Rotation2d.identity());
+        reset(Timer.getFPGATimestamp(), new Pose2d(), new Rotation2d(), new Rotation2d());
     }
 
     /**
@@ -121,6 +122,10 @@ public class RobotState {
      */
     public synchronized Pose2d getFieldToVehicle(double timestamp) {
         return field_to_vehicle_.getInterpolated(new InterpolatingDouble(timestamp));
+    }
+
+    public synchronized double getRobotTheta(double timestamp) {
+        return getLatestFieldToVehicle().getValue().getRotation().getDegrees();
     }
 
     public synchronized Pose2d getVehicleToTurret(double timestamp) {
@@ -167,11 +172,11 @@ public class RobotState {
         vehicle_to_hood_.put(new InterpolatingDouble(timestamp), observation);
     }
 
-    public synchronized void addObservations(double timestamp, Twist2d displacement, Twist2d measured_velocity,
+    public synchronized void addObservations(double timestamp, Pose2d displacement, Twist2d measured_velocity,
             Twist2d predicted_velocity) {
-        distance_driven_ += displacement.dx;
+        distance_driven_ += displacement.getTranslation().x();
         addFieldToVehicleObservation(timestamp,
-                Kinematics.integrateForwardKinematics(getLatestFieldToVehicle().getValue(), displacement));
+               getLatestFieldToVehicle().getValue().transformBy(displacement));
         vehicle_velocity_measured_ = measured_velocity;
         if (Math.abs(vehicle_velocity_measured_.dtheta) < 2.0 * Math.PI) {
             // Reject really high angular velocities from the filter.
@@ -206,6 +211,7 @@ public class RobotState {
     public synchronized void resetVision() {
         vision_target_.reset();
     }
+    
 
     private Translation2d getCameraToVisionTargetPose(double timestamp, TargetInfo target, Limelight source) {
         // Compensate for camera pitch
@@ -241,7 +247,7 @@ public class RobotState {
 
         Pose2d fieldToVisionTarget = getFieldToTurret(timestamp)
                 .transformBy(Pose2d.fromTranslation(getTurretToLens(timestamp))).transformBy(cameraToVisionTarget);
-        tracker.update(timestamp, List.of(new Pose2d(fieldToVisionTarget.getTranslation(), Rotation2d.identity())));
+        tracker.update(timestamp, List.of(new Pose2d(fieldToVisionTarget.getTranslation(), new Rotation2d())));
     }
 
     public synchronized void addVisionUpdate(double timestamp, List<TargetInfo> observations) {

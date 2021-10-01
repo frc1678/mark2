@@ -2,8 +2,10 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Canifier;
 import com.team254.lib.drivers.MotorChecker;
@@ -59,7 +61,7 @@ public class Hood extends ServoMotorSubsystem {
     public synchronized void writePeriodicOutputs() {
         if (mHoming) {
             if (mControlState == ControlState.OPEN_LOOP) {
-                mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand, DemandType.ArbitraryFeedForward, 0.0);
+                mMaster.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, 0.0);
             } else {
                 mMaster.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, 0.0);
             }
@@ -71,6 +73,7 @@ public class Hood extends ServoMotorSubsystem {
     @Override
     public synchronized void readPeriodicInputs() {
         if (mHoming && atHomingLocation()) {
+            System.out.println("is homing");
             mMaster.setSelectedSensorPosition((int) unitsToTicks(17.66));
             mMaster.overrideSoftLimitsEnable(true);
             System.out.println("Homed!!!");
@@ -105,5 +108,10 @@ public class Hood extends ServoMotorSubsystem {
         super.outputTelemetry();
 
         SmartDashboard.putBoolean(mConstants.kName + " Calibrated", !mHoming);
+        SmartDashboard.putBoolean("Hood at Homing Location", atHomingLocation());
+    }
+
+    public void setCoastMode() {
+        mMaster.setNeutralMode(NeutralMode.Coast);
     }
 }

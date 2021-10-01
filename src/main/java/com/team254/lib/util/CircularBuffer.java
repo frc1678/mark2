@@ -6,13 +6,13 @@ import java.util.LinkedList;
  * Implements a simple circular buffer.
  */
 public class CircularBuffer {
-    final int mWindowSize;
-    final LinkedList<Double> mSamples;
+    int mWindowSize;
+    LinkedList<Double> mSamples;
     double mSum;
 
     public CircularBuffer(int window_size) {
         mWindowSize = window_size;
-        mSamples = new LinkedList<>();
+        mSamples = new LinkedList<Double>();
         mSum = 0.0;
     }
 

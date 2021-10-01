@@ -7,13 +7,16 @@ import java.util.LinkedList;
  * Can be used for any class.
  */
 public class CircularBufferGeneric<E> {
-    final int mWindowSize;
-    final LinkedList<E> mSamples;
+    /**
+     *
+     */
+    int mWindowSize;
+    LinkedList<E> mSamples;
     double mSum;
 
     public CircularBufferGeneric(int window_size) {
         mWindowSize = window_size;
-        mSamples = new LinkedList<>();
+        mSamples = new LinkedList<E>();
         mSum = 0.0;
     }
 

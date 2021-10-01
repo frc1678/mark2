@@ -54,7 +54,7 @@ public class InputRamp{
         return output;
     }
 
-    public double getOutput() {
+    public double getOutput(){
         return output;
     }
 
