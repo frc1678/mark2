@@ -48,20 +48,20 @@ public class Constants {
 	public static final double stickDeadband = 0.1;
 
 	public static final class Swerve {
-        public static final int pigeonID = 13;
-        public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
+        public static final int pigeonID = 16;
+        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(17.5);
-        public static final double wheelBase = Units.inchesToMeters(17.5);
+        public static final double trackWidth = Units.inchesToMeters(24);
+        public static final double wheelBase = Units.inchesToMeters(24);
         public static final double wheelDiameter = Units.inchesToMeters(4.0);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;
 
-        public static final double driveGearRatio = 6.92307692; //6.86:1
-        public static final double angleGearRatio = 11.5714286; //12.8:1
+        public static final double driveGearRatio = 6.86; //6.86:1
+        public static final double angleGearRatio = 12.8; //12.8:1
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new edu.wpi.first.wpilibj.geometry.Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -107,7 +107,7 @@ public class Constants {
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = false;
-        public static final boolean angleMotorInvert = true;
+        public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
@@ -292,7 +292,7 @@ public class Constants {
 		// kTurretConstants.kRecoverPositionOnReset = true;
 	}
 
-	public static final Translation2d kVehicleToTurretTranslation = new Translation2d(3.75, 0);
+	public static final Translation2d kVehicleToTurretTranslation = new Translation2d(1.0, 0);
 
 	// hood
 	public static final ServoMotorSubsystemConstants kHoodConstants = new ServoMotorSubsystemConstants();

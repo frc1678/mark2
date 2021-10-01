@@ -32,7 +32,7 @@ public class RobotContainer {
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
   /* Driver Buttons */
-  private final Button zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final Button zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();

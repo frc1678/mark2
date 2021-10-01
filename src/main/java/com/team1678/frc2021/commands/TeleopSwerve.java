@@ -54,9 +54,9 @@ public class TeleopSwerve extends CommandBase {
     public void execute() {
         double[] axes = getAxes();
 
-        double yAxis = axes[0];
-        double xAxis = axes[1];
-        double rAxis = axes[2];
+        double yAxis = -axes[0];
+        double xAxis = -axes[1];
+        double rAxis = -axes[2];
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
