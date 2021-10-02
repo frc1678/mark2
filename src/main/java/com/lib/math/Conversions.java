@@ -67,4 +67,14 @@ public class Conversions {
         return wheelVelocity;
     }
 
+    // Convert meters to inches
+    public static double metersToInches(double meters) {
+        return meters * (39.73701 / 1);
+    }
+
+    // Convert meters to inches
+    public static double inchesToMeters(double inches) {
+        return inches * (0.0254 / 1);
+    }
+
 }

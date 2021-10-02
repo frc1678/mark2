@@ -5,6 +5,7 @@ import com.team1678.frc2021.RobotState;
 import com.team1678.frc2021.commands.TeleopSwerve;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
+import com.lib.math.Conversions;
 // import com.team254.lib.geometry.Pose2d;
 // import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.geometry.Twist2d;
@@ -66,16 +67,19 @@ public class RobotStateEstimator extends Subsystem {
 			double rotation = mTeleopSwerve.getChassisRotation();
 			ChassisSpeeds chassisVelocity = mSwerve.getChassisVelocity(translation, rotation);
 
-			com.team254.lib.geometry.Twist2d latest_displacement = new com.team254.lib.geometry.Twist2d(chassisVelocity.vxMetersPerSecond, chassisVelocity.vyMetersPerSecond,
+            double vx = Conversions.metersToInches(chassisVelocity.vxMetersPerSecond);
+            double vy = Conversions.metersToInches(chassisVelocity.vyMetersPerSecond);
+			com.team254.lib.geometry.Twist2d latest_displacement = new com.team254.lib.geometry.Twist2d(vx, vy,
                                 Math.toDegrees(chassisVelocity.omegaRadiansPerSecond)).scaled(dt);
 
-			final Twist2d measured_velocity = new Twist2d(chassisVelocity.vxMetersPerSecond, chassisVelocity.vyMetersPerSecond, chassisVelocity.omegaRadiansPerSecond);
+			final Twist2d measured_velocity = new Twist2d(vx, vy, chassisVelocity.omegaRadiansPerSecond);
 			final Twist2d predicted_velocity = measured_velocity.scaled(dt);
 			
 			mRobotState.addVehicleToTurretObservation(timestamp,
 								new com.team254.lib.geometry.Rotation2d(Turret.getInstance().getAngle()));
 			mRobotState.addObservations(timestamp, latest_displacement, measured_velocity, predicted_velocity);
-			mRobotState.addVehicleToHoodObservation(timestamp, new com.team254.lib.geometry.Rotation2d(90-Hood.getInstance().getAngle()));
+            mRobotState.addVehicleToHoodObservation(timestamp, new com.team254.lib.geometry.Rotation2d(90-Hood.getInstance().getAngle()));
+            
         }
 
         @Override
