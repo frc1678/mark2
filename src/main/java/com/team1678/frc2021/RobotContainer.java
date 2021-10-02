@@ -33,6 +33,10 @@ public class RobotContainer {
 
   /* Driver Buttons */
   private final Button zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
+  private final Button yButton = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final Button bButton = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final Button aButton = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final Button xButton = new JoystickButton(driver, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -64,6 +68,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    
+    // Snap Commands
+    yButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(0)));
+    bButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(90)));
+    aButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(180)));
+    xButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(270)));   
   }
 
   /**

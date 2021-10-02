@@ -154,6 +154,22 @@ public class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
+	}
+	
+	public static final class SnapConstants {
+        public static final double snapKP = 5;
+        public static final double snapKI = 0;
+        public static final double snapKD = 0;
+        public static final double snapTimeout = 0.25;
+        public static final double snapEpsilon = 1.0;
+
+        //Constraints for the profiled angle controller (vals stolen from AutoConstants)
+        public static final double kMaxAngularSpeedRadiansPerSecond = 4*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
+
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 
     public static final class AutoConstants {
