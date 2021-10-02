@@ -61,7 +61,7 @@ public class Hood extends ServoMotorSubsystem {
     public synchronized void writePeriodicOutputs() {
         if (mHoming) {
             if (mControlState == ControlState.OPEN_LOOP) {
-                mMaster.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, 0.0);
+                mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand, DemandType.ArbitraryFeedForward, 0.0);
             } else {
                 mMaster.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, 0.0);
             }
@@ -109,6 +109,7 @@ public class Hood extends ServoMotorSubsystem {
 
         SmartDashboard.putBoolean(mConstants.kName + " Calibrated", !mHoming);
         SmartDashboard.putBoolean("Hood at Homing Location", atHomingLocation());
+        SmartDashboard.putNumber("Hood Demand", mPeriodicIO.demand);
     }
 
     public void setCoastMode() {

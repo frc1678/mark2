@@ -38,7 +38,7 @@ public class Constants {
 
 	// Control Board
 	public static final double kJoystickThreshold = 0.2;
-	public static final int kButtonGamepadPort = 2;
+	public static final int kButtonGamepadPort = 1;
 
 	// Physical Robot Dimensions (including bumpers)
     public static final double kRobotWidth = 36.5;
@@ -157,7 +157,7 @@ public class Constants {
 	}
 	
 	public static final class SnapConstants {
-        public static final double snapKP = 5;
+        public static final double snapKP = 0.5;
         public static final double snapKI = 0;
         public static final double snapKD = 0;
         public static final double snapTimeout = 0.25;
@@ -213,7 +213,7 @@ public class Constants {
 	public static final int kIndexerId = 7; 
 	
 	// Canifier
-	public static final int kCanifierId = 0;
+	public static final int kCanifierId = 23;
 
 
 	// shooter
@@ -344,7 +344,7 @@ public class Constants {
 
 		// degrees of limelight pitch from horiz
 		kHoodConstants.kMinUnitsLimit = 17.66;
-		kHoodConstants.kMaxUnitsLimit = 80.5;
+		kHoodConstants.kMaxUnitsLimit = 89.5;
 
 		kHoodConstants.kCruiseVelocity = 20000; // Ticks / 100ms
 		kHoodConstants.kAcceleration = 20000; // Ticks / 100ms / s
@@ -435,7 +435,7 @@ public class Constants {
 	}
 	
 	// Climber
-	public static final int kClimberId = 3;
+	public static final int kClimberId = 25;
 
 	static{
 		kVisionSpeedTreemap.put(new InterpolatingDouble(-6.0), new InterpolatingDouble(24.0));
