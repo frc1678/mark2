@@ -6,6 +6,7 @@ package com.team1678.frc2021;
 
 import com.team1678.frc2021.auto.exampleAuto;
 import com.team1678.frc2021.commands.TeleopSwerve;
+import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
+  private final Superstructure mSuperstructure = Superstructure.getInstance();
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -37,6 +39,7 @@ public class RobotContainer {
   private final Button bButton = new JoystickButton(driver, XboxController.Button.kB.value);
   private final Button aButton = new JoystickButton(driver, XboxController.Button.kA.value);
   private final Button xButton = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final Button rightBumper = new JoystickButton(driver, XboxController.Button.kBumperRight.value);
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -68,12 +71,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    rightBumper.whenPressed(new InstantCommand(() -> mSuperstructure.setWantTuck(true)));
     
     // Snap Commands
     yButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(0)));
     bButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(90)));
     aButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(180)));
-    xButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(270)));   
+    xButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(270)));
   }
 
   /**
