@@ -280,7 +280,7 @@ public class Constants {
 		// Unit == Degrees
 		kTurretConstants.kHomePosition = 0.0; // CCW degrees from forward
 		kTurretConstants.kTicksPerUnitDistance = (2048.0 * 54.2) / 360.0;
-		kTurretConstants.kKp = 0.3; // 0.5
+		kTurretConstants.kKp = 0.5; // 0.5
 		kTurretConstants.kKi = 0;
 		kTurretConstants.kKd = 0.0;
 		kTurretConstants.kKf = 0.05;
@@ -326,7 +326,7 @@ public class Constants {
 		// Unit == Degrees
 		kHoodConstants.kHomePosition = 0.0; // Degrees
 		kHoodConstants.kTicksPerUnitDistance = (2048.0 * 93.8) / 360.0;
-		kHoodConstants.kKp = 0.3;
+		kHoodConstants.kKp = 0.5;
 		kHoodConstants.kKi = 0;
 		kHoodConstants.kKd = 0;
 		kHoodConstants.kKf = 0.05;
