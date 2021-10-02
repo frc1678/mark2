@@ -75,8 +75,8 @@ public class RobotState {
     private InterpolatingTreeMap<InterpolatingDouble, Pose2d> field_to_vehicle_;
     private InterpolatingTreeMap<InterpolatingDouble, Rotation2d> turret_rotation_;
     private InterpolatingTreeMap<InterpolatingDouble, Rotation2d> vehicle_to_hood_;
-    private Twist2d vehicle_velocity_predicted_;
-    private Twist2d vehicle_velocity_measured_;
+    private Pose2d vehicle_velocity_predicted_;
+    private Pose2d vehicle_velocity_measured_;
     private MovingAverageTwist2d vehicle_velocity_measured_filtered_;
     private double distance_driven_;
 
@@ -106,8 +106,8 @@ public class RobotState {
     public synchronized void reset(double start_time, Pose2d initial_field_to_vehicle) {
         field_to_vehicle_ = new InterpolatingTreeMap<>(kObservationBufferSize);
         field_to_vehicle_.put(new InterpolatingDouble(start_time), initial_field_to_vehicle);
-        vehicle_velocity_predicted_ = Twist2d.identity();
-        vehicle_velocity_measured_ = Twist2d.identity();
+        vehicle_velocity_predicted_ = Pose2d.identity();
+        vehicle_velocity_measured_ = Pose2d.identity();
         vehicle_velocity_measured_filtered_ = new MovingAverageTwist2d(25);
         distance_driven_ = 0.0;
     }
@@ -157,7 +157,7 @@ public class RobotState {
 
     public synchronized Pose2d getPredictedFieldToVehicle(double lookahead_time) {
         return getLatestFieldToVehicle().getValue()
-                .transformBy(Pose2d.exp(vehicle_velocity_predicted_.scaled(lookahead_time)));
+                .transformBy(vehicle_velocity_predicted_.scaled(lookahead_time));
     }
 
     public synchronized void addFieldToVehicleObservation(double timestamp, Pose2d observation) {
@@ -172,19 +172,12 @@ public class RobotState {
         vehicle_to_hood_.put(new InterpolatingDouble(timestamp), observation);
     }
 
-    public synchronized void addObservations(double timestamp, Twist2d displacement, Twist2d measured_velocity,
-            Twist2d predicted_velocity) {
-        distance_driven_ += displacement.dx;
+    public synchronized void addObservations(double timestamp, Pose2d displacement, Pose2d measured_velocity,
+            Pose2d predicted_velocity) {
+        distance_driven_ += displacement.getTranslation().norm();
         addFieldToVehicleObservation(timestamp,
-               getLatestFieldToVehicle().getValue().transformBy(Pose2d.exp(displacement)));
+               getLatestFieldToVehicle().getValue().transformBy(displacement));
         vehicle_velocity_measured_ = measured_velocity;
-        if (Math.abs(vehicle_velocity_measured_.dtheta) < 2.0 * Math.PI) {
-            // Reject really high angular velocities from the filter.
-            vehicle_velocity_measured_filtered_.add(vehicle_velocity_measured_);
-        } else {
-            vehicle_velocity_measured_filtered_
-                    .add(new Twist2d(vehicle_velocity_measured_.dx, vehicle_velocity_measured_.dy, 0.0));
-        }
         vehicle_velocity_predicted_ = predicted_velocity;
     }
 
@@ -196,16 +189,12 @@ public class RobotState {
         distance_driven_ = 0.0;
     }
 
-    public synchronized Twist2d getPredictedVelocity() {
+    public synchronized Pose2d getPredictedVelocity() {
         return vehicle_velocity_predicted_;
     }
 
-    public synchronized Twist2d getMeasuredVelocity() {
+    public synchronized Pose2d getMeasuredVelocity() {
         return vehicle_velocity_measured_;
-    }
-
-    public synchronized Twist2d getSmoothedVelocity() {
-        return vehicle_velocity_measured_filtered_.getAverage();
     }
 
     public synchronized void resetVision() {

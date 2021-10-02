@@ -126,8 +126,8 @@ public class Robot extends TimedRobot {
 
             mSubsystemManager.setSubsystems(
                 mRobotStateEstimator,
-                mCanifier,
-                mHood,
+				mCanifier,
+				mHood,
                 mLimelight, 
                 mIntake, 
                 mIndexer, 
@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
                 mSuperstructure,
                 mTurret,
                 mInfrastructure,
-                mClimber,
+                // mClimber,
                 mLEDs
             );
 

@@ -152,6 +152,9 @@ public class Superstructure extends Subsystem {
 
         SmartDashboard.putNumber("Turret Goal", mTurretSetpoint);
         SmartDashboard.putNumber("Hood Goal", mHoodSetpoint);
+
+        SmartDashboard.putBoolean("Has Aiming Parameters", mLatestAimingParameters.isPresent());
+        SmartDashboard.putNumber("Distance to Target", mCorrectedRangeToTarget);
     }
 
     @Override
@@ -329,6 +332,8 @@ public class Superstructure extends Subsystem {
                     .rotateBy(mLatestAimingParameters.get().getTurretToGoalRotation());
             
             mTurretSetpoint = mCurrentTurret + turret_error.getDegrees();
+            
+            /*
             final Twist2d velocity = mRobotState.getMeasuredVelocity();
             // Angular velocity component from tangential robot motion about the goal.
             final double tangential_component = mLatestAimingParameters.get().getTurretToGoalRotation().sin()
@@ -337,6 +342,7 @@ public class Superstructure extends Subsystem {
             // Add (opposite) of tangential velocity about goal + angular velocity in local
             // frame.
             mTurretFeedforwardV = -(angular_component + tangential_component);
+            */
 
             safetyReset();
 
