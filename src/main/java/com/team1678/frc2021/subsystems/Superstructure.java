@@ -157,6 +157,8 @@ public class Superstructure extends Subsystem {
 
         SmartDashboard.putBoolean("Has Aiming Parameters", mLatestAimingParameters.isPresent());
         SmartDashboard.putNumber("Distance to Target", mCorrectedRangeToTarget);
+
+        SmartDashboard.putString("Turret Mode", mTurretMode.toString());
     }
 
     @Override
