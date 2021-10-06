@@ -87,7 +87,7 @@ public class RobotStateEstimator extends Subsystem {
             double dy = Units.metersToInches(mSwervePose.getTranslation().y());
             double dtheta = mSwervePose.getRotation().getDegrees();
 
-            swervePose = new Pose2d(dx, dx, swervePose.getRotation());
+            swervePose = new Pose2d(dx, dy, swervePose.getRotation());
 
             double vx = -Units.metersToInches(chassisVelocity.vxMetersPerSecond);
             double vy = -Units.metersToInches(chassisVelocity.vyMetersPerSecond);
