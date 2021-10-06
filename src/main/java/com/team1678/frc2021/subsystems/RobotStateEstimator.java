@@ -1,5 +1,6 @@
 package com.team1678.frc2021.subsystems;
 
+import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.RobotContainer;
 import com.team1678.frc2021.RobotState;
 import com.team1678.frc2021.commands.TeleopSwerve;
@@ -13,8 +14,10 @@ import com.team254.lib.util.InterpolatingDouble;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 
 public class RobotStateEstimator extends Subsystem {
@@ -25,10 +28,15 @@ public class RobotStateEstimator extends Subsystem {
     private RobotContainer m_robotContainer = new RobotContainer();
     private TeleopSwerve mTeleopSwerve;
 
+    com.team254.lib.geometry.Pose2d measured_velocity = new com.team254.lib.geometry.Pose2d();
+    Transform2d latest_displacement = new Transform2d();
+    com.team254.lib.geometry.Pose2d pose2dlatest_displacement = new com.team254.lib.geometry.Pose2d();
+
     private double prev_timestamp_ = -1.0;
     private double prev_vx = 0;
     private double prev_vy = 0;
     private double prev_vtheta = 0;
+    private Pose2d prevSwervePose = new Pose2d();
 
     public static RobotStateEstimator getInstance() {
         if (mInstance == null) {
@@ -65,19 +73,29 @@ public class RobotStateEstimator extends Subsystem {
             com.team254.lib.geometry.Pose2d mSwervePose = new com.team254.lib.geometry.Pose2d(swervePoseTranslation_x,
                     swervePoseTranslation_y, new com.team254.lib.geometry.Rotation2d(swervePoseRotation));
 
-            mTeleopSwerve = m_robotContainer.getTeleopSwerve();
-            Translation2d translation = mTeleopSwerve.getChassisTranslation();
-            double rotation = mTeleopSwerve.getChassisRotation();
-            ChassisSpeeds chassisVelocity = mSwerve.getChassisVelocity(translation, rotation);
+            
 
-            double vx = Units.metersToInches(chassisVelocity.vxMetersPerSecond);
-            double vy = Units.metersToInches(chassisVelocity.vyMetersPerSecond);
-            com.team254.lib.geometry.Pose2d latest_displacement = new com.team254.lib.geometry.Pose2d(vx, vy,
-                    new com.team254.lib.geometry.Rotation2d(Math.toDegrees(chassisVelocity.omegaRadiansPerSecond)))
-                            .scaled(dt);
+            // mTeleopSwerve = m_robotContainer.getTeleopSwerve();
+            // Translation2d translation = mTeleopSwerve.getChassisTranslation();
+            // double rotation = mTeleopSwerve.getChassisRotation();
+            // ChassisSpeeds chassisVelocity = mSwerve.getChassisVelocity(translation, rotation);
 
-            final com.team254.lib.geometry.Pose2d measured_velocity = new com.team254.lib.geometry.Pose2d(vx, vy,
-                    new com.team254.lib.geometry.Rotation2d(Math.toDegrees(chassisVelocity.omegaRadiansPerSecond)));
+            ChassisSpeeds chassisVelocity = Constants.Swerve.swerveKinematics.toChassisSpeeds(mSwerve.mSwerveMods[0].getState(), mSwerve.mSwerveMods[1].getState(), mSwerve.mSwerveMods[2].getState(), mSwerve.mSwerveMods[3].getState());
+
+            double dx = Units.metersToInches(mSwervePose.getTranslation().x());
+            double dy = Units.metersToInches(mSwervePose.getTranslation().y());
+            double dtheta = mSwervePose.getRotation().getDegrees();
+
+            swervePose = new Pose2d(dx, dx, swervePose.getRotation());
+
+            double vx = -Units.metersToInches(chassisVelocity.vxMetersPerSecond);
+            double vy = -Units.metersToInches(chassisVelocity.vyMetersPerSecond);
+            measured_velocity = new com.team254.lib.geometry.Pose2d(vx, vy,
+                    new com.team254.lib.geometry.Rotation2d(Math.toDegrees(-chassisVelocity.omegaRadiansPerSecond)));
+            
+            latest_displacement = new Transform2d(prevSwervePose, swervePose);
+
+            pose2dlatest_displacement = new com.team254.lib.geometry.Pose2d(latest_displacement.getX(), latest_displacement.getY(), new com.team254.lib.geometry.Rotation2d(latest_displacement.getRotation().getDegrees()));
 
             double vx_diff = vx - prev_vx;
             double vy_diff = vy - prev_vy;
@@ -89,13 +107,14 @@ public class RobotStateEstimator extends Subsystem {
 
             mRobotState.addVehicleToTurretObservation(timestamp,
                     new com.team254.lib.geometry.Rotation2d(Turret.getInstance().getAngle()));
-            mRobotState.addObservations(timestamp, latest_displacement, measured_velocity, predicted_velocity);
+            mRobotState.addObservations(timestamp, pose2dlatest_displacement, measured_velocity, predicted_velocity);
             mRobotState.addVehicleToHoodObservation(timestamp,
                     new com.team254.lib.geometry.Rotation2d(90 - Hood.getInstance().getAngle()));
 
             vx_diff = vx;
             vy_diff = vy;
             theta_diff = chassisVelocity.omegaRadiansPerSecond;
+            prevSwervePose = swervePose;
         }
 
         @Override
@@ -115,5 +134,12 @@ public class RobotStateEstimator extends Subsystem {
     @Override
     public void outputTelemetry() {
         mRobotState.outputToSmartDashboard();
+        SmartDashboard.putNumber("Measured X", measured_velocity.getTranslation().x());
+        SmartDashboard.putNumber("Measured Y", measured_velocity.getTranslation().y());
+        SmartDashboard.putNumber("Measured Rot", measured_velocity.getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Displacement X", pose2dlatest_displacement.getTranslation().x());
+        SmartDashboard.putNumber("Displacement Y", pose2dlatest_displacement.getTranslation().y());
+        SmartDashboard.putNumber("Displacement Rot", pose2dlatest_displacement.getRotation().getDegrees());
     }
 }
