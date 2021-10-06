@@ -51,7 +51,7 @@ public class Constants {
 	/* 364 IMPORTED CONSTANTS */
 	public static final double stickDeadband = 0.1;
 
-	public static final class Swerve {
+	public static final class Swerve {	
         public static final int pigeonID = 16;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 

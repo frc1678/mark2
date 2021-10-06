@@ -1,5 +1,6 @@
 package com.team1678.frc2021.subsystems;
 
+import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.RobotContainer;
 import com.team1678.frc2021.RobotState;
 import com.team1678.frc2021.commands.TeleopSwerve;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 
 public class RobotStateEstimator extends Subsystem {
@@ -24,6 +26,7 @@ public class RobotStateEstimator extends Subsystem {
     private RobotState mRobotState = RobotState.getInstance();
     private RobotContainer m_robotContainer = new RobotContainer();
     private TeleopSwerve mTeleopSwerve;
+    private ChassisSpeeds mChassisVelocity = new ChassisSpeeds();
 
     private double prev_timestamp_ = -1.0;
     private double prev_vx = 0;
@@ -65,19 +68,15 @@ public class RobotStateEstimator extends Subsystem {
             com.team254.lib.geometry.Pose2d mSwervePose = new com.team254.lib.geometry.Pose2d(swervePoseTranslation_x,
                     swervePoseTranslation_y, new com.team254.lib.geometry.Rotation2d(swervePoseRotation));
 
-            mTeleopSwerve = m_robotContainer.getTeleopSwerve();
-            Translation2d translation = mTeleopSwerve.getChassisTranslation();
-            double rotation = mTeleopSwerve.getChassisRotation();
-            ChassisSpeeds chassisVelocity = mSwerve.getChassisVelocity(translation, rotation);
+            ChassisSpeeds chassisVelocity = Constants.Swerve.swerveKinematics.toChassisSpeeds(mSwerve.mSwerveMods[0].getState(), mSwerve.mSwerveMods[1].getState(), mSwerve.mSwerveMods[2].getState(), mSwerve.mSwerveMods[3].getState());
+            mChassisVelocity = chassisVelocity;
 
             double vx = Units.metersToInches(chassisVelocity.vxMetersPerSecond);
             double vy = Units.metersToInches(chassisVelocity.vyMetersPerSecond);
-            com.team254.lib.geometry.Pose2d latest_displacement = new com.team254.lib.geometry.Pose2d(vx, vy,
-                    new com.team254.lib.geometry.Rotation2d(Math.toDegrees(chassisVelocity.omegaRadiansPerSecond)))
-                            .scaled(dt);
-
+            
             final com.team254.lib.geometry.Pose2d measured_velocity = new com.team254.lib.geometry.Pose2d(vx, vy,
                     new com.team254.lib.geometry.Rotation2d(Math.toDegrees(chassisVelocity.omegaRadiansPerSecond)));
+            com.team254.lib.geometry.Pose2d latest_displacement = measured_velocity.scaled(dt);
 
             double vx_diff = vx - prev_vx;
             double vy_diff = vy - prev_vy;
@@ -114,6 +113,9 @@ public class RobotStateEstimator extends Subsystem {
 
     @Override
     public void outputTelemetry() {
+        SmartDashboard.putNumber("Chassis Velocity X", mChassisVelocity.vxMetersPerSecond);
+        SmartDashboard.putNumber("Chassis Velocity Y", mChassisVelocity.vyMetersPerSecond);
+        SmartDashboard.putNumber("Chassis Velocity Rotation", mChassisVelocity.omegaRadiansPerSecond);
         mRobotState.outputToSmartDashboard();
     }
 }

@@ -153,6 +153,8 @@ public class Superstructure extends Subsystem {
         SmartDashboard.putNumber("Turret Goal", mTurretSetpoint);
         SmartDashboard.putNumber("Hood Goal", mHoodSetpoint);
 
+        SmartDashboard.putBoolean("Is Field Relative", mTurretMode == TurretControlModes.FIELD_RELATIVE);
+
         SmartDashboard.putBoolean("Has Aiming Parameters", mLatestAimingParameters.isPresent());
         SmartDashboard.putNumber("Distance to Target", mCorrectedRangeToTarget);
     }
