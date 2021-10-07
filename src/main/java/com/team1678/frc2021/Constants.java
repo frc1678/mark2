@@ -221,7 +221,7 @@ public class Constants {
 	public static final int kSlaveFlywheelID = 15;
 	public static final int kTriggerWheelID = 10;
 	public static final int kTriggerPopoutSolenoidID = 6;
-	public static final double kShooterP = 0.2;
+	public static final double kShooterP = 0.25;
 	public static final double kShooterI = 0.00004;
 	public static final double kShooterD = 0.0;
 	public static final double kShooterF = 0.05;
