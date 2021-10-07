@@ -67,11 +67,11 @@ public class RobotStateEstimator extends Subsystem {
         public synchronized void onLoop(double timestamp) {
             final double dt = timestamp - prev_timestamp_;
 
-            Pose2d swervePose = mSwerve.getPose();
-            double swervePoseTranslation_x = swervePose.getTranslation().getX();
-            double swervePoseTranslation_y = swervePose.getTranslation().getY();
-            double swervePoseRotation = swervePose.getRotation().getDegrees();
-            com.team254.lib.geometry.Pose2d mSwervePose = new com.team254.lib.geometry.Pose2d(swervePoseTranslation_x,
+            Pose2d mSwervePose = mSwerve.getPose();
+            double swervePoseTranslation_x = Units.metersToInches(mSwervePose.getTranslation().getX());
+            double swervePoseTranslation_y = Units.metersToInches(mSwervePose.getTranslation().getY());
+            double swervePoseRotation = Units.metersToInches(mSwervePose.getRotation().getDegrees());
+            com.team254.lib.geometry.Pose2d m254SwervePose = new com.team254.lib.geometry.Pose2d(swervePoseTranslation_x,
                     swervePoseTranslation_y, new com.team254.lib.geometry.Rotation2d(swervePoseRotation));
 
             
@@ -83,18 +83,14 @@ public class RobotStateEstimator extends Subsystem {
 
             ChassisSpeeds chassisVelocity = Constants.Swerve.swerveKinematics.toChassisSpeeds(mSwerve.mSwerveMods[0].getState(), mSwerve.mSwerveMods[1].getState(), mSwerve.mSwerveMods[2].getState(), mSwerve.mSwerveMods[3].getState());
 
-            double dx = Units.metersToInches(mSwervePose.getTranslation().x());
-            double dy = Units.metersToInches(mSwervePose.getTranslation().y());
-            double dtheta = mSwervePose.getRotation().getDegrees();
-
-            swervePose = new Pose2d(dx, dy, swervePose.getRotation());
+            mSwervePose = new Pose2d(swervePoseTranslation_x, swervePoseTranslation_y, mSwervePose.getRotation());
 
             double vx = -Units.metersToInches(chassisVelocity.vxMetersPerSecond);
             double vy = -Units.metersToInches(chassisVelocity.vyMetersPerSecond);
             measured_velocity = new com.team254.lib.geometry.Pose2d(vx, vy,
                     new com.team254.lib.geometry.Rotation2d(Math.toDegrees(-chassisVelocity.omegaRadiansPerSecond)));
             
-            latest_displacement = new Transform2d(prevSwervePose, swervePose);
+            latest_displacement = new Transform2d(prevSwervePose, mSwervePose);
 
             pose2dlatest_displacement = new com.team254.lib.geometry.Pose2d(latest_displacement.getX(), latest_displacement.getY(), new com.team254.lib.geometry.Rotation2d(latest_displacement.getRotation().getDegrees()));
 
@@ -115,7 +111,7 @@ public class RobotStateEstimator extends Subsystem {
             vx_diff = vx;
             vy_diff = vy;
             theta_diff = chassisVelocity.omegaRadiansPerSecond;
-            prevSwervePose = swervePose;
+            prevSwervePose = mSwervePose;
         }
 
         @Override
