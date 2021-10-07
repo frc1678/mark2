@@ -30,6 +30,7 @@ public class RobotStateEstimator extends Subsystem {
     private ChassisSpeeds mChassisVelocity = new ChassisSpeeds();
 
     com.team254.lib.geometry.Pose2d measured_velocity = new com.team254.lib.geometry.Pose2d();
+    com.team254.lib.geometry.Pose2d predicted_velocity = new com.team254.lib.geometry.Pose2d();    
     Transform2d latest_displacement = new Transform2d();
     com.team254.lib.geometry.Pose2d pose2dlatest_displacement = new com.team254.lib.geometry.Pose2d();
 
@@ -99,8 +100,7 @@ public class RobotStateEstimator extends Subsystem {
             double theta_diff = chassisVelocity.omegaRadiansPerSecond - prev_vtheta;
             final com.team254.lib.geometry.Pose2d latest_acceleration = new com.team254.lib.geometry.Pose2d(vx_diff,
                     vy_diff, new com.team254.lib.geometry.Rotation2d(Math.toDegrees(theta_diff))).scaled(1 / dt);
-            final com.team254.lib.geometry.Pose2d predicted_velocity = measured_velocity
-                    .transformBy(latest_acceleration.scaled(dt));
+            predicted_velocity = measured_velocity.transformBy(latest_acceleration.scaled(dt));
 
             mRobotState.addVehicleToTurretObservation(timestamp,
                     new com.team254.lib.geometry.Rotation2d(Turret.getInstance().getAngle()));
@@ -108,9 +108,9 @@ public class RobotStateEstimator extends Subsystem {
             mRobotState.addVehicleToHoodObservation(timestamp,
                     new com.team254.lib.geometry.Rotation2d(90 - Hood.getInstance().getAngle()));
 
-            vx_diff = vx;
-            vy_diff = vy;
-            theta_diff = chassisVelocity.omegaRadiansPerSecond;
+            prev_vx = vx;
+            prev_vy = vy;
+            prev_vtheta = chassisVelocity.omegaRadiansPerSecond;
             prevSwervePose = mSwervePose;
         }
 
@@ -134,9 +134,14 @@ public class RobotStateEstimator extends Subsystem {
         SmartDashboard.putNumber("Chassis Velocity Y", mChassisVelocity.vyMetersPerSecond);
         SmartDashboard.putNumber("Chassis Velocity Rotation", mChassisVelocity.omegaRadiansPerSecond);
         mRobotState.outputToSmartDashboard();
+
         SmartDashboard.putNumber("Measured X", measured_velocity.getTranslation().x());
         SmartDashboard.putNumber("Measured Y", measured_velocity.getTranslation().y());
         SmartDashboard.putNumber("Measured Rot", measured_velocity.getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Predicted X", predicted_velocity.getTranslation().x());
+        SmartDashboard.putNumber("Predicted Y", predicted_velocity.getTranslation().y());
+        SmartDashboard.putNumber("Predicted Rot", predicted_velocity.getRotation().getDegrees());
 
         SmartDashboard.putNumber("Displacement X", pose2dlatest_displacement.getTranslation().x());
         SmartDashboard.putNumber("Displacement Y", pose2dlatest_displacement.getTranslation().y());
