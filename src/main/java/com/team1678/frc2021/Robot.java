@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     private final Shooter mShooter = Shooter.getInstance();
     private final Trigger mTrigger = Trigger.getInstance();
     private final Climber mClimber = Climber.getInstance();
+    private final Skywalker mSkywalker = Skywalker.getInstance();
     private final Hood mHood = Hood.getInstance();
 
     private final Canifier mCanifier = Canifier.getInstance();
@@ -341,6 +342,7 @@ public class Robot extends TimedRobot {
                 mSuperstructure.setWantPreShot(false);
                 mSuperstructure.setWantUnjam(false);
 
+                //Climber control
                 if (mControlBoard.getArmExtend()) { // Press A
                         climber_action = (Climber.WantedAction.EXTEND);   
 				} else if (mControlBoard.getArmHug()) { // Press B
@@ -355,7 +357,18 @@ public class Robot extends TimedRobot {
                 } else {
 					// TODO: Check if NONE state needs to be set
                 }
-
+                //Skywalker Control
+                switch(mControlBoard.getSkywalker()){
+                    case -1:
+                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.SHIFT_LEFT);
+                        break;
+                    case 1:
+                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.SHIFT_RIGHT);
+                        break;
+                    case 0:
+                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.NONE);
+                        break;
+                }
                 if (mClimber.getState() == Climber.State.HUGGING) {
                     mLEDs.conformToState(buddy_climb ? LEDs.State.HUGGING_BUDDY : LEDs.State.HUGGING);
                 } else if (mClimber.getState() == Climber.State.CLIMBING) {
