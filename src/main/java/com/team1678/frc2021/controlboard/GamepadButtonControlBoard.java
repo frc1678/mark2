@@ -90,8 +90,8 @@ public class GamepadButtonControlBoard {
     }
 
     public Rotation2d getJogTurret() {
-        double jogX = mController.getJoystick(CustomXboxController.Side.LEFT, CustomXboxController.Axis.X);
-        double jogY = mController.getJoystick(CustomXboxController.Side.LEFT, CustomXboxController.Axis.Y);
+        double jogX = -mController.getJoystick(CustomXboxController.Side.LEFT, CustomXboxController.Axis.X);
+        double jogY = -mController.getJoystick(CustomXboxController.Side.LEFT, CustomXboxController.Axis.Y);
         
         Translation2d mag = new Translation2d(jogX, jogY);
         Rotation2d turret = mag.direction();
@@ -115,7 +115,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getSpinUp() {
-        return mController.getController().getAButtonReleased();
+        return mController.getController().getAButtonPressed();
     }
 
     public boolean getTuck() {
@@ -144,7 +144,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getShoot() {
-        return mController.getController().getYButtonReleased();
+        return mController.getController().getYButtonPressed();
     }
 
     public boolean getPreShot() {
