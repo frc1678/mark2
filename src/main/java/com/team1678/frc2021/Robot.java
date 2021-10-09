@@ -126,19 +126,20 @@ public class Robot extends TimedRobot {
             CrashTracker.logRobotInit();
 
             mSubsystemManager.setSubsystems(
-                mRobotStateEstimator,
-				mCanifier,
-				mHood,
-                mLimelight, 
-                mIntake, 
-                mIndexer, 
-                mShooter,
-                mTrigger,
-                mSuperstructure,
-                mTurret,
-                mInfrastructure,
+                // mRobotStateEstimator,
+				// mCanifier,
+				// mHood,
+                // mLimelight, 
+                // mIntake, 
+                // mIndexer, 
+                // mShooter,
+                // mTrigger,
+                // mSuperstructure,
+                // mTurret,
+                // mInfrastructure,
+                mSkywalker//,
                 // mClimber,
-                mLEDs
+                // mLEDs
             );
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -221,6 +222,7 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             mDisabledLooper.stop();
             mClimber.setBrakeMode(true);
+            mClimber.setShift(false);
 
             mInfrastructure.setIsDuringAuto(false);
 
@@ -341,6 +343,8 @@ public class Robot extends TimedRobot {
                 mSuperstructure.setWantShoot(false);
                 mSuperstructure.setWantPreShot(false);
                 mSuperstructure.setWantUnjam(false);
+
+                mClimber.setShift(true);
 
                 //Climber control
                 if (mControlBoard.getArmExtend()) { // Press A

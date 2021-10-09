@@ -438,7 +438,7 @@ public class Constants {
 	public static final int kClimberId = 25;
 
 	// Skywalker
-	public static final int kSkywalkerMasterId = 18; // Check this
+	public static final int kSkywalkerMasterId = 2; // Check this
 	public static final double kIdleVoltage = 0.0;
 	public static final double kShiftingRightVoltage = 5.0; // 12
 	public static final double kShiftingLeftVoltage = -5.0; // -12

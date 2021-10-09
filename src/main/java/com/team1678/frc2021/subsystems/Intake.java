@@ -24,7 +24,7 @@ public class Intake extends Subsystem {
     private static Intake mInstance;
     private TimeDelayedBoolean mIntakeSolenoidTimer = new TimeDelayedBoolean();
 
-    private Solenoid mDeploySolenoid, mShiftSolenoid;
+    private Solenoid mDeploySolenoid;
 
     public enum WantedAction {
         NONE, INTAKE, RETRACT, STAY_OUT,
@@ -38,7 +38,6 @@ public class Intake extends Subsystem {
 
     private static PeriodicIO mPeriodicIO = new PeriodicIO();
     private ReflectingCSVWriter<PeriodicIO> mCSVWriter = null;
-    private boolean shift = false;
 
     private final TalonFX mMaster;
 
@@ -57,7 +56,6 @@ public class Intake extends Subsystem {
         mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
         mMaster.setInverted(true);
         mDeploySolenoid = Constants.makeSolenoidForId(Constants.kDeploySolenoidId);
-        mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
     }
 
     public synchronized static Intake getInstance() {
@@ -184,7 +182,6 @@ public class Intake extends Subsystem {
     public void writePeriodicOutputs() {
         mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);
         mDeploySolenoid.set(mPeriodicIO.deploy);
-        mShiftSolenoid.set(shift);
     }
 
     @Override

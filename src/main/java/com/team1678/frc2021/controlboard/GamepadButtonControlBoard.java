@@ -279,7 +279,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getLeaveClimbMode() {
-        return mController.getDPad() != -1;
+        return mController.getButton(Button.BACK) && mController.getButton(Button.START);
     }
 
     public void reset() {

@@ -46,6 +46,8 @@ public class Climber extends Subsystem  {
     private State mState = State.IDLE;
 
     private final TalonFX mMaster;
+    private final Solenoid mShiftSolenoid;
+    
     private double mHoldingPos = 0.0;
     private double mZeroPos;
     private boolean mExtended = false;
@@ -76,6 +78,8 @@ public class Climber extends Subsystem  {
         mMaster.setNeutralMode(NeutralMode.Coast);
 
         mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
+
+        mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
     }
 
     public synchronized static Climber getInstance() {
@@ -166,6 +170,10 @@ public class Climber extends Subsystem  {
 
     public void setZeroPosition() {
         mZeroPos = mPeriodicIO.position;
+    }
+
+    public void setShift(boolean shift) {
+        mPeriodicIO.shift_solenoid = shift;
     }
 
     public void runStateMachine() {
@@ -260,6 +268,7 @@ public class Climber extends Subsystem  {
     public synchronized void writePeriodicOutputs() {
         if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING) {
             mMaster.set(ControlMode.MotionMagic, mPeriodicIO.demand);
+            mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         } else {
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);
         }
@@ -274,6 +283,7 @@ public class Climber extends Subsystem  {
 
         // OUTPUTS
         public double demand;
+        public boolean shift_solenoid;
         public boolean arm_solenoid;
         public boolean brake_solenoid;
     }
