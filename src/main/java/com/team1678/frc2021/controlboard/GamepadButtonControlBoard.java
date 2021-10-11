@@ -213,7 +213,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getArmExtend() {
-        return mController.getController().getAButtonReleased();
+        return mController.getController().getAButtonPressed();
     }
 
     public boolean getStopClimb() {
@@ -229,10 +229,17 @@ public class GamepadButtonControlBoard {
         return mController.getController().getBackButtonReleased();
     }
 
-    public boolean getArmHug() {
-        return mController.getController().getBButtonReleased();
+    public int getClimberJog(){
+        int povread = mController.getController().getPOV();
+        switch(povread){
+            case 0:
+                return 1;
+            case 180:
+                return -1;
+            default:
+                return 0;
+        }
     }
-
     /**
      * The skywalker input
      *

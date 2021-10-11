@@ -127,19 +127,19 @@ public class Robot extends TimedRobot {
 
             mSubsystemManager.setSubsystems(
                 // mRobotStateEstimator,
-				// mCanifier,
+				mCanifier,
 				// mHood,
                 // mLimelight, 
-                // mIntake, 
+                mIntake, 
                 // mIndexer, 
                 // mShooter,
                 // mTrigger,
                 // mSuperstructure,
                 // mTurret,
-                // mInfrastructure,
-                mSkywalker//,
-                // mClimber,
-                // mLEDs
+                mInfrastructure,
+                mSkywalker,
+                mClimber,
+                mLEDs
             );
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -337,6 +337,7 @@ public class Robot extends TimedRobot {
                 }
             } else {
                 Climber.WantedAction climber_action = Climber.WantedAction.NONE;
+                mClimber.setZeroPosition();
                 mSuperstructure.enableIndexer(false);
                 mIntake.setState(Intake.WantedAction.NONE);
                 mSuperstructure.setWantSpinUp(false);
@@ -348,9 +349,7 @@ public class Robot extends TimedRobot {
 
                 //Climber control
                 if (mControlBoard.getArmExtend()) { // Press A
-                        climber_action = (Climber.WantedAction.EXTEND);   
-				} else if (mControlBoard.getArmHug()) { // Press B
-                    climber_action = (Climber.WantedAction.HUG); // hook onto the rung
+                    climber_action = (Climber.WantedAction.EXTEND);   
                 } else if (mControlBoard.getClimb()) { // Press Y
                     climber_action = (Climber.WantedAction.CLIMB);
                 } else if (mControlBoard.getBrake()) { // Release Y
@@ -358,6 +357,7 @@ public class Robot extends TimedRobot {
                 } else if (mControlBoard.getLeaveClimbMode()) {
                     climb_mode = false;
                     buddy_climb = false;
+                    mClimber.setShift(true);
                 } else {
 					// TODO: Check if NONE state needs to be set
                 }
@@ -371,6 +371,15 @@ public class Robot extends TimedRobot {
                         break;
                     case 0:
                         mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.NONE);
+                        break;
+                }
+                //Climber Jog
+                switch(mControlBoard.getClimberJog()){
+                    case -1:
+                        mClimber.setState(com.team1678.frc2021.subsystems.Climber.WantedAction.JOG_DOWN);
+                        break;
+                    case 1:
+                        mClimber.setState(com.team1678.frc2021.subsystems.Climber.WantedAction.JOG_UP);
                         break;
                 }
                 if (mClimber.getState() == Climber.State.HUGGING) {

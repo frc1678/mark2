@@ -29,18 +29,23 @@ public class Climber extends Subsystem  {
     private static final double kBrakeVelocity = 500.0;
     private double mInitialTime;
 
-    private static final int kExtendDelta = (204000 - (-27600));
+    private static final int kExtendDelta = (2) - (174100);
     private static final int kHugDelta = (157000 - (-27600));
     private static final int kClimbDelta = 10000;
 
+    private static boolean wasShifted;
+
     private PeriodicIO mPeriodicIO = new PeriodicIO();
+    private TimeDelayedBoolean mShiftSolenoidTimer = new TimeDelayedBoolean();
 
     public enum WantedAction {
-        NONE, EXTEND, HUG, CLIMB, BRAKE, STOP,
+        NONE, EXTEND, HUG, CLIMB, BRAKE, STOP, JOG_UP, JOG_DOWN,
     }
 
+    private static WantedAction mWantedAction = WantedAction.NONE;
+
     public enum State {
-        IDLE, EXTENDING, HUGGING, CLIMBING, BRAKING,
+        IDLE, EXTENDING, HUGGING, CLIMBING, BRAKING, JOGGING_UP, JOGGING_DOWN,
     }
 
     private State mState = State.IDLE;
@@ -58,7 +63,7 @@ public class Climber extends Subsystem  {
 
 
     private Climber() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kClimberId);
+        mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
         mMaster.set(ControlMode.PercentOutput, 0);
         mMaster.setInverted(true);
         mMaster.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
@@ -104,6 +109,9 @@ public class Climber extends Subsystem  {
         SmartDashboard.putNumber("ClimbVoltage", mPeriodicIO.demand);
         SmartDashboard.putNumber("ClimberPosition", mPeriodicIO.position);
         SmartDashboard.putNumber("ClimberVelocity", mPeriodicIO.velocity);
+        SmartDashboard.putBoolean("Shifter Goal", mPeriodicIO.shift_solenoid);
+        SmartDashboard.putBoolean("Shifter Actual", mPeriodicIO.shift_out);
+        SmartDashboard.putString("Climber Wanted Action", mWantedAction.name());
 
         if (mCSVWriter != null) {
             mCSVWriter.write();
@@ -132,6 +140,14 @@ public class Climber extends Subsystem  {
             public void onLoop(double timestamp) {
                 synchronized (Climber.this) {
                     runStateMachine();
+
+                    if (mPeriodicIO.shift_out) {
+                        wasShifted = true;
+                    }
+
+                    if (wasShifted && !mPeriodicIO.shift_out) {    
+                        mPeriodicIO.shift_solenoid = true;
+                    }
                 }
             }
 
@@ -191,9 +207,16 @@ public class Climber extends Subsystem  {
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
-            case HUGGING:
+            case JOGGING_UP:
                 if (mExtended) {
-                    mPeriodicIO.demand = mZeroPos + kHugDelta;
+                    mPeriodicIO.demand = mPeriodicIO.position + 50;
+                }
+                mPeriodicIO.arm_solenoid = true;
+                mPeriodicIO.brake_solenoid = false;
+                break;
+            case JOGGING_DOWN:
+                if (mExtended) {
+                    mPeriodicIO.demand = mPeriodicIO.position - 50;
                 }
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
@@ -228,6 +251,8 @@ public class Climber extends Subsystem  {
             mHoldingPos = mPeriodicIO.position;
         }
 
+        mWantedAction = wanted_state;
+
         switch (wanted_state) {
             case NONE:
                   mState = State.IDLE;{
@@ -253,6 +278,7 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void readPeriodicInputs() {
+        mPeriodicIO.shift_out = mShiftSolenoidTimer.update(mShiftSolenoid.get(), 0.2);
         mPeriodicIO.position = mMaster.getSelectedSensorPosition(0);
         mPeriodicIO.velocity = mMaster.getSelectedSensorVelocity(0);
 
@@ -266,9 +292,9 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void writePeriodicOutputs() {
+        mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING) {
             mMaster.set(ControlMode.MotionMagic, mPeriodicIO.demand);
-            mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         } else {
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);
         }
@@ -280,6 +306,7 @@ public class Climber extends Subsystem  {
         public double velocity;
         public double current;
         public double voltage;
+        public boolean shift_out;
 
         // OUTPUTS
         public double demand;

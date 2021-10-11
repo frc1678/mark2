@@ -130,8 +130,8 @@ public class ControlBoard {
         return mButtonControlBoard.getBuddyDeploy();
     }
 
-    public boolean getArmHug() {
-        return mButtonControlBoard.getArmHug();
+    public int getClimberJog() {
+        return mButtonControlBoard.getClimberJog();
     }
 
     public boolean getManualArmExtend() {
