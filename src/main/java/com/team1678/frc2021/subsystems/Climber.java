@@ -208,16 +208,16 @@ public class Climber extends Subsystem  {
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_UP:
-                if (mExtended) {
-                    mPeriodicIO.demand = mPeriodicIO.position + 50;
-                }
+               // if (mExtended) {
+                    mPeriodicIO.demand = mPeriodicIO.position + 20000;
+                //}
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_DOWN:
-                if (mExtended) {
-                    mPeriodicIO.demand = mPeriodicIO.position - 50;
-                }
+                //if (mExtended) {
+                    mPeriodicIO.demand = mPeriodicIO.position - 20000;
+               // }
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
@@ -255,14 +255,19 @@ public class Climber extends Subsystem  {
 
         switch (wanted_state) {
             case NONE:
-                  mState = State.IDLE;{
-                }
+                  mState = State.IDLE;
                 break;
             case EXTEND:
                 mState = State.EXTENDING;
                 break;
             case HUG:
                 mState = State.HUGGING;
+                break;
+            case JOG_UP:
+                mState = State.JOGGING_UP;
+                break;
+            case JOG_DOWN:
+                mState = State.JOGGING_DOWN;
                 break;
             case CLIMB:
                 mState = State.CLIMBING;
@@ -293,7 +298,7 @@ public class Climber extends Subsystem  {
     @Override
     public synchronized void writePeriodicOutputs() {
         mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
-        if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING) {
+        if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING || mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
             mMaster.set(ControlMode.MotionMagic, mPeriodicIO.demand);
         } else {
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);

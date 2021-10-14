@@ -37,6 +37,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -81,6 +82,8 @@ public class Robot extends TimedRobot {
 
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
+
+    // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
 
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
@@ -336,7 +339,12 @@ public class Robot extends TimedRobot {
                     //mRoller.stop();
                 }
             } else {
+                // mShiftSolenoid.set(true);
+                
                 Climber.WantedAction climber_action = Climber.WantedAction.NONE;
+                Skywalker.WantedAction skywalker_action = Skywalker.WantedAction.NONE;
+                // mClimber.setShift(true);
+
                 mClimber.setZeroPosition();
                 mSuperstructure.enableIndexer(false);
                 mIntake.setState(Intake.WantedAction.NONE);
@@ -345,9 +353,20 @@ public class Robot extends TimedRobot {
                 mSuperstructure.setWantPreShot(false);
                 mSuperstructure.setWantUnjam(false);
 
-                mClimber.setShift(true);
-
                 //Climber control
+
+                // Climber Jog
+                switch(mControlBoard.getClimberJog()){
+                    case -1:
+                        climber_action = (Climber.WantedAction.JOG_DOWN);
+                        break;
+                    case 1:
+                        climber_action = (Climber.WantedAction.JOG_UP);
+                        break;
+                    case 0 :
+                        climber_action = (Climber.WantedAction.NONE);
+                }
+
                 if (mControlBoard.getArmExtend()) { // Press A
                     climber_action = (Climber.WantedAction.EXTEND);   
                 } else if (mControlBoard.getClimb()) { // Press Y
@@ -357,31 +376,24 @@ public class Robot extends TimedRobot {
                 } else if (mControlBoard.getLeaveClimbMode()) {
                     climb_mode = false;
                     buddy_climb = false;
-                    mClimber.setShift(true);
+                    mClimber.setShift(false);
                 } else {
 					// TODO: Check if NONE state needs to be set
                 }
-                //Skywalker Control
+
+                // Skywalker Control
                 switch(mControlBoard.getSkywalker()){
                     case -1:
-                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.SHIFT_LEFT);
+                        skywalker_action = (Skywalker.WantedAction.SHIFT_LEFT);
                         break;
                     case 1:
-                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.SHIFT_RIGHT);
+                        skywalker_action = (Skywalker.WantedAction.SHIFT_RIGHT);
                         break;
                     case 0:
-                        mSkywalker.setState(com.team1678.frc2021.subsystems.Skywalker.WantedAction.NONE);
+                        skywalker_action = (Skywalker.WantedAction.NONE);
                         break;
                 }
-                //Climber Jog
-                switch(mControlBoard.getClimberJog()){
-                    case -1:
-                        mClimber.setState(com.team1678.frc2021.subsystems.Climber.WantedAction.JOG_DOWN);
-                        break;
-                    case 1:
-                        mClimber.setState(com.team1678.frc2021.subsystems.Climber.WantedAction.JOG_UP);
-                        break;
-                }
+
                 if (mClimber.getState() == Climber.State.HUGGING) {
                     mLEDs.conformToState(buddy_climb ? LEDs.State.HUGGING_BUDDY : LEDs.State.HUGGING);
                 } else if (mClimber.getState() == Climber.State.CLIMBING) {
@@ -395,6 +407,7 @@ public class Robot extends TimedRobot {
 //                }
 
                 mClimber.setState(climber_action);
+                mSkywalker.setState(skywalker_action);
             }
             mLEDs.writePeriodicOutputs();
         } catch (Throwable t) {
