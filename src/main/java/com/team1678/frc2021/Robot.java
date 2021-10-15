@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
 
-    // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
+    Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
 
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
@@ -225,7 +225,8 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             mDisabledLooper.stop();
             mClimber.setBrakeMode(true);
-            mClimber.setShift(false);
+            // mClimber.setShift(false);
+            mShiftSolenoid.set(true);
 
             mInfrastructure.setIsDuringAuto(false);
 
@@ -355,18 +356,12 @@ public class Robot extends TimedRobot {
 
                 //Climber control
 
-                // Climber Jog
-                switch(mControlBoard.getClimberJog()){
-                    case -1:
-                        climber_action = (Climber.WantedAction.JOG_DOWN);
-                        break;
-                    case 1:
-                        climber_action = (Climber.WantedAction.JOG_UP);
-                        break;
-                    case 0 :
-                        climber_action = (Climber.WantedAction.NONE);
+                
+                if (mControlBoard.getClimberJog() == -1){
+                    climber_action = (Climber.WantedAction.JOG_DOWN);
+                } else if(mControlBoard.getClimberJog() == 1){
+                    climber_action = (Climber.WantedAction.JOG_UP);
                 }
-
                 if (mControlBoard.getArmExtend()) { // Press A
                     climber_action = (Climber.WantedAction.EXTEND);   
                 } else if (mControlBoard.getClimb()) { // Press Y
@@ -443,7 +438,8 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logDisabledInit();
             mEnabledLooper.stop();
-            mClimber.setBrakeMode(true);
+            mClimber.setBrakeMode(true);            
+
 
           //  mRobotState.resetVision();
 

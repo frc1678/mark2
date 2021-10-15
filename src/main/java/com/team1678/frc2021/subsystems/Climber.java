@@ -51,14 +51,14 @@ public class Climber extends Subsystem  {
     private State mState = State.IDLE;
 
     private final TalonFX mMaster;
-    private final Solenoid mShiftSolenoid;
+    // private final Solenoid mShiftSolenoid;
     
     private double mHoldingPos = 0.0;
     private double mZeroPos;
     private boolean mExtended = false;
     private TimeDelayedBoolean brake_activation = new TimeDelayedBoolean();
 
-    public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 40, 40, .2);
+    public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 40, 80, 1.0);
     private ReflectingCSVWriter<PeriodicIO> mCSVWriter = null;
 
 
@@ -72,7 +72,7 @@ public class Climber extends Subsystem  {
         mMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
 
         mMaster.configMotionAcceleration(40000, Constants.kLongCANTimeoutMs);
-        mMaster.configMotionCruiseVelocity(20000, Constants.kLongCANTimeoutMs);
+        mMaster.configMotionCruiseVelocity(30000, Constants.kLongCANTimeoutMs);
         mMaster.config_kP(0, 0.5);
         mMaster.config_kI(0, 0);
         mMaster.config_kD(0, 0);
@@ -82,9 +82,9 @@ public class Climber extends Subsystem  {
 
         mMaster.setNeutralMode(NeutralMode.Coast);
 
-        mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
+        // mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
 
-        mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
+        // mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
     }
 
     public synchronized static Climber getInstance() {
@@ -106,12 +106,15 @@ public class Climber extends Subsystem  {
     @Override
     public void outputTelemetry() {
         SmartDashboard.putString("ClimberState", mState.name());
-        SmartDashboard.putNumber("ClimbVoltage", mPeriodicIO.demand);
+        SmartDashboard.putNumber("ClimbOutputVoltage", mMaster.getMotorOutputVoltage());
+        SmartDashboard.putNumber("Climber Voltage", mPeriodicIO.voltage);
         SmartDashboard.putNumber("ClimberPosition", mPeriodicIO.position);
         SmartDashboard.putNumber("ClimberVelocity", mPeriodicIO.velocity);
+        SmartDashboard.putNumber("Climber Current", mPeriodicIO.current);
         SmartDashboard.putBoolean("Shifter Goal", mPeriodicIO.shift_solenoid);
         SmartDashboard.putBoolean("Shifter Actual", mPeriodicIO.shift_out);
         SmartDashboard.putString("Climber Wanted Action", mWantedAction.name());
+        SmartDashboard.putNumber("Climber Goal", mPeriodicIO.demand);
 
         if (mCSVWriter != null) {
             mCSVWriter.write();
@@ -146,7 +149,7 @@ public class Climber extends Subsystem  {
                     }
 
                     if (wasShifted && !mPeriodicIO.shift_out) {    
-                        mPeriodicIO.shift_solenoid = true;
+                    //     mPeriodicIO.shift_solenoid = true;
                     }
                 }
             }
@@ -209,14 +212,16 @@ public class Climber extends Subsystem  {
                 break;
             case JOGGING_UP:
                // if (mExtended) {
-                    mPeriodicIO.demand = mPeriodicIO.position + 20000;
+                    // mPeriodicIO.demand += 20000;
+                    mPeriodicIO.demand = 8.0;
                 //}
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_DOWN:
                 //if (mExtended) {
-                    mPeriodicIO.demand = mPeriodicIO.position - 20000;
+                    // mPeriodicIO.demand -= 20000;
+                    mPeriodicIO.demand = -8.0;
                // }
                 mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
@@ -283,23 +288,23 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void readPeriodicInputs() {
-        mPeriodicIO.shift_out = mShiftSolenoidTimer.update(mShiftSolenoid.get(), 0.2);
+        // mPeriodicIO.shift_out = mShiftSolenoidTimer.update(mShiftSolenoid.get(), 0.2);
         mPeriodicIO.position = mMaster.getSelectedSensorPosition(0);
         mPeriodicIO.velocity = mMaster.getSelectedSensorVelocity(0);
 
         if (mCSVWriter != null) {
             mCSVWriter.add(mPeriodicIO);
         }
-        mPeriodicIO.current = mMaster.getSupplyCurrent();
+        mPeriodicIO.current = mMaster.getStatorCurrent();
         mPeriodicIO.voltage = mMaster.getMotorOutputVoltage();
         //LogSend();
     }
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
+        // mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING || mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
-            mMaster.set(ControlMode.MotionMagic, mPeriodicIO.demand);
+            mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand > 12.0 ? 12.0/12.0 : mPeriodicIO.demand/12.0);
         } else {
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);
         }

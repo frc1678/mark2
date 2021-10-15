@@ -117,6 +117,7 @@ public class Skywalker extends Subsystem {
             @Override
             public void onStop(double timestamp) {
                 mState = State.IDLE;
+                mMaster.neutralOutput();
                 stop();
                 stopLogging();
             }
