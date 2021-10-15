@@ -213,7 +213,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getArmExtend() {
-        return mController.getController().getAButtonReleased();
+        return mController.getController().getAButtonPressed();
     }
 
     public boolean getStopClimb() {
@@ -229,8 +229,34 @@ public class GamepadButtonControlBoard {
         return mController.getController().getBackButtonReleased();
     }
 
-    public boolean getArmHug() {
-        return mController.getController().getBButtonReleased();
+    public int getClimberJog(){
+        int povread = mController.getController().getPOV();
+        switch(povread){
+            case 0:
+                return 1;
+            case 180:
+                return -1;
+            default:
+                return 0;
+        }
+    }
+    /**
+     * The skywalker input
+     *
+     * Uses a getPOV() call to read d-pad, and returns -1 for left, 0 for neutral, and +1 for right.
+     * 
+     * @return the inputted skywalker direction, -1 for left, 0 for neutral, +1 for right
+     */
+    public int getSkywalker(){
+        int povread = mController.getController().getPOV();
+        switch(povread){
+            case 90:
+                return 1;
+            case 270:
+                return -1;
+            default:
+                return 0;
+        }
     }
 
     public boolean getManualArmExtend() {
@@ -260,7 +286,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getLeaveClimbMode() {
-        return mController.getDPad() != -1;
+        return mController.getButton(Button.BACK) && mController.getButton(Button.START);
     }
 
     public void reset() {
@@ -294,21 +320,22 @@ public class GamepadButtonControlBoard {
         return mController.getTrigger(CustomXboxController.Side.LEFT);
     }
 
-    public double getJoggingX() {
-        double jog = mController.getJoystick(CustomXboxController.Side.RIGHT, CustomXboxController.Axis.X);
-        if (Deadband.inDeadband(jog, kDeadband)) {
-            return 0.0;
-        }
-        return (jog - kDeadband * Math.signum(jog));
-    }
+    // Not used
+    // public double getJoggingX() {
+    //     double jog = mController.getJoystick(CustomXboxController.Side.RIGHT, CustomXboxController.Axis.X);
+    //     if (Deadband.inDeadband(jog, kDeadband)) {
+    //         return 0.0;
+    //     }
+    //     return (jog - kDeadband * Math.signum(jog));
+    // }
 
-    public double getJoggingZ() {
-        double jog = mController.getJoystick(CustomXboxController.Side.RIGHT, CustomXboxController.Axis.Y);
-        if (Deadband.inDeadband(jog, kDeadband)) {
-            return 0.0;
-        }
-        return (jog - kDeadband * Math.signum(jog));
-    }
+    // public double getJoggingZ() {
+    //     double jog = mController.getJoystick(CustomXboxController.Side.RIGHT, CustomXboxController.Axis.Y);
+    //     if (Deadband.inDeadband(jog, kDeadband)) {
+    //         return 0.0;
+    //     }
+    //     return (jog - kDeadband * Math.signum(jog));
+    // }
 
     // Intake
     public boolean getRunIntake() {
