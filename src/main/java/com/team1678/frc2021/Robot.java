@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
 
-    Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
+    // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
 
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
@@ -226,7 +226,7 @@ public class Robot extends TimedRobot {
             mDisabledLooper.stop();
             mClimber.setBrakeMode(true);
             // mClimber.setShift(false);
-            mShiftSolenoid.set(true);
+            // mShiftSolenoid.set(true);
 
             mInfrastructure.setIsDuringAuto(false);
 
@@ -344,7 +344,7 @@ public class Robot extends TimedRobot {
                 
                 Climber.WantedAction climber_action = Climber.WantedAction.NONE;
                 Skywalker.WantedAction skywalker_action = Skywalker.WantedAction.NONE;
-                // mClimber.setShift(true);
+                mClimber.setShift(true);
 
                 mClimber.setZeroPosition();
                 mSuperstructure.enableIndexer(false);
