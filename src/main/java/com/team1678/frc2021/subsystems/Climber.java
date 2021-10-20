@@ -51,7 +51,7 @@ public class Climber extends Subsystem  {
     private State mState = State.IDLE;
 
     private final TalonFX mMaster;
-    // private final Solenoid mShiftSolenoid;
+    private final Solenoid mShiftSolenoid;
     
     private double mHoldingPos = 0.0;
     private double mZeroPos;
@@ -82,9 +82,9 @@ public class Climber extends Subsystem  {
 
         mMaster.setNeutralMode(NeutralMode.Coast);
 
-        // mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
+        mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
 
-        // mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
+        mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
     }
 
     public synchronized static Climber getInstance() {
@@ -200,35 +200,32 @@ public class Climber extends Subsystem  {
         switch (mState) {
             case IDLE:
                 mPeriodicIO.demand = kIdleVoltage;
-                mPeriodicIO.arm_solenoid = true;
                 break;
             case EXTENDING:
                 mPeriodicIO.demand = mZeroPos + kExtendDelta;
                 if ((mPeriodicIO.position - mZeroPos) > kExtendDelta - 2000) {
                     mExtended = true;
                 }
-                mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_UP:
-               // if (mExtended) {
+                mPeriodicIO.shift_solenoid = true;
+                // if (mExtended) {
                     // mPeriodicIO.demand += 20000;
                     mPeriodicIO.demand = 8.0;
                 //}
-                mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_DOWN:
+                mPeriodicIO.shift_solenoid = true;
                 //if (mExtended) {
                     // mPeriodicIO.demand -= 20000;
                     mPeriodicIO.demand = -8.0;
-               // }
-                mPeriodicIO.arm_solenoid = true;
+                // }
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case CLIMBING:
                 mPeriodicIO.demand = mZeroPos + kClimbDelta;
-                mPeriodicIO.arm_solenoid = true;
                 mPeriodicIO.brake_solenoid = false;
 
                 if ((Math.abs(mPeriodicIO.position - (mZeroPos + kClimbDelta)) < 5000 && Math.abs(mPeriodicIO.velocity) < kBrakeVelocity)) {
@@ -239,7 +236,6 @@ public class Climber extends Subsystem  {
                 break;
             case BRAKING:
                 mPeriodicIO.demand = mHoldingPos;
-                mPeriodicIO.arm_solenoid = true;
                 if (!mPeriodicIO.brake_solenoid) {
                     if (mPeriodicIO.velocity < kBrakeVelocity) {
                         mPeriodicIO.brake_solenoid = true;
@@ -288,7 +284,7 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void readPeriodicInputs() {
-        // mPeriodicIO.shift_out = mShiftSolenoidTimer.update(mShiftSolenoid.get(), 0.2);
+        mPeriodicIO.shift_out = mShiftSolenoidTimer.update(mShiftSolenoid.get(), 0.2);
         mPeriodicIO.position = mMaster.getSelectedSensorPosition(0);
         mPeriodicIO.velocity = mMaster.getSelectedSensorVelocity(0);
 
@@ -302,7 +298,7 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        // mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
+        mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING || mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand > 12.0 ? 12.0/12.0 : mPeriodicIO.demand/12.0);
         } else {
@@ -321,7 +317,6 @@ public class Climber extends Subsystem  {
         // OUTPUTS
         public double demand;
         public boolean shift_solenoid;
-        public boolean arm_solenoid;
         public boolean brake_solenoid;
     }
 }

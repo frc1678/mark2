@@ -266,7 +266,7 @@ public class Constants {
 	 public static final double kInnerGoalDepth = 0;
 	 public static final double kHoodToTurret = 4.25; // center of the turret to the axis of rotation of the hood
 	 public static final double kLimelightPitchOffset = 17.66; // limelight pitch at hood 0
-	 public static final double kAutoAimPredictionTime = 0.25; // lookahead for robot state during aiming
+	 public static final double kAutoAimPredictionTime = 0.15; // lookahead for robot state during aiming
 
 	// turret
 	public static final ServoMotorSubsystemConstants kTurretConstants = new ServoMotorSubsystemConstants();
