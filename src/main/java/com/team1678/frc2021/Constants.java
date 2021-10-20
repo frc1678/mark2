@@ -110,11 +110,16 @@ public class Constants {
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
+
+        /* Controller Invert */
+        public static final boolean invertXAxis = false;
+        public static final boolean invertYAxis = false;
+        public static final boolean invertRAxis = false;
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
@@ -157,9 +162,9 @@ public class Constants {
 	}
 	
 	public static final class SnapConstants {
-        public static final double snapKP = 0.5;
+        public static final double snapKP = 0.2;
         public static final double snapKI = 0;
-        public static final double snapKD = 0;
+        public static final double snapKD = 0.1;
         public static final double snapTimeout = 0.25;
         public static final double snapEpsilon = 1.0;
 
@@ -173,11 +178,14 @@ public class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxSpeedMetersPerSecond = 1.75;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
+	
+		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
+		public static final double kSlowMaxAccelerationMetersPerSecondSquared = 3;
+		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
