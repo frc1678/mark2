@@ -145,7 +145,7 @@ public class Shooter extends Subsystem {
         
         mPeriodicIO.flywheel_velocity = mMaster.getSelectedSensorVelocity() * kFlywheelVelocityConversion;
         mPeriodicIO.flywheel_voltage = mMaster.getMotorOutputVoltage();
-        mPeriodicIO.flywheel_current = mMaster.getStatorCurrent();
+        mPeriodicIO.flywheel_current = mMaster.getSupplyCurrent();
         mPeriodicIO.flywheel_temperature = mMaster.getTemperature();
         if (mCSVWriter != null) {
             mCSVWriter.add(mPeriodicIO);
