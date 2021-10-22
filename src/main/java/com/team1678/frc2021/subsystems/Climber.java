@@ -58,7 +58,7 @@ public class Climber extends Subsystem  {
     private boolean mExtended = false;
     private TimeDelayedBoolean brake_activation = new TimeDelayedBoolean();
 
-    public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 40, 80, 1.0);
+    public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80, 80, 1.0);
     private ReflectingCSVWriter<PeriodicIO> mCSVWriter = null;
 
 
@@ -212,7 +212,7 @@ public class Climber extends Subsystem  {
                 mPeriodicIO.shift_solenoid = true;
                 // if (mExtended) {
                     // mPeriodicIO.demand += 20000;
-                    mPeriodicIO.demand = 8.0;
+                    mPeriodicIO.demand = 12.0;
                 //}
                 mPeriodicIO.brake_solenoid = false;
                 break;
@@ -220,7 +220,7 @@ public class Climber extends Subsystem  {
                 mPeriodicIO.shift_solenoid = true;
                 //if (mExtended) {
                     // mPeriodicIO.demand -= 20000;
-                    mPeriodicIO.demand = -8.0;
+                    mPeriodicIO.demand = -12.0;
                 // }
                 mPeriodicIO.brake_solenoid = false;
                 break;
@@ -298,10 +298,11 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
         if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING || mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
+            mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand > 12.0 ? 12.0/12.0 : mPeriodicIO.demand/12.0);
         } else {
+            mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand / 12.0);
         }
     }
