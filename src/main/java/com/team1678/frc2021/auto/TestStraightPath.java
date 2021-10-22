@@ -1,6 +1,12 @@
+
 package com.team1678.frc2021.auto;
 
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ShootCommand;
+import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.subsystems.Intake;
+import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
 import java.util.List;
@@ -17,33 +23,24 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class exampleAuto extends SequentialCommandGroup {
-    public exampleAuto(Swerve s_Swerve){
+public class TestStraightPath extends SequentialCommandGroup {
+
+    public TestStraightPath(Swerve s_Swerve){
+        
+        final Intake mIntake = Intake.getInstance();
+        final Superstructure mSuperstructure = Superstructure.getInstance();
+
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 .setKinematics(Constants.Swerve.swerveKinematics);
 
-        // An example trajectory to follow.  All units in meters.
-        Trajectory exampleTrajectory1 =
+        Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
                 List.of(new Translation2d(1, 0), new Translation2d(2, 0)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(90)),
-                config);
-
-        Trajectory exampleTrajectory2 =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(3, 0, new Rotation2d(90)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(2, 0), new Translation2d(1, 0)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(0, 0, new Rotation2d(180)),
+                new Pose2d(3, 0, new Rotation2d(0)),
                 config);
 
         var thetaController =
@@ -51,9 +48,9 @@ public class exampleAuto extends SequentialCommandGroup {
                 Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        SwerveControllerCommand swerveControllerCommand1 =
+        SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                exampleTrajectory1,
+                exampleTrajectory,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -62,23 +59,25 @@ public class exampleAuto extends SequentialCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwerveControllerCommand swerveControllerCommand2 =
-            new SwerveControllerCommand(
-                exampleTrajectory2,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                s_Swerve::setModuleStates,
-                s_Swerve);
+        IntakeCommand intake = 
+            new IntakeCommand(mIntake);
 
-
+        SpinUpCommand spinUp = 
+            new SpinUpCommand(mSuperstructure);
+            
+        ShootCommand shoot =
+            new ShootCommand(mSuperstructure);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory1.getInitialPose())),
-            swerveControllerCommand1,
-            swerveControllerCommand2
+            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
+            swerveControllerCommand.deadlineWith(intake),
+            spinUp,
+            shoot
+            
+
         );
+
+        
+
     }
 }

@@ -94,19 +94,6 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void robotPeriodic() {
-		CommandScheduler.getInstance().run();
-		
-        RobotState.getInstance().outputToSmartDashboard();
-        mSubsystemManager.outputToSmartDashboard();
-        mEnabledLooper.outputToSmartDashboard();
-
-        SmartDashboard.putBoolean("Climb Mode", climb_mode);
-        SmartDashboard.putBoolean("Pivoted", mPivoted);
-        SmartDashboard.putString("LEDs State", mLEDs.getState().name());
-    }
-
-    @Override
     public void robotInit() {
 
 		ctreConfigs = new CTREConfigs();
@@ -128,13 +115,13 @@ public class Robot extends TimedRobot {
                 mRobotStateEstimator,
 				mCanifier,
 				mHood,
-                mLimelight, 
+                // mLimelight, 
                 mIntake, 
                 mIndexer, 
                 mShooter,
                 mTrigger,
                 mSuperstructure,
-                mTurret,
+                // mTurret,
                 mInfrastructure,
                 // mClimber,
                 mLEDs
@@ -146,12 +133,25 @@ public class Robot extends TimedRobot {
             // Robot starts forwards.
             mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
 
-			mLimelight.setLed(Limelight.LedMode.OFF);
+			// mLimelight.setLed(Limelight.LedMode.OFF);
 			
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+    }
+
+    @Override
+    public void robotPeriodic() {
+		CommandScheduler.getInstance().run();
+		
+        RobotState.getInstance().outputToSmartDashboard();
+        mSubsystemManager.outputToSmartDashboard();
+        mEnabledLooper.outputToSmartDashboard();
+
+        SmartDashboard.putBoolean("Climb Mode", climb_mode);
+        SmartDashboard.putBoolean("Pivoted", mPivoted);
+        SmartDashboard.putString("LEDs State", mLEDs.getState().name());
     }
 
     @Override
@@ -168,9 +168,9 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logAutoInit();
             mDisabledLooper.stop();
-            mLimelight.setLed(Limelight.LedMode.ON);
+            // mLimelight.setLed(Limelight.LedMode.ON);
 
-            mLimelight.setPipeline(Constants.kPortPipeline);
+            // mLimelight.setPipeline(Constants.kPortPipeline);
 
             RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
 
@@ -189,18 +189,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        
         SmartDashboard.putString("Match Cycle", "AUTONOMOUS");
         //mLimelight.setLed(Limelight.LedMode.ON);
 
-        if (!mLimelight.limelightOK()) {
-            mLEDs.conformToState(LEDs.State.EMERGENCY);
-        } else if (mSuperstructure.isOnTarget()) {
-            mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
-        } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
-            mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
-        } else {
-            mLEDs.conformToState(LEDs.State.ENABLED);
-        }
+        // if (!mLimelight.limelightOK()) {
+        //     mLEDs.conformToState(LEDs.State.EMERGENCY);
+        // } else if (mSuperstructure.isOnTarget()) {
+        //     mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
+        // } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
+        //     mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
+        // } else {
+        //     mLEDs.conformToState(LEDs.State.ENABLED);
+        // }
 
         try {
 
@@ -208,6 +209,7 @@ public class Robot extends TimedRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+        
     }
 
     @Override

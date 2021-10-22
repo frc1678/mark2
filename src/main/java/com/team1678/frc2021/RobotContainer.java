@@ -4,7 +4,7 @@
 
 package com.team1678.frc2021;
 
-import com.team1678.frc2021.auto.exampleAuto;
+import com.team1678.frc2021.auto.AutonomousSelector;
 import com.team1678.frc2021.commands.TeleopSwerve;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -44,13 +44,16 @@ public class RobotContainer {
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
 
+  /* Autonomous Selector */
+  private final AutonomousSelector autonomousSelector;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     boolean fieldRelative = true;
     boolean openLoop = true;
     s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
-
+    autonomousSelector = new AutonomousSelector();
+    
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -86,7 +89,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new exampleAuto(s_Swerve);
+    return autonomousSelector.getCommand(s_Swerve);
   }
 }
