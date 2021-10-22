@@ -383,7 +383,6 @@ public class Indexer extends Subsystem {
         if (atHomingLocation() && !mHasBeenZeroed) {
             mMaster.setSelectedSensorPosition((int) Math.floor(mOffset * kAngleConversion));
             mMaster.overrideSoftLimitsEnable(true);
-            System.out.println("Homed!!!");
             mHasBeenZeroed = true;
         }
     }

@@ -123,8 +123,7 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getFendorShot() {
-        return false;
-        //return mController.getController().getStickButtonReleased(Hand.kLeft);
+        return mController.getController().getStickButtonReleased(Hand.kRight);
     }
 
     public boolean getUntuck() {
@@ -136,7 +135,8 @@ public class GamepadButtonControlBoard {
     }
 
     public boolean getTestSpit() {
-        return mController.getController().getStickButtonReleased(Hand.kRight);
+        return false;
+        // return mController.getController().getStickButtonReleased(Hand.kRight);
     }
 
     public boolean getRevolve() {
