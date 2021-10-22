@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import com.lib.math.Conversions;
 import com.lib.util.CTREModuleState;
 import com.lib.util.SwerveModuleConstants;
-
+import com.team254.lib.drivers.TalonFXFactory;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -34,11 +34,11 @@ public class SwerveModule {
         configAngleEncoder();
 
         /* Angle Motor Config */
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        mAngleMotor = TalonFXFactory.createDefaultTalon(moduleConstants.angleMotorID);
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        mDriveMotor = TalonFXFactory.createDefaultTalon(moduleConstants.driveMotorID);
         configDriveMotor();
 
         lastAngle = getState().angle.getDegrees();
