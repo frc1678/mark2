@@ -25,7 +25,7 @@ public class RobotStateEstimator extends Subsystem {
 
     private static RobotStateEstimator mInstance = new RobotStateEstimator();
     private RobotState mRobotState = RobotState.getInstance();
-    private RobotContainer m_robotContainer = new RobotContainer();
+    //private RobotContainer m_robotContainer = new RobotContainer();
     private TeleopSwerve mTeleopSwerve;
     private ChassisSpeeds mChassisVelocity = new ChassisSpeeds();
 

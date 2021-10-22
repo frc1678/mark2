@@ -5,6 +5,7 @@
 package com.team1678.frc2021;
 
 import com.team1678.frc2021.auto.exampleAuto;
+import com.team1678.frc2021.commands.CardinalSnapCommand;
 import com.team1678.frc2021.commands.TeleopSwerve;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -44,6 +45,13 @@ public class RobotContainer {
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
 
+  private static RobotContainer instance;
+  public static RobotContainer getInstance(){
+    if(instance == null){
+      instance = new RobotContainer();
+    }
+    return instance;
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -74,10 +82,10 @@ public class RobotContainer {
     rightBumper.whenPressed(new InstantCommand(() -> mSuperstructure.setWantTuck(true)));
     
     // Snap Commands
-    yButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(0)));
-    bButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(90)));
-    aButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(180)));
-    xButton.whenPressed(new InstantCommand(() -> s_Swerve.startSnap(270)));
+    yButton.whenPressed(new CardinalSnapCommand(s_Swerve, 0, true, true));
+    bButton.whenPressed(new CardinalSnapCommand(s_Swerve, 90, true, true));
+    aButton.whenPressed(new CardinalSnapCommand(s_Swerve, 180, true, true));
+    xButton.whenPressed(new CardinalSnapCommand(s_Swerve, 270, true, true));
   }
 
   /**

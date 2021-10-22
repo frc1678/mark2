@@ -19,11 +19,15 @@ public class TeleopSwerve extends CommandBase {
     private int translationAxis;
     private int strafeAxis;
     private int rotationAxis;
+    
 
     /**
      * Driver control
      */
     public TeleopSwerve(Swerve s_Swerve, Joystick controller, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+
+        this.setName("TELEOP_SWERVE");
+
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
