@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.util.Units;
 
 public class RobotStateEstimator extends Subsystem {
     private Swerve mSwerve;
+    private double mDt;
 
     private static RobotStateEstimator mInstance = new RobotStateEstimator();
     private RobotState mRobotState = RobotState.getInstance();
@@ -67,6 +68,7 @@ public class RobotStateEstimator extends Subsystem {
         @Override
         public synchronized void onLoop(double timestamp) {
             final double dt = timestamp - prev_timestamp_;
+            mDt = dt;
 
             Pose2d mSwervePose = mSwerve.getPose();
             double swervePoseTranslation_x = Units.metersToInches(mSwervePose.getTranslation().getX());
@@ -146,5 +148,7 @@ public class RobotStateEstimator extends Subsystem {
         SmartDashboard.putNumber("Displacement X", pose2dlatest_displacement.getTranslation().x());
         SmartDashboard.putNumber("Displacement Y", pose2dlatest_displacement.getTranslation().y());
         SmartDashboard.putNumber("Displacement Rot", pose2dlatest_displacement.getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Robot State Estimator dt", mDt);
     }
 }

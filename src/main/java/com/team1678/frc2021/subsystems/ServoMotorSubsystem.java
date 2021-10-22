@@ -237,6 +237,8 @@ public abstract class ServoMotorSubsystem extends Subsystem {
         public double absolute_pulse_position_modded;
         public boolean reset_occured;
 
+        public double dt;
+
         // OUTPUTS
         public double demand;
         public double feedforward;
@@ -366,6 +368,7 @@ public abstract class ServoMotorSubsystem extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
+                final double start = Timer.getFPGATimestamp();
                 if (mPeriodicIO.reset_occured) {
                     System.out.println(mConstants.kName + ": Master Talon reset occurred; resetting frame rates.");
                     mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 10, 20);
@@ -383,6 +386,8 @@ public abstract class ServoMotorSubsystem extends Subsystem {
                         System.out.println(mConstants.kName + ": Slave Talon reset occurred");
                     }
                 }
+                final double end = Timer.getFPGATimestamp();
+                mPeriodicIO.dt = end - start;
             }
 
             @Override
@@ -551,5 +556,6 @@ public abstract class ServoMotorSubsystem extends Subsystem {
         SmartDashboard.putNumber(mConstants.kName + ": Position (units)", mPeriodicIO.position_units);
         SmartDashboard.putNumber(mConstants.kName + ": goal (units)", mPeriodicIO.demand);
         SmartDashboard.putBoolean(mConstants.kName + ": Homing Location", atHomingLocation());
+        SmartDashboard.putNumber(mConstants.kName + " dt", mPeriodicIO.dt);
     }
 }

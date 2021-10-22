@@ -17,7 +17,6 @@ import com.team1678.frc2021.controlboard.GamepadButtonControlBoard;
 import com.team254.lib.wpilib.TimedRobot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team254.lib.util.*;
-import com.team254.lib.wpilib.TimedRobot;
 
 import java.util.Optional;
 
@@ -30,7 +29,6 @@ import com.team1678.frc2021.subsystems.Indexer.WantedAction;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.CrashTracker;
-import com.team254.lib.wpilib.TimedRobot;
 
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
@@ -91,12 +89,11 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         CrashTracker.logRobotConstruction();
+        // CommandScheduler.getInstance().setPeriod(0.04);
     }
 
     @Override
-    public void robotPeriodic() {
-		CommandScheduler.getInstance().run();
-		
+    public void robotPeriodic() {		
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
@@ -379,7 +376,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-		CommandScheduler.getInstance().cancelAll();
+		// CommandScheduler.getInstance().cancelAll();
 
         SmartDashboard.putString("Match Cycle", "TEST");
 

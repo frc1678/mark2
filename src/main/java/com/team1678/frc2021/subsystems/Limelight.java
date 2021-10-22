@@ -70,6 +70,7 @@ public class Limelight extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
+                final double start = Timer.getFPGATimestamp();
                 synchronized (this) {
                     if ((Hood.getInstance().getAtGoal() || Superstructure.getInstance().getScanningHood())
                             && !Superstructure.getInstance().getTucked() && !Superstructure.getInstance().getWantSpit()
@@ -82,6 +83,8 @@ public class Limelight extends Subsystem {
                 }
                 setLed(LedMode.ON);
 
+                final double end = Timer.getFPGATimestamp();
+                mPeriodicIO.dt = end - start;
             }
 
             @Override
@@ -107,6 +110,8 @@ public class Limelight extends Subsystem {
         public double yOffset;
         public double area;
         public boolean has_comms;
+
+        public double dt;
 
         // OUTPUTS
         public int ledMode = 1; // 0 - use pipeline mode, 1 - off, 2 - blink, 3 - on
@@ -206,6 +211,7 @@ public class Limelight extends Subsystem {
         SmartDashboard.putNumber(mConstants.kName + ": Pipeline Latency (ms)", mPeriodicIO.latency);
         SmartDashboard.putNumber("Limelight Tx: ", mPeriodicIO.xOffset);
         SmartDashboard.putNumber("Limelight Ty: ", mPeriodicIO.yOffset);
+        SmartDashboard.putNumber("Limelight dt", mPeriodicIO.dt);
         if (mCSVWriter != null) {
             mCSVWriter.write();
         }

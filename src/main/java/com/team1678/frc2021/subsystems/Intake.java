@@ -47,6 +47,7 @@ public class Intake extends Subsystem {
         public double timestamp;
         public double current;
         public boolean intake_out;
+        public double dt;
 
         // OUTPUTS
         public double demand;
@@ -74,6 +75,7 @@ public class Intake extends Subsystem {
         SmartDashboard.putString("Intake State", mState.toString());
         SmartDashboard.putBoolean("Solenoid Actual", mDeploySolenoid.get());
         SmartDashboard.putBoolean("Solenoid Goal", mPeriodicIO.deploy);
+        SmartDashboard.putNumber("Intake dt", mPeriodicIO.dt);
         if (mCSVWriter != null) {
             mCSVWriter.write();
         }
@@ -99,6 +101,7 @@ public class Intake extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
+                final double start = Timer.getFPGATimestamp();
                 synchronized (Intake.this) {
                     runStateMachine();
 
@@ -106,6 +109,8 @@ public class Intake extends Subsystem {
                         mPeriodicIO.deploy = true;
                     } 
                 }
+                final double end = Timer.getFPGATimestamp();
+                mPeriodicIO.dt = end - start;
             }
 
             @Override
