@@ -11,15 +11,32 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.subsystems.Swerve;
+
+import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ShootCommand;
+import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.commands.SwervePointTurnCommand;
+import com.team1678.frc2021.commands.TuckCommand;
+import com.team1678.frc2021.subsystems.Indexer;
+import com.team1678.frc2021.subsystems.Intake;
+import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
 public class LeftEightFarMode extends SequentialCommandGroup{
     
     public LeftEightFarMode(Swerve s_Swerve){
+
+        final Intake mIntake = Intake.getInstance();
+        final Indexer mIndexer = Indexer.getInstance();
+        final Superstructure mSuperstructure = Superstructure.getInstance();
+
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -96,12 +113,34 @@ public class LeftEightFarMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
+        IntakeCommand intake = 
+            new IntakeCommand(mIntake, mSuperstructure);
+
+        SpinUpCommand spinUp = 
+            new SpinUpCommand(mSuperstructure, 180.0);
+            
+        ShootCommand shoot =
+            new ShootCommand(mSuperstructure);
+
+        TuckCommand firstTuck =
+            new TuckCommand(mSuperstructure, true);
+
+        TuckCommand secondTuck =
+            new TuckCommand(mSuperstructure, true);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
             leftEightFirstShotCommand,
+            shoot,
+            firstTuck,
             leftEightIntakeCommand,
-            leftEightSecondShotCommand
+            secondTuck,
+            leftEightSecondShotCommand,
+            shoot
         );
+
+        parallel(intake);
+        parallel(spinUp);
 
     }
     

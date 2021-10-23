@@ -5,6 +5,7 @@ import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.subsystems.Indexer;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -20,10 +21,11 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class TestStraightPath extends SequentialCommandGroup {
+public class TestStraightPath extends ParallelCommandGroup {
 
     public TestStraightPath(Swerve s_Swerve){
         
@@ -60,24 +62,23 @@ public class TestStraightPath extends SequentialCommandGroup {
                 s_Swerve);
 
         IntakeCommand intake = 
-            new IntakeCommand(mIntake);
+            new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
+            new SpinUpCommand(mSuperstructure, 0.0);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
-            swerveControllerCommand.deadlineWith(intake),
-            spinUp,
+            swerveControllerCommand,
             shoot
-            
 
         );
 
-        
+        addCommands(intake);
+        addCommands(spinUp);
 
     }
 }
