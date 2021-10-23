@@ -52,11 +52,20 @@ public class TeleopSwerve extends CommandBase {
 
     @Override
     public void execute() {
-        double[] axes = getAxes();
 
-        double yAxis = -axes[0];
-        double xAxis = -axes[1];
-        double rAxis = -axes[2];
+        double yAxis;
+        double xAxis;
+        double rAxis;
+
+        /* Inversions */
+        yAxis = Constants.Swerve.invertYAxis ? controller.getRawAxis(translationAxis) : -controller.getRawAxis(translationAxis);
+        xAxis = Constants.Swerve.invertXAxis ? controller.getRawAxis(strafeAxis) : -controller.getRawAxis(strafeAxis);
+        rAxis = Constants.Swerve.invertRAxis ? controller.getRawAxis(rotationAxis) : -controller.getRawAxis(rotationAxis);
+
+        /* Deadbands */
+        yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
+        xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
+        rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
