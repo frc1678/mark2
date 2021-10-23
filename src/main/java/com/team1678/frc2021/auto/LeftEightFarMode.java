@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Swerve;
-
+import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
@@ -117,10 +117,13 @@ public class LeftEightFarMode extends SequentialCommandGroup{
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure, 180.0);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
+
+        AutoAimCommand aim =
+            new AutoAimCommand(mSuperstructure, 180);
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
@@ -141,6 +144,7 @@ public class LeftEightFarMode extends SequentialCommandGroup{
 
         parallel(intake);
         parallel(spinUp);
+        addCommands(aim);
 
     }
     

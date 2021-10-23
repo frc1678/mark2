@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.team1678.frc2021.subsystems.Swerve;
@@ -29,6 +30,7 @@ public class AutonomousSelector {
         autonomousModeChooser.addOption("Left Eight Near Ball", AutonomousMode.LEFT_EIGHT_NEAR_BALL);
         autonomousModeChooser.addOption("Left Eight Far Ball", AutonomousMode.LEFT_EIGHT_FAR_BALL);
         autoTab.add("Mode", autonomousModeChooser);
+
         
     }
 

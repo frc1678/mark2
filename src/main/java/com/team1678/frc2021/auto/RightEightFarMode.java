@@ -1,6 +1,7 @@
 package com.team1678.frc2021.auto;
 
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
@@ -237,10 +238,13 @@ public class RightEightFarMode extends ParallelCommandGroup {
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure, 120);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
+
+        AutoAimCommand aim =
+            new AutoAimCommand(mSuperstructure, 120);
         
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(firstShot.getInitialPose())),
@@ -256,5 +260,6 @@ public class RightEightFarMode extends ParallelCommandGroup {
 
         addCommands(spinUp);
         addCommands(intake);
+        addCommands(aim);
     }
 }

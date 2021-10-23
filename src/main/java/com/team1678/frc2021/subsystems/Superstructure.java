@@ -142,6 +142,7 @@ public class Superstructure extends Subsystem {
     public void outputTelemetry() {
         SmartDashboard.putBoolean("Shooting", mWantsShoot);
         SmartDashboard.putBoolean("Spinning Up", mWantsSpinUp);
+        SmartDashboard.putBoolean("System Spun Up", mGotSpunUp);
         SmartDashboard.putBoolean("Pre Shot", mWantsPreShot);
 
         SmartDashboard.putBoolean("Test Spit", mWantsTestSpit);

@@ -21,6 +21,7 @@ import com.team254.lib.util.*;
 import java.util.Optional;
 
 import com.team1678.frc2021.SubsystemManager;
+import com.team1678.frc2021.auto.AutonomousSelector;
 import com.team1678.frc2021.subsystems.*;
 import com.team254.lib.util.*;
 import com.team254.lib.vision.AimingParameters;
@@ -125,7 +126,7 @@ public class Robot extends TimedRobot {
                 mRobotStateEstimator,
 				mCanifier,
 				mHood,
-                // mLimelight, 
+                mLimelight, 
                 mIntake, 
                 mIndexer, 
                 mShooter,
@@ -165,9 +166,9 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logAutoInit();
             mDisabledLooper.stop();
-            // mLimelight.setLed(Limelight.LedMode.ON);
+            mLimelight.setLed(Limelight.LedMode.ON);
 
-            // mLimelight.setPipeline(Constants.kPortPipeline);
+            mLimelight.setPipeline(Constants.kPortPipeline);
 
             RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
 
@@ -188,17 +189,18 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         
         SmartDashboard.putString("Match Cycle", "AUTONOMOUS");
-        //mLimelight.setLed(Limelight.LedMode.ON);
+        mLimelight.setLed(Limelight.LedMode.ON);
 
-        // if (!mLimelight.limelightOK()) {
-        //     mLEDs.conformToState(LEDs.State.EMERGENCY);
-        // } else if (mSuperstructure.isOnTarget()) {
-        //     mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
-        // } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
-        //     mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
-        // } else {
-        //     mLEDs.conformToState(LEDs.State.ENABLED);
-        // }
+
+        if (!mLimelight.limelightOK()) {
+            mLEDs.conformToState(LEDs.State.EMERGENCY);
+        } else if (mSuperstructure.isOnTarget()) {
+            mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
+        } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
+            mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
+        } else {
+            mLEDs.conformToState(LEDs.State.ENABLED);
+        }
 
         try {
 

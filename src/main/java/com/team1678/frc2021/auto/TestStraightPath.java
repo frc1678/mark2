@@ -2,6 +2,7 @@
 package com.team1678.frc2021.auto;
 
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -26,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class TestStraightPath extends ParallelCommandGroup {
+
+    public static boolean mIsFinished = false;
 
     public TestStraightPath(Swerve s_Swerve){
         
@@ -65,20 +69,32 @@ public class TestStraightPath extends ParallelCommandGroup {
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure, 0.0);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
+        AutoAimCommand aim =
+            new AutoAimCommand(mSuperstructure, 200);
+
+        mIsFinished = swerveControllerCommand.isFinished();
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
-            swerveControllerCommand,
-            shoot
-
+            new SequentialCommandGroup(
+                //swerveControllerCommand,
+                shoot
+            )
         );
 
         addCommands(intake);
         addCommands(spinUp);
+        addCommands(aim);
+
+        
+
+        
 
     }
+
 }
