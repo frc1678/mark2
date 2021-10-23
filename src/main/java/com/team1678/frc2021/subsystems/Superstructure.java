@@ -401,7 +401,7 @@ public class Superstructure extends Subsystem {
         if (mWantsTuck || !mEnableIndexer) {
             mHood.setSetpointPositionPID(Constants.kHoodConstants.kMinUnitsLimit, 0);
         } else if (mWantsFendor) {
-            mHood.setSetpointMotionMagic(39.5);
+            mHood.setSetpointMotionMagic(25.0);
             mTurretSetpoint = 180.0;
         } else if (mWantsTestSpit) {
             mHood.setSetpointMotionMagic(Constants.kHoodConstants.kMinUnitsLimit);
@@ -469,7 +469,7 @@ public class Superstructure extends Subsystem {
         if (Math.abs(real_shooter) < Util.kEpsilon) {
             mShooter.setOpenLoop(0);
         } else if (mWantsFendor) {
-            mShooter.setVelocity(1500);
+            mShooter.setVelocity(2000);
         } else if (mWantsTestSpit) {
             mShooter.setVelocity(1200);
         } else {

@@ -162,9 +162,9 @@ public class Constants {
 	}
 	
 	public static final class SnapConstants {
-        public static final double snapKP = 0.2;
+        public static final double snapKP = 1.0;
         public static final double snapKI = 0;
-        public static final double snapKD = 0.1;
+        public static final double snapKD = 0.05;
         public static final double snapTimeout = 0.25;
         public static final double snapEpsilon = 1.0;
 
@@ -274,7 +274,7 @@ public class Constants {
 	 public static final double kInnerGoalDepth = 0;
 	 public static final double kHoodToTurret = 4.25; // center of the turret to the axis of rotation of the hood
 	 public static final double kLimelightPitchOffset = 17.66; // limelight pitch at hood 0
-	 public static final double kAutoAimPredictionTime = 0.25; // lookahead for robot state during aiming
+	 public static final double kAutoAimPredictionTime = 0.32; // lookahead for robot state during aiming
 
 	// turret
 	public static final ServoMotorSubsystemConstants kTurretConstants = new ServoMotorSubsystemConstants();
@@ -288,7 +288,7 @@ public class Constants {
 		// Unit == Degrees
 		kTurretConstants.kHomePosition = 0.0; // CCW degrees from forward
 		kTurretConstants.kTicksPerUnitDistance = (2048.0 * 54.2) / 360.0;
-		kTurretConstants.kKp = 0.5; // 0.5
+		kTurretConstants.kKp = 0.50; // 0.5
 		kTurretConstants.kKi = 0;
 		kTurretConstants.kKd = 0.0;
 		kTurretConstants.kKf = 0.05;
