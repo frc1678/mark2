@@ -358,11 +358,6 @@ public class Robot extends TimedRobot {
                     climber_action = (Climber.WantedAction.JOG_DOWN);
                 } else if(mControlBoard.getClimberJog() == 1){
                     climber_action = (Climber.WantedAction.JOG_UP);
-                }
-                if (mControlBoard.getArmExtend()) { // Press A
-                    climber_action = (Climber.WantedAction.EXTEND);   
-                } else if (mControlBoard.getClimb()) { // Press Y
-                    climber_action = (Climber.WantedAction.CLIMB);
                 } else if (mControlBoard.getBrake()) { // Release Y
                     climber_action = (Climber.WantedAction.BRAKE);
                 } else if (mControlBoard.getLeaveClimbMode()) {
@@ -375,10 +370,10 @@ public class Robot extends TimedRobot {
 
                 // Skywalker Control
                 switch(mControlBoard.getSkywalker()){
-                    case -1:
+                    case 1:
                         skywalker_action = (Skywalker.WantedAction.SHIFT_LEFT);
                         break;
-                    case 1:
+                    case -1:
                         skywalker_action = (Skywalker.WantedAction.SHIFT_RIGHT);
                         break;
                     case 0:
@@ -386,21 +381,12 @@ public class Robot extends TimedRobot {
                         break;
                 }
 
-                if (mClimber.getState() == Climber.State.HUGGING) {
-                    mLEDs.conformToState(buddy_climb ? LEDs.State.HUGGING_BUDDY : LEDs.State.HUGGING);
-                } else if (mClimber.getState() == Climber.State.CLIMBING) {
-                    mLEDs.conformToState(buddy_climb ? LEDs.State.CLIMBING_BUDDY : LEDs.State.CLIMBING);
-                } else {
-                    mLEDs.conformToState(buddy_climb ? LEDs.State.CLIMB_MODE_BUDDY : LEDs.State.CLIMB_MODE);
-                }
-
-//                if (mControlBoard.getStopExtend() || mControlBoard.getStopClimb()) {
-//                    climber_action = Climber.WantedAction.STOP;
-//                }
+                mLEDs.conformToState(LEDs.State.CLIMB_MODE);
 
                 mClimber.setState(climber_action);
                 mSkywalker.setState(skywalker_action);
             }
+
             mLEDs.writePeriodicOutputs();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
