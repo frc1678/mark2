@@ -49,7 +49,7 @@ public class Constants {
     public static final double kRobotProbeExtrusion = 4.0;
 	
 	/* 364 IMPORTED CONSTANTS */
-	public static final double stickDeadband = 0.1;
+	public static final double stickDeadband = 1.0;
 
 	public static final class Swerve {	
         public static final int pigeonID = 16;
@@ -266,7 +266,7 @@ public class Constants {
 	 public static final double kInnerGoalDepth = 0;
 	 public static final double kHoodToTurret = 4.25; // center of the turret to the axis of rotation of the hood
 	 public static final double kLimelightPitchOffset = 17.66; // limelight pitch at hood 0
-	 public static final double kAutoAimPredictionTime = 0.32; // lookahead for robot state during aiming
+	 public static final double kAutoAimPredictionTime = 0.10; // lookahead for robot state during aiming
 
 	// turret
 	public static final ServoMotorSubsystemConstants kTurretConstants = new ServoMotorSubsystemConstants();
@@ -283,7 +283,7 @@ public class Constants {
 		kTurretConstants.kKp = 0.50; // 0.5
 		kTurretConstants.kKi = 0;
 		kTurretConstants.kKd = 0.0;
-		kTurretConstants.kKf = 0.05;
+		kTurretConstants.kKf = 0.10;
 		kTurretConstants.kKa = 0.0;
 		kTurretConstants.kMaxIntegralAccumulator = 0;
 		kTurretConstants.kIZone = 0; // Ticks
@@ -326,7 +326,7 @@ public class Constants {
 		// Unit == Degrees
 		kHoodConstants.kHomePosition = 0.0; // Degrees
 		kHoodConstants.kTicksPerUnitDistance = (2048.0 * 93.8) / 360.0;
-		kHoodConstants.kKp = 0.5;
+		kHoodConstants.kKp = 0.55;
 		kHoodConstants.kKi = 0;
 		kHoodConstants.kKd = 0;
 		kHoodConstants.kKf = 0.05;

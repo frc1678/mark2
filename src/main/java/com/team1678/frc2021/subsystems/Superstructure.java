@@ -109,10 +109,7 @@ public class Superstructure extends Subsystem {
             public void onStart(double timestamp) {
                 synchronized (Superstructure.this) {
                     mTurretMode = TurretControlModes.FIELD_RELATIVE;
-                    if (SuperstructureConstants.kUseSmartdashboard) {
-                        SmartDashboard.putNumber("Shooting RPM", mShooterSetpoint);
-                        SmartDashboard.putNumber("Hood Angle", mHoodSetpoint);
-                    }
+                    
                 }
             }
 
@@ -159,6 +156,11 @@ public class Superstructure extends Subsystem {
         SmartDashboard.putNumber("Distance to Target", mCorrectedRangeToTarget);
 
         SmartDashboard.putString("Turret Mode", mTurretMode.toString());
+
+        if (SuperstructureConstants.kUseSmartdashboard) {
+            SmartDashboard.putNumber("Shooting RPM", mShooterSetpoint);
+            SmartDashboard.putNumber("Hood Angle", mHoodSetpoint);
+        }
     }
 
     @Override

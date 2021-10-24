@@ -286,7 +286,7 @@ public class Indexer extends Subsystem {
             break;
         case HELLA_ZOOMING:
             mPeriodicIO.indexer_control_mode = ControlMode.Velocity;
-            mPeriodicIO.indexer_demand = (mBackwards ? -kZoomingVelocity : kZoomingVelocity) * 1.5;
+            mPeriodicIO.indexer_demand = (mBackwards ? -kZoomingVelocity : kZoomingVelocity) * 1.2;
             break;
         case FEEDING:
             mPeriodicIO.indexer_control_mode = ControlMode.MotionMagic;
