@@ -49,7 +49,7 @@ public class Constants {
     public static final double kRobotProbeExtrusion = 4.0;
 	
 	/* 364 IMPORTED CONSTANTS */
-	public static final double stickDeadband = 1.0;
+	public static final double stickDeadband = 0.15;
 
 	public static final class Swerve {	
         public static final int pigeonID = 16;
