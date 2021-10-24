@@ -14,10 +14,24 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.commands.AutoAimCommand;
+import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ShootCommand;
+import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.commands.TuckCommand;
+import com.team1678.frc2021.subsystems.Indexer;
+import com.team1678.frc2021.subsystems.Intake;
+import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
 public class LeftEightNearMode extends SequentialCommandGroup{
+
+    final Intake mIntake = Intake.getInstance();
+    final Indexer mIndexer = Indexer.getInstance();
+    final Superstructure mSuperstructure = Superstructure.getInstance();
     
     public LeftEightNearMode(Swerve s_Swerve){
         TrajectoryConfig config =
@@ -96,11 +110,30 @@ public class LeftEightNearMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
+        IntakeCommand intake = 
+            new IntakeCommand(mIntake, mSuperstructure);
+
+        SpinUpCommand spinUp = 
+            new SpinUpCommand(mSuperstructure, 1.0);
+            
+        ShootCommand shoot =
+            new ShootCommand(mSuperstructure);
+
+        AutoAimCommand aim =
+            new AutoAimCommand(mSuperstructure, 180, 0.0);
+
+        TuckCommand firstTuck =
+            new TuckCommand(mSuperstructure, true);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0)))),
-            leftEightFirstShotCommand,
+            leftEightFirstShotCommand.deadlineWith(aim, spinUp, intake),
+            shoot,
+            new WaitCommand(1.0),
+            firstTuck,
             leftEightIntakeCommand,
-            leftEightSecondShotCommand
+            leftEightSecondShotCommand,
+            shoot
         );
 
     }

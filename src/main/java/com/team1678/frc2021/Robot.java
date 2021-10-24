@@ -194,7 +194,7 @@ public class Robot extends TimedRobot {
 
         if (!mLimelight.limelightOK()) {
             mLEDs.conformToState(LEDs.State.EMERGENCY);
-        } else if (mSuperstructure.isOnTarget()) {
+        } else if (mSuperstructure.isAimed()) {
             mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
         } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
             mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
@@ -252,9 +252,9 @@ public class Robot extends TimedRobot {
                     mLEDs.conformToState(LEDs.State.EMERGENCY);
                 } else if (mSuperstructure.getTucked()) {
                     mLEDs.conformToState(LEDs.State.HOOD_TUCKED);
-                } else if (mSuperstructure.isOnTarget() && mLimelight.seesTarget()) {
+                } else if (mSuperstructure.isAimed() && mLimelight.seesTarget()) {
                     mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
-                } else if (mSuperstructure.isOnTarget()) {
+                } else if (mSuperstructure.isAimed()) {
                     mLEDs.conformToState(LEDs.State.INVISIBLE_TARGET_TRACKING);
                 } else if (mSuperstructure.getLatestAimingParameters().isPresent() && !mLimelight.seesTarget() && !mSuperstructure.getScanningHood()) {
                     mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);

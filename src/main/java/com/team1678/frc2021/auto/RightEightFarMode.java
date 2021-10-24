@@ -28,8 +28,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class RightEightFarMode extends ParallelCommandGroup {
+public class RightEightFarMode extends SequentialCommandGroup {
 
     public RightEightFarMode(Swerve s_Swerve){
 
@@ -100,71 +101,58 @@ public class RightEightFarMode extends ParallelCommandGroup {
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        Trajectory firstShot =
+        Trajectory getTofirstShot =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)),
                 List.of(new Translation2d(5.0, 0.71),
-                        new Translation2d(6.0, 1.0),
+                        new Translation2d(6.3, 0.9),
                         new Translation2d(4.5, 4.0)),
                 new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(90.0)), 
                 config);
 
-        Trajectory shotToIntake =
+        Trajectory getToIntakePosition =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(0.0)),
-                List.of(new Translation2d(5.0, 6.5)),
-                new Pose2d(6.8, 6.0, Rotation2d.fromDegrees(260.0)), 
+                List.of(/*new Translation2d(5.0, 6.5)*/),
+                new Pose2d(7.0, 7.0, Rotation2d.fromDegrees(260.0)), 
                 shotToIntakeConfig);
         
-        Trajectory firstIntake =
+        Trajectory getToFirstIntake =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.8, 6.0, Rotation2d.fromDegrees(260.0)),
+                new Pose2d(7.0, 7.0, Rotation2d.fromDegrees(260.0)),
                 List.of(),
-                new Pose2d(6.45, 4.7, Rotation2d.fromDegrees(260.0)), 
+                new Pose2d(7.0, 4.85, Rotation2d.fromDegrees(260.0)), 
                 firstIntakeConfig);
 
-        Trajectory headingAdjust =
+        Trajectory getToSecondIntake =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.45, 4.8, Rotation2d.fromDegrees(110)),
+                new Pose2d(6.6, 4.85, Rotation2d.fromDegrees(110)),
                 List.of(),
-                new Pose2d(6.45, 4.85, Rotation2d.fromDegrees(110)), 
-                headingAdjustConfig);
-        
-        Trajectory secondIntake =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.45, 4.85, Rotation2d.fromDegrees(110)),
-                List.of(),
-                new Pose2d(5.0, 6.5, Rotation2d.fromDegrees(180)), 
+                new Pose2d(7.0, 6.5, Rotation2d.fromDegrees(180)), 
                 secondIntakeConfig);
 
-        Trajectory secondShoot =
+        Trajectory getToSecondShot =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(5.0, 6.5, Rotation2d.fromDegrees(180)),
+                new Pose2d(5.5, 6.5, Rotation2d.fromDegrees(180)),
                 List.of(),
-                new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(225)), 
+                new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(225)), 
                 secondShotConfig);
-        // Trajectory secondIntake =
-        //     TrajectoryGenerator.generateTrajectory(
-        //         new Pose2d(6.45, 4.4, Rotation2d.fromDegrees(100.0)),
-        //         List.of(new Translation2d(5.0, 6.5)),
-        //         new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(180.0)), 
-        //         config);          
-    
-        SwerveControllerCommand firstShotCommand =
+
+        SwerveControllerCommand driveToFirstShotCommand =
             new SwerveControllerCommand(
-                firstShot,
+                getTofirstShot,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(45),
+                () -> Rotation2d.fromDegrees(30),
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwerveControllerCommand shotToIntakeCommand =
+        SwerveControllerCommand driveToIntakeCommand =
             new SwerveControllerCommand(
-                shotToIntake,
+                getToIntakePosition,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -174,9 +162,9 @@ public class RightEightFarMode extends ParallelCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
         
-        SwerveControllerCommand firstIntakeCommand =
+        SwerveControllerCommand driveFirstIntakeCommand =
             new SwerveControllerCommand(
-                firstIntake,
+                getToFirstIntake,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -185,19 +173,6 @@ public class RightEightFarMode extends ParallelCommandGroup {
                 () -> Rotation2d.fromDegrees(260),
                 s_Swerve::setModuleStates,
                 s_Swerve);
-/*
-        SwerveControllerCommand headingAdjustCommand =
-            new SwerveControllerCommand(
-                headingAdjust,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(110),
-                s_Swerve::setModuleStates,
-                s_Swerve);
-                */
 
         SwervePointTurnCommand headingAdjustCommand =
             new SwervePointTurnCommand(
@@ -210,9 +185,9 @@ public class RightEightFarMode extends ParallelCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
             
-        SwerveControllerCommand secondIntakeCommand =
+        SwerveControllerCommand driveSecondIntakeCommand =
             new SwerveControllerCommand(
-                secondIntake,
+                getToSecondIntake,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -222,9 +197,9 @@ public class RightEightFarMode extends ParallelCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwerveControllerCommand sceondShotCommand =
+        SwerveControllerCommand driveToSceondShotCommand =
             new SwerveControllerCommand(
-                secondShoot,
+                getToSecondShot,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -237,29 +212,33 @@ public class RightEightFarMode extends ParallelCommandGroup {
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
 
-        SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
+        SpinUpCommand firstSpinUp = 
+            new SpinUpCommand(mSuperstructure, 1.0);
+
+        SpinUpCommand secondSpinUp = 
+            new SpinUpCommand(mSuperstructure, 0.0);
             
-        ShootCommand shoot =
+        ShootCommand firstShoot =
+            new ShootCommand(mSuperstructure);
+
+        ShootCommand secondShoot =
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 120);
+            new AutoAimCommand(mSuperstructure, 180, 2.0);
         
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(firstShot.getInitialPose())),
-            firstShotCommand,
-            shoot,
-            shotToIntakeCommand,
-            firstIntakeCommand,
-            headingAdjustCommand,
-            secondIntakeCommand,
-            sceondShotCommand,
-            shoot
+            new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(driveToFirstShotCommand, aim, firstSpinUp),
+                firstShoot,
+                driveToIntakeCommand.deadlineWith(secondSpinUp),
+                driveFirstIntakeCommand,
+                headingAdjustCommand,
+                driveSecondIntakeCommand,
+                driveToSceondShotCommand,
+                secondShoot
+            ).deadlineWith(intake)
         );
-
-        addCommands(spinUp);
-        addCommands(intake);
-        addCommands(aim);
     }
 }

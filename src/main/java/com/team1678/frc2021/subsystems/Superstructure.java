@@ -511,10 +511,6 @@ public class Superstructure extends Subsystem {
         return mLatestAimingParameters;
     }
 
-    public synchronized boolean isOnTarget() {
-        return mOnTarget;
-    }
-
     public synchronized void setWantUnjam(boolean unjam) {
         mWantsUnjam = unjam;
     }

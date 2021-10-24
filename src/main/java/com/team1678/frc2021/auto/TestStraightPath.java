@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class TestStraightPath extends ParallelCommandGroup {
+public class TestStraightPath extends SequentialCommandGroup {
 
     public static boolean mIsFinished = false;
 
@@ -69,32 +69,26 @@ public class TestStraightPath extends ParallelCommandGroup {
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
+            new SpinUpCommand(mSuperstructure, 1.0);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 200);
+            new AutoAimCommand(mSuperstructure, 200, 0.0);
 
         mIsFinished = swerveControllerCommand.isFinished();
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
             new SequentialCommandGroup(
-                //swerveControllerCommand,
+                new ParallelCommandGroup(
+                    spinUp, 
+                    swerveControllerCommand.deadlineWith(aim)
+                ),
                 shoot
-            )
+            ).deadlineWith(intake)
         );
-
-        addCommands(intake);
-        addCommands(spinUp);
-        addCommands(aim);
-
-        
-
-        
-
     }
 
 }

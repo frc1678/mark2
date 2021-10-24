@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -117,13 +118,13 @@ public class LeftEightFarMode extends SequentialCommandGroup{
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
+            new SpinUpCommand(mSuperstructure, 1.0);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180);
+            new AutoAimCommand(mSuperstructure, 180, 0.0);
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
@@ -133,19 +134,15 @@ public class LeftEightFarMode extends SequentialCommandGroup{
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
-            leftEightFirstShotCommand,
+            leftEightFirstShotCommand.deadlineWith(intake, spinUp, aim),
             shoot,
+            new WaitCommand(1.0),
             firstTuck,
             leftEightIntakeCommand,
             secondTuck,
             leftEightSecondShotCommand,
             shoot
         );
-
-        parallel(intake);
-        parallel(spinUp);
-        addCommands(aim);
-
     }
     
 }

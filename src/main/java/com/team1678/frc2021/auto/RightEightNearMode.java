@@ -1,6 +1,11 @@
 package com.team1678.frc2021.auto;
 
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.commands.AutoAimCommand;
+import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ShootCommand;
+import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 import java.util.List;
@@ -16,12 +21,16 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class RightEightNearMode extends SequentialCommandGroup {
 
     public RightEightNearMode(Swerve s_Swerve) {
+
+        final Intake mIntake = Intake.getInstance();
+        final Superstructure mSuperstructure = Superstructure.getInstance();
 
         TrajectoryConfig config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -83,23 +92,24 @@ public class RightEightNearMode extends SequentialCommandGroup {
             () -> Rotation2d.fromDegrees(180), // Swerve Heading
             s_Swerve::setModuleStates,
             s_Swerve);
-        
-        // SwerveControllerCommand sGIntakeCommand =
-        // new SwerveControllerCommand(
-        //     sGIntake,
-        //     s_Swerve::getPose,
-        //     Constants.Swerve.swerveKinematics,
-        //     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-        //     new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-        //     thetaController,
-        //     s_Swerve::setModuleStates,
-        //     s_Swerve);
 
+        IntakeCommand intake = 
+            new IntakeCommand(mIntake, mSuperstructure);
+
+        SpinUpCommand spinUp = 
+            new SpinUpCommand(mSuperstructure, 1.0);
+            
+        ShootCommand shoot =
+            new ShootCommand(mSuperstructure);
+
+        AutoAimCommand aim =
+            new AutoAimCommand(mSuperstructure, 120, 1.0);
+        
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(trenchIntake.getInitialPose())),
-            trenchIntakeCommand,
-            closeShotCommand
-            // sGIntakeCommand
+            new ParallelCommandGroup(trenchIntakeCommand, intake, spinUp, aim),
+            closeShotCommand,
+            shoot
         );
 
     }
