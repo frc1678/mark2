@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -61,19 +62,19 @@ public class LeftEightFarMode extends SequentialCommandGroup{
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)),
                 List.of(),
-                new Pose2d(5.3, 7.5 , Rotation2d.fromDegrees(0.0)),
+                new Pose2d(4.8, 7.5 , Rotation2d.fromDegrees(0.0)),
                 config);
 
         Trajectory leftEightIntake =          
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(5.3, 7.5 , Rotation2d.fromDegrees(0.0)),
                 List.of(),
-                new Pose2d(9.6, 7.5, Rotation2d.fromDegrees(0.0)),
+                new Pose2d(10.0, 7.5, Rotation2d.fromDegrees(0.0)),
                 config);
 
         Trajectory leftEightSecondShot =          
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(9.6, 7.5 , Rotation2d.fromDegrees(180.0)),
+                new Pose2d(10.0, 7.5 , Rotation2d.fromDegrees(180.0)),
                 List.of(),
                 new Pose2d(5.3, 7.5, Rotation2d.fromDegrees(180.0)),
                 config);
@@ -120,11 +121,17 @@ public class LeftEightFarMode extends SequentialCommandGroup{
         SpinUpCommand spinUp = 
             new SpinUpCommand(mSuperstructure, 1.0);
             
-        ShootCommand shoot =
+        ShootCommand firstShoot =
             new ShootCommand(mSuperstructure);
 
-        AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180, 0.0);
+        ShootCommand secondShoot =
+            new ShootCommand(mSuperstructure);
+
+        AutoAimCommand firstAim =
+            new AutoAimCommand(mSuperstructure, 200, 0.0);
+
+        AutoAimCommand secondAim =
+            new AutoAimCommand(mSuperstructure, 200, 0.0);
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
@@ -134,14 +141,21 @@ public class LeftEightFarMode extends SequentialCommandGroup{
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
-            leftEightFirstShotCommand.deadlineWith(intake, spinUp, aim),
-            shoot,
-            new WaitCommand(1.0),
-            firstTuck,
-            leftEightIntakeCommand,
-            secondTuck,
-            leftEightSecondShotCommand,
-            shoot
+            new SequentialCommandGroup(
+                leftEightFirstShotCommand.deadlineWith(new SequentialCommandGroup(
+                    new WaitCommand(0.5),
+                    spinUp, 
+                    firstAim
+                )),
+                firstShoot,
+                firstTuck,
+                leftEightIntakeCommand,
+                leftEightSecondShotCommand.deadlineWith(new SequentialCommandGroup(
+                    new WaitCommand(1.0),
+                    (secondAim)
+                )),
+                secondShoot
+            ).deadlineWith(intake)
         );
     }
     

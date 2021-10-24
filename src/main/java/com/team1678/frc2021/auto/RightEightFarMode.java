@@ -107,19 +107,19 @@ public class RightEightFarMode extends SequentialCommandGroup {
                 List.of(new Translation2d(5.0, 0.71),
                         new Translation2d(6.3, 0.9),
                         new Translation2d(4.5, 4.0)),
-                new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(90.0)), 
+                new Pose2d(4.2, 6.0, Rotation2d.fromDegrees(90.0)), 
                 config);
 
         Trajectory getToIntakePosition =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(4.0, 6.0, Rotation2d.fromDegrees(0.0)),
+                new Pose2d(4.2, 6.0, Rotation2d.fromDegrees(0.0)),
                 List.of(/*new Translation2d(5.0, 6.5)*/),
-                new Pose2d(7.0, 7.0, Rotation2d.fromDegrees(260.0)), 
+                new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)), 
                 shotToIntakeConfig);
         
         Trajectory getToFirstIntake =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(7.0, 7.0, Rotation2d.fromDegrees(260.0)),
+                new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)),
                 List.of(),
                 new Pose2d(7.0, 4.85, Rotation2d.fromDegrees(260.0)), 
                 firstIntakeConfig);
@@ -128,12 +128,12 @@ public class RightEightFarMode extends SequentialCommandGroup {
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(6.6, 4.85, Rotation2d.fromDegrees(110)),
                 List.of(),
-                new Pose2d(7.0, 6.5, Rotation2d.fromDegrees(180)), 
+                new Pose2d(6.0, 6.5, Rotation2d.fromDegrees(180)), 
                 secondIntakeConfig);
 
         Trajectory getToSecondShot =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(5.5, 6.5, Rotation2d.fromDegrees(180)),
+                new Pose2d(6.0, 6.5, Rotation2d.fromDegrees(180)),
                 List.of(),
                 new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(225)), 
                 secondShotConfig);
@@ -146,11 +146,11 @@ public class RightEightFarMode extends SequentialCommandGroup {
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(30),
+                () -> Rotation2d.fromDegrees(15),
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwerveControllerCommand driveToIntakeCommand =
+        SwerveControllerCommand driveToShieldGenerator =
             new SwerveControllerCommand(
                 getToIntakePosition,
                 s_Swerve::getPose,
@@ -230,9 +230,13 @@ public class RightEightFarMode extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),
             new SequentialCommandGroup(
-                new ParallelCommandGroup(driveToFirstShotCommand, aim, firstSpinUp),
+                driveToFirstShotCommand.deadlineWith(new SequentialCommandGroup(
+                    new WaitCommand(1.0),
+                    aim,
+                    firstSpinUp
+                )),
                 firstShoot,
-                driveToIntakeCommand.deadlineWith(secondSpinUp),
+                driveToShieldGenerator.deadlineWith(secondSpinUp),
                 driveFirstIntakeCommand,
                 headingAdjustCommand,
                 driveSecondIntakeCommand,

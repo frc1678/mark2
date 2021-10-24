@@ -29,7 +29,7 @@ public class ShootCommand extends CommandBase{
             startTime = Timer.getFPGATimestamp();
         }
 
-        if(Timer.getFPGATimestamp() - startTime > 3.0){
+        if(Timer.getFPGATimestamp() - startTime > 1.5){
             mSuperstructure.setWantShoot(false);
             mSuperstructure.setWantSpinUp(true);
             isFinished = true;

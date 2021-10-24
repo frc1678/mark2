@@ -26,14 +26,14 @@ public class SpinUpCommand extends CommandBase{
     @Override 
     public void initialize(){
         startTime = Timer.getFPGATimestamp();
+        mSuperstructure.setWantSpinUp(true);
     }
 
     @Override
     public void execute(){
         //if(Timer.getFPGATimestamp() - startTime > startDelay){
-            mSuperstructure.setWantSpinUp(true);
             isFinished = true;
-       // }
+        //}
     }
 
     @Override

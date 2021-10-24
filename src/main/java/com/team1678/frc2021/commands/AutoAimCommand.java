@@ -24,14 +24,15 @@ public class AutoAimCommand extends CommandBase{
     @Override
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
+        mSuperstructure.setWantTuck(false);
+        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
     }
 
     @Override
     public void execute(){
-        if(Timer.getFPGATimestamp() - startTime > mStartDelay){
-            mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
+        //if(Timer.getFPGATimestamp() - startTime > mStartDelay){
             isFinished = true;
-        }
+        //}
     }
 
     @Override 
