@@ -45,13 +45,6 @@ public class LeftEightFarMode extends SequentialCommandGroup{
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 .setKinematics(Constants.Swerve.swerveKinematics);
 
-        TrajectoryConfig endConfig =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
-
         var thetaController =
             new ProfiledPIDController(
                 Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
@@ -63,21 +56,21 @@ public class LeftEightFarMode extends SequentialCommandGroup{
                 new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)),
                 List.of(),
                 new Pose2d(4.8, 7.5 , Rotation2d.fromDegrees(0.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
 
         Trajectory leftEightIntake =          
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(5.3, 7.5 , Rotation2d.fromDegrees(0.0)),
                 List.of(),
                 new Pose2d(10.0, 7.5, Rotation2d.fromDegrees(0.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
 
         Trajectory leftEightSecondShot =          
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(10.0, 7.5 , Rotation2d.fromDegrees(180.0)),
                 List.of(),
                 new Pose2d(5.3, 7.5, Rotation2d.fromDegrees(180.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
     
         SwerveControllerCommand leftEightFirstShotCommand =
             new SwerveControllerCommand(

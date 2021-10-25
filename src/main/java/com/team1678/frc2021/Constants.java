@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import com.lib.util.SwerveModuleConstants;
@@ -193,7 +194,53 @@ public class Constants {
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+				kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+				
+		// Trajectory Speed Configs
+		public static final TrajectoryConfig defaultConfig = 
+		new TrajectoryConfig(
+				Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+
+		public static final TrajectoryConfig slowConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+		
+		public static final TrajectoryConfig zeroToSlow =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)
+			.setStartVelocity(0)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+
+		public static final TrajectoryConfig slowToZero =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+            .setKinematics(Constants.Swerve.swerveKinematics)
+    		.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(0);
+			
+		public static final TrajectoryConfig zeroToMax =
+        	new TrajectoryConfig(
+            	Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)
+			.setStartVelocity(0.0)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+		    
+		public static final TrajectoryConfig maxToZero =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)   
+			.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(0);
       }
 
 	 // Indexer

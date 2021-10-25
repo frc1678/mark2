@@ -34,18 +34,6 @@ public class LeftEightNearMode extends SequentialCommandGroup{
     final Superstructure mSuperstructure = Superstructure.getInstance();
     
     public LeftEightNearMode(Swerve s_Swerve){
-        TrajectoryConfig config =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
-        TrajectoryConfig endConfig =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
 
         var thetaController =
             new ProfiledPIDController(
@@ -58,21 +46,21 @@ public class LeftEightNearMode extends SequentialCommandGroup{
                 new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(180.0)),
                 List.of(),
                 new Pose2d(1.7, 5.8 , Rotation2d.fromDegrees(270.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
 
         Trajectory leftEightIntake =          
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(1.5, 6.0 , Rotation2d.fromDegrees(90.0)),
                 List.of(new Translation2d(2.9, 7.0), new Translation2d(5.0, 7.0)),
                 new Pose2d(9.6, 7.3, Rotation2d.fromDegrees(0.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
 
         Trajectory leftEightSecondShot =          
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(9.6, 7.5 , Rotation2d.fromDegrees(180.0)),
                 List.of(new Translation2d(2.9, 7.0)),
                 new Pose2d(1.7, 5.8, Rotation2d.fromDegrees(270.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
     
         SwerveControllerCommand leftEightFirstShotCommand =
             new SwerveControllerCommand(

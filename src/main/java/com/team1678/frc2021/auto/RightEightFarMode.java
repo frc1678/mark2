@@ -35,65 +35,7 @@ public class RightEightFarMode extends SequentialCommandGroup {
     public RightEightFarMode(Swerve s_Swerve){
 
         final Intake mIntake = Intake.getInstance();
-        final Indexer mIndexer = Indexer.getInstance();
         final Superstructure mSuperstructure = Superstructure.getInstance();
-
-        TrajectoryConfig config =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
-        TrajectoryConfig slowConfig = 
-            new TrajectoryConfig(
-                Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(Constants.Swerve.swerveKinematics);
-
-        TrajectoryConfig shotToIntakeConfig =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                    .setKinematics(Constants.Swerve.swerveKinematics);
-
-        shotToIntakeConfig.setStartVelocity(0);
-
-        shotToIntakeConfig.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-
-        TrajectoryConfig firstIntakeConfig =
-        new TrajectoryConfig(
-            Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-        
-        firstIntakeConfig.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-        firstIntakeConfig.setEndVelocity(0);
-        
-        TrajectoryConfig headingAdjustConfig =
-        new TrajectoryConfig(
-            Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-        
-        headingAdjustConfig.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-        headingAdjustConfig.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-
-        TrajectoryConfig secondIntakeConfig =
-        new TrajectoryConfig(
-            Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
-        secondIntakeConfig.setStartVelocity(0.0);
-        secondIntakeConfig.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-    
-        TrajectoryConfig secondShotConfig =
-        new TrajectoryConfig(
-            Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);        
-        secondShotConfig.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
-        secondShotConfig.setEndVelocity(0);
 
         var thetaController =
             new ProfiledPIDController(
@@ -108,35 +50,35 @@ public class RightEightFarMode extends SequentialCommandGroup {
                         new Translation2d(6.3, 0.9),
                         new Translation2d(4.5, 4.0)),
                 new Pose2d(4.2, 6.0, Rotation2d.fromDegrees(90.0)), 
-                config);
+                Constants.AutoConstants.defaultConfig);
 
-        Trajectory getToIntakePosition =
+        Trajectory getToShieldGen =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(4.2, 6.0, Rotation2d.fromDegrees(0.0)),
                 List.of(/*new Translation2d(5.0, 6.5)*/),
                 new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)), 
-                shotToIntakeConfig);
+                Constants.AutoConstants.zeroToSlow);
         
         Trajectory getToFirstIntake =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)),
                 List.of(),
                 new Pose2d(7.0, 4.85, Rotation2d.fromDegrees(260.0)), 
-                firstIntakeConfig);
+                Constants.AutoConstants.slowToZero);
 
         Trajectory getToSecondIntake =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(6.6, 4.85, Rotation2d.fromDegrees(110)),
                 List.of(),
                 new Pose2d(6.0, 6.5, Rotation2d.fromDegrees(180)), 
-                secondIntakeConfig);
+                Constants.AutoConstants.zeroToSlow);
 
         Trajectory getToSecondShot =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(6.0, 6.5, Rotation2d.fromDegrees(180)),
                 List.of(),
                 new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(225)), 
-                secondShotConfig);
+                Constants.AutoConstants.slowToZero);
 
         SwerveControllerCommand driveToFirstShotCommand =
             new SwerveControllerCommand(
@@ -152,7 +94,7 @@ public class RightEightFarMode extends SequentialCommandGroup {
 
         SwerveControllerCommand driveToShieldGenerator =
             new SwerveControllerCommand(
-                getToIntakePosition,
+                getToShieldGen,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),

@@ -32,26 +32,12 @@ public class RightEightNearMode extends SequentialCommandGroup {
         final Intake mIntake = Intake.getInstance();
         final Superstructure mSuperstructure = Superstructure.getInstance();
 
-        TrajectoryConfig config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(Constants.Swerve.swerveKinematics);
-
-        TrajectoryConfig reversedConfig = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                    .setKinematics(Constants.Swerve.swerveKinematics);
-                
-        reversedConfig.setReversed(true);
-
-        TrajectoryConfig slowConfig = new TrajectoryConfig(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(Constants.Swerve.swerveKinematics);
-        
         Trajectory trenchIntake =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)),
                 List.of(new Translation2d(5.0, 0.71)),
                 new Pose2d(6.10, 0.71, Rotation2d.fromDegrees(0.0)), 
-                config);
+                Constants.AutoConstants.defaultConfig);
         
         Trajectory closeShot =
             TrajectoryGenerator.generateTrajectory(
@@ -61,7 +47,7 @@ public class RightEightNearMode extends SequentialCommandGroup {
                         //new Translation2d(1.52, 4.84)
                         ),
                 new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
-                config);
+                Constants.AutoConstants.defaultConfig);
 
         var thetaController =
             new ProfiledPIDController(
