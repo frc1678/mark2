@@ -7,7 +7,6 @@ import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
 
-import com.team1678.frc2021.subsystems.Indexer;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -20,12 +19,8 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -155,10 +150,10 @@ public class RightEightFarMode extends SequentialCommandGroup {
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand firstSpinUp = 
-            new SpinUpCommand(mSuperstructure, 1.0);
+            new SpinUpCommand(mSuperstructure);
 
         SpinUpCommand secondSpinUp = 
-            new SpinUpCommand(mSuperstructure, 0.0);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand firstShoot =
             new ShootCommand(mSuperstructure);
@@ -167,7 +162,7 @@ public class RightEightFarMode extends SequentialCommandGroup {
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180, 2.0);
+            new AutoAimCommand(mSuperstructure, 180);
         
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),

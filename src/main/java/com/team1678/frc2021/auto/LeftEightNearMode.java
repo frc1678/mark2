@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -102,13 +100,13 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure, 1.0);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180, 0.0);
+            new AutoAimCommand(mSuperstructure, 180);
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);

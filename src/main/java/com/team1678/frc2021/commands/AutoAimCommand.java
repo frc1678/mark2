@@ -11,32 +11,20 @@ public class AutoAimCommand extends CommandBase{
 
     private final Superstructure mSuperstructure;
     private final double mTurretAngle;
-    private final double mStartDelay;
-    private double startTime;
-    private boolean isFinished = false;
 
-    public AutoAimCommand(Superstructure superstructure, double turretAngle, double startDelay) {
+    public AutoAimCommand(Superstructure superstructure, double turretAngle) {
         mSuperstructure = superstructure;
         mTurretAngle = turretAngle;
-        mStartDelay = startDelay;
     }
 
     @Override
     public void initialize() {
-        startTime = Timer.getFPGATimestamp();
         mSuperstructure.setWantTuck(false);
         mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
     }
 
-    @Override
-    public void execute(){
-        //if(Timer.getFPGATimestamp() - startTime > mStartDelay){
-            isFinished = true;
-        //}
-    }
-
     @Override 
     public boolean isFinished(){
-        return mSuperstructure.isAimed() || isFinished;
+        return true;
     }
 }

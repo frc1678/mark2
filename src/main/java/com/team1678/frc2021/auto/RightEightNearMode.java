@@ -14,12 +14,8 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.spline.SplineHelper;
-import edu.wpi.first.wpilibj.spline.Spline.ControlVector;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -83,13 +79,13 @@ public class RightEightNearMode extends SequentialCommandGroup {
             new IntakeCommand(mIntake, mSuperstructure);
 
         SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure, 1.0);
+            new SpinUpCommand(mSuperstructure);
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 120, 1.0);
+            new AutoAimCommand(mSuperstructure, 120);
         
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(trenchIntake.getInitialPose())),
