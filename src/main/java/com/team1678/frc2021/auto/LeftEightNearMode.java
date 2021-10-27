@@ -118,8 +118,8 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new WaitCommand(1.0),
             firstTuck,
             leftEightIntakeCommand,
-            leftEightSecondShotCommand,
-            shoot
+            leftEightSecondShotCommand
+            //shoot
         );
 
     }

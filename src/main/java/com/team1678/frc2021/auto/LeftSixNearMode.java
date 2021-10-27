@@ -2,7 +2,22 @@ package com.team1678.frc2021.auto;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
@@ -10,23 +25,10 @@ import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.TuckCommand;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
-import com.team1678.frc2021.subsystems.Swerve;
-
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class LeftSixNearMode extends SequentialCommandGroup{
-
-    public LeftSixNearMode(Swerve s_Swerve) {
+    
+    public LeftSixNearMode(Swerve s_Swerve){
 
         final Intake mIntake = Intake.getInstance();
         final Superstructure mSuperstructure = Superstructure.getInstance();
@@ -39,25 +41,25 @@ public class LeftSixNearMode extends SequentialCommandGroup{
 
         Trajectory leftSixFirstShot =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)),
-                List.of(),
-                new Pose2d(4.8, 7.5 , Rotation2d.fromDegrees(0.0)),
-                Constants.AutoConstants.defaultConfig);
+                new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(180.0)),
+                List.of(new Translation2d(2.5, 7.3)),
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(270.0)),
+                Constants.AutoConstants.fastConfig);
 
         Trajectory leftSixIntake =          
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(5.3, 7.5 , Rotation2d.fromDegrees(0.0)),
-                List.of(),
-                new Pose2d(8.5, 7.5, Rotation2d.fromDegrees(0.0)),
-                Constants.AutoConstants.defaultConfig);
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
+                List.of(new Translation2d(2.9, 7.0)),
+                new Pose2d(8.0, 7.3, Rotation2d.fromDegrees(0.0)),
+                Constants.AutoConstants.fastConfig);
 
         Trajectory leftSixSecondShot =          
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(8.5, 7.5 , Rotation2d.fromDegrees(180.0)),
-                List.of(),
-                new Pose2d(1.3, 7.0, Rotation2d.fromDegrees(180.0)),
-                Constants.AutoConstants.defaultConfig);
-
+                new Pose2d(8.0, 7.3 , Rotation2d.fromDegrees(180.0)),
+                List.of(new Translation2d(2.9, 7.1)),
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(270.0)),
+                Constants.AutoConstants.fastConfig);
+    
         SwerveControllerCommand leftSixFirstShotCommand =
             new SwerveControllerCommand(
                 leftSixFirstShot,
@@ -112,19 +114,14 @@ public class LeftSixNearMode extends SequentialCommandGroup{
         AutoAimCommand secondAim =
             new AutoAimCommand(mSuperstructure, 200);
 
-        TuckCommand firstTuck =
-            new TuckCommand(mSuperstructure, true);
-
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(leftSixFirstShot.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0)))),
             new SequentialCommandGroup(
-                leftSixFirstShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(0.5),
+                leftSixFirstShotCommand.deadlineWith(new ParallelCommandGroup(
                     spinUp, 
                     firstAim
                 )),
                 firstShoot,
-                firstTuck,
                 leftSixIntakeCommand,
                 leftSixSecondShotCommand.deadlineWith(new SequentialCommandGroup(
                     new WaitCommand(1.0),
@@ -134,4 +131,6 @@ public class LeftSixNearMode extends SequentialCommandGroup{
             ).deadlineWith(intake)
         );
     }
+    
 }
+

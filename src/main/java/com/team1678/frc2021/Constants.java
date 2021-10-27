@@ -186,6 +186,9 @@ public class Constants {
 	
 		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
 		public static final double kSlowMaxAccelerationMetersPerSecondSquared = 3;
+
+		public static final double kFastMaxSpeedMetersPerSecond = 4;
+		public static final double kFastMaxAccelerationMetersPerSecondSquared = 3;
 		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
@@ -208,6 +211,12 @@ public class Constants {
 				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
 				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
 			.setKinematics(Constants.Swerve.swerveKinematics);
+		
+		public static final TrajectoryConfig fastConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);		
 		
 		public static final TrajectoryConfig zeroToSlow =
 			new TrajectoryConfig(
