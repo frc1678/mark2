@@ -42,9 +42,9 @@ public class AutonomousSelector {
             case TEST_STRAIGHT_PATH:
                 return new TestStraightPath(s_Swerve);
             case RIGHT_EIGHT_NEAR_BALL:
-                return new RightEightNearMode(s_Swerve);
+                return new RightTenNearMode(s_Swerve);
             case RIGHT_EIGHT_FAR_BALL:
-                return new RightEightFarMode(s_Swerve);
+                return new RightTenFarMode(s_Swerve);
             case LEFT_EIGHT_NEAR_BALL:
                 return new LeftEightNearMode(s_Swerve);
             case LEFT_EIGHT_FAR_BALL:

@@ -25,9 +25,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class RightEightFarMode extends SequentialCommandGroup {
+public class RightTenFarMode extends SequentialCommandGroup {
 
-    public RightEightFarMode(Swerve s_Swerve){
+    public RightTenFarMode(Swerve s_Swerve){
 
         final Intake mIntake = Intake.getInstance();
         final Superstructure mSuperstructure = Superstructure.getInstance();
