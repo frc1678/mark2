@@ -24,10 +24,11 @@ public class AutonomousSelector {
 
         autonomousModeChooser = new SendableChooser<>();
         autonomousModeChooser.addOption("Test Straight", AutonomousMode.TEST_STRAIGHT_PATH);
-        autonomousModeChooser.addOption("Right Eight Near Ball", AutonomousMode.RIGHT_EIGHT_NEAR_BALL);
-        autonomousModeChooser.addOption("Right Eight Far Ball", AutonomousMode.RIGHT_EIGHT_FAR_BALL);
+        autonomousModeChooser.addOption("Right Ten Near Ball", AutonomousMode.RIGHT_TEN_NEAR_BALL);
+        autonomousModeChooser.addOption("Right Ten Far Ball", AutonomousMode.RIGHT_TEN_FAR_BALL);
         autonomousModeChooser.addOption("Left Eight Near Ball", AutonomousMode.LEFT_EIGHT_NEAR_BALL);
         autonomousModeChooser.addOption("Left Eight Far Ball", AutonomousMode.LEFT_EIGHT_FAR_BALL);
+        autonomousModeChooser.addOption("Left Six Far Ball", AutonomousMode.LEFT_SIX_FAR_BALL);
         autonomousModeChooser.addOption("Aiming Test", AutonomousMode.AIM_TEST_AUTO);
 
         autoTab.add("Mode", autonomousModeChooser);
@@ -41,14 +42,16 @@ public class AutonomousSelector {
         switch (mode) {
             case TEST_STRAIGHT_PATH:
                 return new TestStraightPath(s_Swerve);
-            case RIGHT_EIGHT_NEAR_BALL:
+            case RIGHT_TEN_NEAR_BALL:
                 return new RightTenNearMode(s_Swerve);
-            case RIGHT_EIGHT_FAR_BALL:
+            case RIGHT_TEN_FAR_BALL:
                 return new RightTenFarMode(s_Swerve);
             case LEFT_EIGHT_NEAR_BALL:
                 return new LeftEightNearMode(s_Swerve);
             case LEFT_EIGHT_FAR_BALL:
                 return new LeftEightFarMode(s_Swerve);
+            case LEFT_SIX_FAR_BALL:
+                return new LeftSixFarMode(s_Swerve);
             case AIM_TEST_AUTO:
                 return new AimTestAuto(s_Swerve);
             default:
@@ -64,10 +67,11 @@ public class AutonomousSelector {
 
     private enum AutonomousMode {
         TEST_STRAIGHT_PATH,
-        RIGHT_EIGHT_NEAR_BALL,
-        RIGHT_EIGHT_FAR_BALL,
+        RIGHT_TEN_NEAR_BALL,
+        RIGHT_TEN_FAR_BALL,
         LEFT_EIGHT_NEAR_BALL,
         LEFT_EIGHT_FAR_BALL,
+        LEFT_SIX_FAR_BALL,
         AIM_TEST_AUTO
     }
 
