@@ -78,7 +78,7 @@ public class ControlBoard {
         return mButtonControlBoard.getRevolve();
     }
 
-    public boolean getSpinUp() {
+    public boolean getWantStopShoot() {
         return mButtonControlBoard.getSpinUp();
     }
 
