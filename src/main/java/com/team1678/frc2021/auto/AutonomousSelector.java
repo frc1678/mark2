@@ -29,6 +29,7 @@ public class AutonomousSelector {
         autonomousModeChooser.addOption("Left Eight Near Ball", AutonomousMode.LEFT_EIGHT_NEAR_BALL);
         autonomousModeChooser.addOption("Left Eight Far Ball", AutonomousMode.LEFT_EIGHT_FAR_BALL);
         autonomousModeChooser.addOption("Left Six Far Ball", AutonomousMode.LEFT_SIX_FAR_BALL);
+        autonomousModeChooser.addOption("Left Six Near Ball", AutonomousMode.LEFT_SIX_NEAR_BALL);
         autonomousModeChooser.addOption("Aiming Test", AutonomousMode.AIM_TEST_AUTO);
 
         autoTab.add("Mode", autonomousModeChooser);
@@ -52,6 +53,8 @@ public class AutonomousSelector {
                 return new LeftEightFarMode(s_Swerve);
             case LEFT_SIX_FAR_BALL:
                 return new LeftSixFarMode(s_Swerve);
+            case LEFT_SIX_NEAR_BALL:
+                return new LeftSixNearMode(s_Swerve);
             case AIM_TEST_AUTO:
                 return new AimTestAuto(s_Swerve);
             default:
@@ -72,6 +75,7 @@ public class AutonomousSelector {
         LEFT_EIGHT_NEAR_BALL,
         LEFT_EIGHT_FAR_BALL,
         LEFT_SIX_FAR_BALL,
+        LEFT_SIX_NEAR_BALL,
         AIM_TEST_AUTO
     }
 
