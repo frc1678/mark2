@@ -5,6 +5,7 @@ import com.team1678.frc2021.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import jdk.vm.ci.meta.Constant;
 
 
 public class TeleopSwerve extends CommandBase {
@@ -35,14 +36,25 @@ public class TeleopSwerve extends CommandBase {
         this.openLoop = openLoop;
     }
 
+    private double applyDeadband(double input){
+        double deadband = Constants.stickDeadband;
+        if(Math.abs(input) < deadband){
+            return 0.0;
+        } else {
+            return (input - (Math.signum(input) * deadband))/(1 - deadband);
+        }
+    }
+
     public double[] getAxes() {
         double yAxis = -controller.getRawAxis(translationAxis);
         double xAxis = -controller.getRawAxis(strafeAxis);
         double rAxis = -controller.getRawAxis(rotationAxis);
         
         /* Deadbands */
-        yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis - Constants.stickDeadband;
-        xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis - Constants.stickDeadband;
+        yAxis = applyDeadband(yAxis);
+        xAxis = applyDeadband(xAxis);
+        rAxis = applyDeadband(rAxis);
+
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis - Constants.stickDeadband;
 
         double[] axes = {yAxis, xAxis, rAxis};
@@ -83,6 +95,5 @@ public class TeleopSwerve extends CommandBase {
 
         return rotation;
     }
-
 
 }
