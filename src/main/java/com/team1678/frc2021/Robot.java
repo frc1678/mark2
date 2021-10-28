@@ -308,10 +308,10 @@ public class Robot extends TimedRobot {
 
                 if (mControlBoard.getShoot()) {
                     if (mSuperstructure.isAimed() || mSuperstructure.getWantFendor() || mSuperstructure.getWantSpit() || mSuperstructure.getLatestAimingParameters().isEmpty()) {
-                        mSuperstructure.setWantShoot();
+                        mSuperstructure.setWantShoot(true);
                     }
-                } else if (mControlBoard.getPreShot()) {
-                    mSuperstructure.setWantPreShot(true);
+                } else if (mControlBoard.getSpinDown()) {
+                    mSuperstructure.setWantShoot(false);
                 } else if (mControlBoard.getSpinUp()) {
                     mSuperstructure.setWantSpinUp();
                 } else if (mControlBoard.getTuck()) {

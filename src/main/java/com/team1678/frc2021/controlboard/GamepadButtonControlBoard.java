@@ -118,6 +118,10 @@ public class GamepadButtonControlBoard {
         return mController.getController().getAButtonPressed();
     }
 
+    public boolean getSpinDown() {
+        return mController.getController().getBButtonPressed();
+    }
+
     public boolean getTuck() {
         return mController.getButton(Button.X);
     }
