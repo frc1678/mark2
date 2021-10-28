@@ -328,6 +328,7 @@ public class Robot extends TimedRobot {
                         mIntake.setState(Intake.WantedAction.INTAKE);
                     } else {
                         mIntake.setState(Intake.WantedAction.STAY_OUT);
+                        // mIntake.setState(Intake.WantedAction.INTAKE);
                     }
                     mSuperstructure.setAutoIndex(false);
                 } else if (mControlBoard.getRetractIntake()) {
