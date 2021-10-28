@@ -168,7 +168,7 @@ public class RightTenFarMode extends SequentialCommandGroup {
             new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),
             new SequentialCommandGroup(
                 driveToFirstShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(1.0),
+                    new WaitCommand(4.0),
                     aim,
                     firstSpinUp
                 )),

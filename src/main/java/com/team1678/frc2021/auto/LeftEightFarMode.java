@@ -14,6 +14,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import com.team1678.frc2021.commands.WaitAfterDrive;
+import com.team1678.frc2021.commands.WaitToAutoAimCommand;
+import com.team1678.frc2021.commands.WaitToIntakeCommand;
+import com.team1678.frc2021.commands.WaitToSpinUpCommand;
+
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.commands.AutoAimCommand;
@@ -115,23 +120,35 @@ public class LeftEightFarMode extends SequentialCommandGroup{
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
 
+        WaitToSpinUpCommand waitToSpinUp = 
+            new WaitToSpinUpCommand(mSuperstructure, 1.5);
+
+        WaitToAutoAimCommand waitToAutoAim = 
+            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+
+        WaitToIntakeCommand waitToFirstIntake = 
+            new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
+
+        IntakeCommand secondIntake = 
+            new IntakeCommand(mIntake, mSuperstructure);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
             new SequentialCommandGroup(
-                leftEightFirstShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(0.5),
-                    spinUp, 
-                    firstAim
-                )),
+                leftEightFirstShotCommand.deadlineWith(
+                    // new WaitAfterDrive(5.0),
+                    waitToSpinUp, 
+                    waitToAutoAim,
+                    waitToFirstIntake
+                ),
                 firstShoot,
-                firstTuck,
+                firstTuck.deadlineWith(secondIntake),
                 leftEightIntakeCommand,
                 leftEightSecondShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(1.0),
-                    (secondAim)
+                    secondAim
                 )),
                 secondShoot
-            ).deadlineWith(intake)
+            )
         );
     }
     

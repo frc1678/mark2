@@ -501,6 +501,12 @@ public class Constants {
 	// Climber
 	public static final int kClimberId = 25;
 
+	// Skywalker
+	public static final int kSkywalkerMasterId = 2; // Check this
+	public static final double kIdleVoltage = 0.0;
+	public static final double kShiftingRightVoltage = 5.0; // 12
+	public static final double kShiftingLeftVoltage = -5.0; // -12
+
 	static{
 		kVisionSpeedTreemap.put(new InterpolatingDouble(-6.0), new InterpolatingDouble(24.0));
 		kVisionSpeedTreemap.put(new InterpolatingDouble(kClosestVisionDistance), new InterpolatingDouble(24.0));

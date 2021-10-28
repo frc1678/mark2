@@ -130,8 +130,8 @@ public class ControlBoard {
         return mButtonControlBoard.getBuddyDeploy();
     }
 
-    public boolean getArmHug() {
-        return mButtonControlBoard.getArmHug();
+    public int getClimberJog() {
+        return mButtonControlBoard.getClimberJog();
     }
 
     public boolean getManualArmExtend() {
@@ -154,6 +154,9 @@ public class ControlBoard {
         return mButtonControlBoard.getWrangle();
     }
 
+    public int getSkywalker(){
+        return mButtonControlBoard.getSkywalker();
+    }
     
     public boolean climbMode() {
         return mButtonControlBoard.climbMode();

@@ -59,6 +59,7 @@ public class Superstructure extends Subsystem {
     private boolean mWantsPreShot = false;
     private boolean mWantsUnjam = false;
     private boolean mWantsHoodScan = false;
+    private boolean mWantsShift = false;
 
     private double mCurrentTurret = 0.0;
     private double mCurrentHood = 0.0;
@@ -525,6 +526,10 @@ public class Superstructure extends Subsystem {
 
     public synchronized void setWantAutoAim(Rotation2d field_to_turret_hint) {
         setWantAutoAim(field_to_turret_hint, false, 500);
+    }
+
+    public synchronized void setWantShift(boolean shift) {
+        mWantsShift = shift;
     }
 
     public synchronized void setWantShoot() {

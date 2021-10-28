@@ -6,7 +6,7 @@ import com.team1678.frc2021.subsystems.Superstructure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class SpinUpCommand extends CommandBase{
+public class SpinUpCommand extends CommandBase {
 
     private final Superstructure mSuperstructure;
     private final Shooter shooter;
