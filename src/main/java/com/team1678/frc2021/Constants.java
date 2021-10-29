@@ -216,7 +216,13 @@ public class Constants {
 			new TrajectoryConfig(
 				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
 				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
-			.setKinematics(Constants.Swerve.swerveKinematics);		
+			.setKinematics(Constants.Swerve.swerveKinematics);
+			
+		public static final TrajectoryConfig RTNfastConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
 		
 		public static final TrajectoryConfig zeroToSlow =
 			new TrajectoryConfig(

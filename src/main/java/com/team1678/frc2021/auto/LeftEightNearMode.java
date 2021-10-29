@@ -20,6 +20,9 @@ import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.TuckCommand;
+import com.team1678.frc2021.commands.WaitToAutoAimCommand;
+import com.team1678.frc2021.commands.WaitToIntakeCommand;
+import com.team1678.frc2021.commands.WaitToSpinUpCommand;
 import com.team1678.frc2021.subsystems.Indexer;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
@@ -111,16 +114,28 @@ public class LeftEightNearMode extends SequentialCommandGroup{
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
 
+        WaitToSpinUpCommand waitToSpinUp = 
+            new WaitToSpinUpCommand(mSuperstructure, 1.5);
+
+        WaitToAutoAimCommand waitToAutoAim = 
+            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+
+        WaitToIntakeCommand waitToFirstIntake = 
+            new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0)))),
-            leftEightFirstShotCommand.deadlineWith(aim, spinUp, intake),
+            leftEightFirstShotCommand.deadlineWith(
+                waitToFirstIntake,
+                waitToSpinUp,
+                waitToAutoAim
+            ),
             shoot,
-            new WaitCommand(1.0),
             firstTuck,
-            leftEightIntakeCommand,
+            leftEightIntakeCommand.deadlineWith(intake),
             leftEightSecondShotCommand
             //shoot
-        );
+        ); 
 
     }
     

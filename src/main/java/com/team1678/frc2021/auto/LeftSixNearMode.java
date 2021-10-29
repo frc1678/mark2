@@ -23,6 +23,9 @@ import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.TuckCommand;
+import com.team1678.frc2021.commands.WaitToAutoAimCommand;
+import com.team1678.frc2021.commands.WaitToIntakeCommand;
+import com.team1678.frc2021.commands.WaitToSpinUpCommand;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 
@@ -114,21 +117,33 @@ public class LeftSixNearMode extends SequentialCommandGroup{
         AutoAimCommand secondAim =
             new AutoAimCommand(mSuperstructure, 200);
 
+        
+        WaitToSpinUpCommand waitToSpinUp = 
+            new WaitToSpinUpCommand(mSuperstructure, 1.5);
+
+        WaitToAutoAimCommand waitToAutoAim = 
+            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+
+        WaitToIntakeCommand waitToFirstIntake = 
+            new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0)))),
             new SequentialCommandGroup(
-                leftSixFirstShotCommand.deadlineWith(new ParallelCommandGroup(
-                    spinUp, 
-                    firstAim
-                )),
+                leftSixFirstShotCommand.deadlineWith(
+                    waitToSpinUp,
+                    waitToAutoAim,
+                    waitToFirstIntake
+                ),
                 firstShoot,
-                leftSixIntakeCommand,
+                leftSixIntakeCommand.deadlineWith(intake),
                 leftSixSecondShotCommand.deadlineWith(new SequentialCommandGroup(
+                    intake,
                     new WaitCommand(1.0),
                     (secondAim)
                 )),
                 secondShoot
-            ).deadlineWith(intake)
+            )
         );
     }
     

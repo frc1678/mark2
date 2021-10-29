@@ -19,6 +19,11 @@ public class AutoAimCommand extends CommandBase{
 
     @Override
     public void initialize() {
+
+        // if (!mSuperstructure.isAimed()) {
+        //     mSuperstructure.setWantHoodScan(true );
+        // }
+
         mSuperstructure.setWantTuck(false);
         mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
     }

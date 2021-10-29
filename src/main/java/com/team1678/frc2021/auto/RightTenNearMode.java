@@ -53,13 +53,20 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 List.of(/*new Translation2d(4.2, 6.0) */
                         /*new Translation2d(5.0, 6.5)*/),
                 new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)), 
-                Constants.AutoConstants.zeroToSlow);
+                Constants.AutoConstants.RTNfastConfig);
         
         Trajectory getToFirstIntake =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(7.2, 6.0, Rotation2d.fromDegrees(260.0)),
                 List.of(),
                 new Pose2d(7.0, 4.85, Rotation2d.fromDegrees(260.0)), 
+                Constants.AutoConstants.slowToZero);
+        
+        Trajectory getFirstToSecondIntake =
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(7.0, 4.85, Rotation2d.fromDegrees(260.0)),
+                List.of(),
+                new Pose2d(6.6, 4.85, Rotation2d.fromDegrees(110.0)), 
                 Constants.AutoConstants.slowToZero);
 
         Trajectory getToSecondIntake =
@@ -76,9 +83,9 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(225)), 
                 Constants.AutoConstants.slowToZero);
 
-        var thetaController =
-            new ProfiledPIDController(
-                0.37, 0, 0.55, Constants.AutoConstants.kThetaControllerConstraints);
+            var thetaController =
+                new ProfiledPIDController(
+                    Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -130,14 +137,26 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwervePointTurnCommand headingAdjustCommand =
-            new SwervePointTurnCommand(
+        // SwervePointTurnCommand headingAdjustCommand =
+        //     new SwervePointTurnCommand(
+        //         s_Swerve::getPose,
+        //         Constants.Swerve.swerveKinematics,
+        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+        //         thetaController,
+        //         () -> Rotation2d.fromDegrees(140),
+        //         s_Swerve::setModuleStates,
+        //         s_Swerve);
+
+        SwerveControllerCommand driveFirstToSecondIntakeCommand =
+            new SwerveControllerCommand(
+                getFirstToSecondIntake,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(140),
+                () -> Rotation2d.fromDegrees(260),
                 s_Swerve::setModuleStates,
                 s_Swerve);
             
@@ -188,14 +207,13 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 firstIntakeCommand,
                 closeShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(1.0),
                     aim,
                     firstSpinUp
                 )),
                 firstShoot,
                 driveToShieldGenerator.deadlineWith(secondSpinUp),
                 driveFirstIntakeCommand,
-                headingAdjustCommand,
+                driveFirstToSecondIntakeCommand,
                 driveSecondIntakeCommand,
                 driveToSceondShotCommand,
                 secondShoot
