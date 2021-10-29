@@ -127,11 +127,11 @@ public class LeftSixFarMode extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftSixFirstShot.getInitialPose())),
             new SequentialCommandGroup(
-                leftSixFirstShotCommand.deadlineWith(new SequentialCommandGroup(
+                leftSixFirstShotCommand.deadlineWith(
                     waitToAutoAim,
                     waitToSpinUp,
                     waitToFirstIntake
-                )),
+                ),
                 firstShoot,
                 leftSixIntakeCommand.deadlineWith(intake),
                 leftSixSecondShotCommand.deadlineWith(new SequentialCommandGroup(
