@@ -557,5 +557,6 @@ public abstract class ServoMotorSubsystem extends Subsystem {
         SmartDashboard.putNumber(mConstants.kName + ": goal (units)", mPeriodicIO.demand);
         SmartDashboard.putBoolean(mConstants.kName + ": Homing Location", atHomingLocation());
         SmartDashboard.putNumber(mConstants.kName + " dt", mPeriodicIO.dt);
+        SmartDashboard.putNumber(mConstants.kName + ": voltage", mPeriodicIO.output_voltage);
     }
 }
