@@ -78,7 +78,8 @@ public class Shooter extends Subsystem {
         SmartDashboard.putNumber("Flywheel Goal", mPeriodicIO.flywheel_demand);
         SmartDashboard.putNumber("Flywheel Temperature", mPeriodicIO.flywheel_temperature);
         SmartDashboard.putBoolean("Shooter Spun Up: ", spunUp());
-        SmartDashboard.putNumber("Shooter Voltage", mPeriodicIO.flywheel_voltage);
+        SmartDashboard.putNumber("Shooter Master Voltage", mPeriodicIO.flywheel_voltage);
+        SmartDashboard.putNumber("Shooter Slave Voltage", mPeriodicIO.slave_voltage);
         if (mCSVWriter != null) {
             mCSVWriter.write();
         }
@@ -145,6 +146,7 @@ public class Shooter extends Subsystem {
         
         mPeriodicIO.flywheel_velocity = mMaster.getSelectedSensorVelocity() * kFlywheelVelocityConversion;
         mPeriodicIO.flywheel_voltage = mMaster.getMotorOutputVoltage();
+        mPeriodicIO.slave_voltage = mSlave.getMotorOutputVoltage();
         mPeriodicIO.flywheel_current = mMaster.getSupplyCurrent();
         mPeriodicIO.flywheel_temperature = mMaster.getTemperature();
         if (mCSVWriter != null) {
@@ -192,6 +194,7 @@ public class Shooter extends Subsystem {
         
         public double flywheel_velocity;
         public double flywheel_voltage;
+        public double slave_voltage;
         public double flywheel_current;
         public double flywheel_temperature;
 

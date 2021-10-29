@@ -50,8 +50,8 @@ public class LEDs extends Subsystem{
         ENABLED(0.0, 0.0, 255.0, Double.POSITIVE_INFINITY, 0.0, false), // solid blue
         EMERGENCY(255.0, 0.0, 0.0, 0.5, 0.5, false), // blinking red
         HOOD_TUCKED(255.0, 20.0, 0.0, Double.POSITIVE_INFINITY, 0.0, false), // solid pink
-        TARGET_VISIBLE(0.0, 255.0, 0.0, Double.POSITIVE_INFINITY, 0.0, false), // solid green
-        TARGET_TRACKING(0.0, 255.0, 0.0, 0.0625, 0.0625, false), // flashing green
+        TARGET_VISIBLE(0.0, 255.0, 0.0, Double.POSITIVE_INFINITY, 0.0, false), // solid orange
+        TARGET_TRACKING(255.0, 165.0, 0.0, 0.0625, 0.0625, false), // flashing green
         INVISIBLE_TARGET_TRACKING(255.0, 255.0, 0.0, 0.0625, 0.0625, false), // flashing green
         LIMELIGHT_SEES_ONLY(0.0, 255.0, 0.0, Double.POSITIVE_INFINITY, 0.0, false), // solid green
         CLIMB_MODE(255.0, 0.0, 255.0, Double.POSITIVE_INFINITY, 0.0, false), // solid purple
