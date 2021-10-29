@@ -24,6 +24,7 @@ public class AutonomousSelector {
 
         autonomousModeChooser = new SendableChooser<>();
         autonomousModeChooser.addOption("Test Straight", AutonomousMode.TEST_STRAIGHT_PATH);
+        autonomousModeChooser.addOption("Right Ten Ball", AutonomousMode.RIGHT_TEN_BALL);
         autonomousModeChooser.addOption("Right Ten Near Ball", AutonomousMode.RIGHT_TEN_NEAR_BALL);
         autonomousModeChooser.addOption("Right Ten Far Ball", AutonomousMode.RIGHT_TEN_FAR_BALL);
         autonomousModeChooser.addOption("Left Eight Near Ball", AutonomousMode.LEFT_EIGHT_NEAR_BALL);
@@ -43,6 +44,8 @@ public class AutonomousSelector {
         switch (mode) {
             case TEST_STRAIGHT_PATH:
                 return new TestStraightPath(s_Swerve);
+            case RIGHT_TEN_BALL:
+                return new RightTenMode(s_Swerve);
             case RIGHT_TEN_NEAR_BALL:
                 return new RightTenNearMode(s_Swerve);
             case RIGHT_TEN_FAR_BALL:
@@ -70,6 +73,7 @@ public class AutonomousSelector {
 
     private enum AutonomousMode {
         TEST_STRAIGHT_PATH,
+        RIGHT_TEN_BALL,
         RIGHT_TEN_NEAR_BALL,
         RIGHT_TEN_FAR_BALL,
         LEFT_EIGHT_NEAR_BALL,

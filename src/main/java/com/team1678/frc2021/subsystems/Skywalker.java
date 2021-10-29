@@ -2,6 +2,7 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.loops.ILooper;
@@ -49,6 +50,8 @@ public class Skywalker extends Subsystem {
 
     private Skywalker() {
         mMaster = TalonSRXFactory.createDefaultTalon(Constants.kSkywalkerMasterId);
+        mMaster.changeMotionControlFramePeriod(100);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
         mMaster.setNeutralMode(NeutralMode.Brake);
     }
 

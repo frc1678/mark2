@@ -156,13 +156,13 @@ public class Robot extends TimedRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
-        System.out.println("Ended robot init method: " + Timer.getFPGATimestamp());
+        // System.out.println("Ended robot init method: " + Timer.getFPGATimestamp());
 			
     }
 
     @Override
     public void autonomousInit() {
-        System.out.println("Starting auto init: " + Timer.getFPGATimestamp());
+        // System.out.println("Starting auto init: " + Timer.getFPGATimestamp());
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
@@ -221,7 +221,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        System.out.println("Starting teleop init: " + Timer.getFPGATimestamp());
+        // System.out.println("Starting teleop init: " + Timer.getFPGATimestamp());
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
@@ -253,7 +253,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-        System.out.println("Starting teleop periodic:" + Timer.getFPGATimestamp());
+        // System.out.println("Starting teleop periodic:" + Timer.getFPGATimestamp());
         try {
             double timestamp = Timer.getFPGATimestamp();
             double hood_jog = mControlBoard.getJogHood();

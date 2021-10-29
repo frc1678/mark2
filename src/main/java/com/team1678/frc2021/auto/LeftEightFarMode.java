@@ -119,12 +119,18 @@ public class LeftEightFarMode extends SequentialCommandGroup{
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
+    
+        TuckCommand secondTuck =
+            new TuckCommand(mSuperstructure, false);
 
         WaitToSpinUpCommand waitToSpinUp = 
             new WaitToSpinUpCommand(mSuperstructure, 1.5);
 
         WaitToAutoAimCommand waitToAutoAim = 
             new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+
+        WaitToAutoAimCommand secondWaitToAutoAim = 
+            new WaitToAutoAimCommand(mSuperstructure, 200, 4.0);
 
         WaitToIntakeCommand waitToFirstIntake = 
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
@@ -144,9 +150,9 @@ public class LeftEightFarMode extends SequentialCommandGroup{
                 firstShoot,
                 firstTuck.deadlineWith(secondIntake),
                 leftEightIntakeCommand,
-                leftEightSecondShotCommand.deadlineWith(new SequentialCommandGroup(
-                    secondAim
-                )),
+                leftEightSecondShotCommand,
+                secondTuck,
+                secondAim,
                 secondShoot
             )
         );

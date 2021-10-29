@@ -107,12 +107,18 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
+            
+        ShootCommand secondShot =
+            new ShootCommand(mSuperstructure);
 
         AutoAimCommand aim =
             new AutoAimCommand(mSuperstructure, 180);
 
         TuckCommand firstTuck =
             new TuckCommand(mSuperstructure, true);
+
+        TuckCommand secondTuck =
+            new TuckCommand(mSuperstructure, false);
 
         WaitToSpinUpCommand waitToSpinUp = 
             new WaitToSpinUpCommand(mSuperstructure, 1.5);
@@ -133,8 +139,9 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             shoot,
             firstTuck,
             leftEightIntakeCommand.deadlineWith(intake),
-            leftEightSecondShotCommand
-            //shoot
+            leftEightSecondShotCommand,
+            secondTuck,
+            secondShot
         ); 
 
     }

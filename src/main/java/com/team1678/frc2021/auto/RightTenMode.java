@@ -31,9 +31,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class RightTenNearMode extends SequentialCommandGroup {
+public class RightTenMode extends SequentialCommandGroup {
 
-    public RightTenNearMode(Swerve s_Swerve) {
+    public RightTenMode(Swerve s_Swerve) {
         final Intake mIntake = Intake.getInstance();
         final Superstructure mSuperstructure = Superstructure.getInstance();
 
@@ -42,53 +42,64 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)),
                 List.of(new Translation2d(5.0, 0.71)),
                 new Pose2d(6.50, 0.71, Rotation2d.fromDegrees(0.0)),
-                Constants.AutoConstants.defaultConfig);
+                Constants.AutoConstants.RTNfastConfig);
 
         Trajectory closeShot =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.10, 0.71, Rotation2d.fromDegrees(135.0)),
+                new Pose2d(6.10, 0.71, Rotation2d.fromDegrees(335.0)),
                 List.of(new Translation2d(5.10, 0.71),
                         new Translation2d(2.54, 2.54),
                         new Translation2d(1.52, 4.84)
                         ),
                 new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
-                Constants.AutoConstants.defaultConfig);
+                Constants.AutoConstants.RTNfastConfig);
+
+        Trajectory getFirstShot =
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(2.9, 0.71, Rotation2d.fromDegrees(0.0)),
+                List.of(new Translation2d(6.10, 0.71),
+                        new Translation2d(5.10, 0.71),
+                        new Translation2d(2.54, 2.54),
+                        new Translation2d(1.52, 4.84)
+                        ),
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
+                Constants.AutoConstants.RTNfastConfig);
 
         Trajectory getToShieldGen =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(330.0)),
-                List.of(/*new Translation2d(4.2, 6.0) */
-                        /*new Translation2d(5.0, 6.5)*/),
-                new Pose2d(3.81, 3.7, Rotation2d.fromDegrees(50.0)),
+                List.of(new Translation2d(3.8, 4.064),
+                        new Translation2d(6.096, 7.0)),
+                new Pose2d(7.6, 5.49, Rotation2d.fromDegrees(240.0)),
                 Constants.AutoConstants.RTNfastConfig);
 
-        Trajectory getToFirstIntake =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(3.81, 3.7, Rotation2d.fromDegrees(50.0)),
-                List.of(new Translation2d(6.1, 4.7)),
-                new Pose2d(7.27, 5.0, Rotation2d.fromDegrees(50.0)),
-                Constants.AutoConstants.slowToZero);
-
-        Trajectory getFirstToSecondIntake =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(7.27, 5.0, Rotation2d.fromDegrees(270.0)),
-                List.of(),
-                new Pose2d(6.38, 4.52, Rotation2d.fromDegrees(270.0)),
-                Constants.AutoConstants.slowToZero);
-
         Trajectory getToSecondIntake =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.38, 4.52, Rotation2d.fromDegrees(180)),
-                List.of(),
-                new Pose2d(5.34, 4.9, Rotation2d.fromDegrees(180)),
-                Constants.AutoConstants.zeroToSlow);
+             TrajectoryGenerator.generateTrajectory(
+                new Pose2d(7.3, 5.49, Rotation2d.fromDegrees(240.0)),
+                 List.of(/*new Translation2d(6.1, 4.7)*/),
+                 new Pose2d(6.37, 3.72, Rotation2d.fromDegrees(240.0)),
+                 Constants.AutoConstants.RTNFastToZero);
 
-        Trajectory getToSecondShot =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(5.34, 4.9, Rotation2d.fromDegrees(180)),
-                List.of(),
-                new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(130)),
-                Constants.AutoConstants.slowToZero);
+        // Trajectory getFirstToSecondIntake =
+        //     TrajectoryGenerator.generateTrajectory(
+        //         new Pose2d(7.27, 5.0, Rotation2d.fromDegrees(270.0)),
+        //         List.of(),
+        //         new Pose2d(6.38, 4.52, Rotation2d.fromDegrees(270.0)),
+        //         Constants.AutoConstants.slowToZero);
+
+        // Trajectory getToSecondIntake =
+        //     TrajectoryGenerator.generateTrajectory(
+        //         new Pose2d(6.38, 4.52, Rotation2d.fromDegrees(180)),
+        //         List.of(),
+        //         new Pose2d(5.34, 4.9, Rotation2d.fromDegrees(180)),
+        //         Constants.AutoConstants.zeroToSlow);
+
+        // Trajectory getToSecondShot =
+        //     TrajectoryGenerator.generateTrajectory(
+        //         new Pose2d(5.34, 4.9, Rotation2d.fromDegrees(180)),
+        //         List.of(),
+        //         new Pose2d(4.5, 6.0, Rotation2d.fromDegrees(130)),
+        //         Constants.AutoConstants.slowToZero);
 
             var thetaController =
                 new ProfiledPIDController(
@@ -128,13 +139,13 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(50),
+                () -> Rotation2d.fromDegrees(250),
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
         SwerveControllerCommand driveFirstIntakeCommand =
             new SwerveControllerCommand(
-                getToFirstIntake,
+                getToSecondIntake,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -155,41 +166,41 @@ public class RightTenNearMode extends SequentialCommandGroup {
         //         s_Swerve::setModuleStates,
         //         s_Swerve);
 
-        SwerveControllerCommand driveFirstToSecondIntakeCommand =
-            new SwerveControllerCommand(
-                getFirstToSecondIntake,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(270),
-                s_Swerve::setModuleStates,
-                s_Swerve);
+        // SwerveControllerCommand driveFirstToSecondIntakeCommand =
+        //     new SwerveControllerCommand(
+        //         getFirstToSecondIntake,
+        //         s_Swerve::getPose,
+        //         Constants.Swerve.swerveKinematics,
+        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+        //         thetaController,
+        //         () -> Rotation2d.fromDegrees(270),
+        //         s_Swerve::setModuleStates,
+        //         s_Swerve);
 
-        SwerveControllerCommand driveSecondIntakeCommand =
-            new SwerveControllerCommand(
-                getToSecondIntake,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(200),
-                s_Swerve::setModuleStates,
-                s_Swerve);
+        // SwerveControllerCommand driveSecondIntakeCommand =
+        //     new SwerveControllerCommand(
+        //         getToSecondIntake,
+        //         s_Swerve::getPose,
+        //         Constants.Swerve.swerveKinematics,
+        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+        //         thetaController,
+        //         () -> Rotation2d.fromDegrees(200),
+        //         s_Swerve::setModuleStates,
+        //         s_Swerve);
 
-        SwerveControllerCommand driveToSceondShotCommand =
-            new SwerveControllerCommand(
-                getToSecondShot,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(200),
-                s_Swerve::setModuleStates,
-                s_Swerve);
+        // SwerveControllerCommand driveToSceondShotCommand =
+        //     new SwerveControllerCommand(
+        //         getToSecondShot,
+        //         s_Swerve::getPose,
+        //         Constants.Swerve.swerveKinematics,
+        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+        //         thetaController,
+        //         () -> Rotation2d.fromDegrees(200),
+        //         s_Swerve::setModuleStates,
+        //         s_Swerve);
 
         IntakeCommand intake =
             new IntakeCommand(mIntake, mSuperstructure);
@@ -229,13 +240,13 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 closeShotCommand
             ),
             new SequentialCommandGroup(
-                firstShoot,
+                firstShoot, 
                 driveToShieldGenerator.deadlineWith(secondSpinUp),
-                driveFirstIntakeCommand,
-                driveFirstToSecondIntakeCommand,
-                driveSecondIntakeCommand,
-                driveToSceondShotCommand,
-                secondShoot
+                driveFirstIntakeCommand
+                // driveFirstToSecondIntakeCommand,
+                // driveSecondIntakeCommand,
+                // driveToSceondShotCommand,
+                // secondShoot
             ).deadlineWith(intake)
         );
     }

@@ -14,7 +14,7 @@ public class Canifier extends Subsystem {
 
     private Canifier() {
         mCanifier = new CANifier(Constants.kCanifierId);
-        mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_1_General, 100, Constants.kLongCANTimeoutMs);
+        mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_1_General, 200, Constants.kLongCANTimeoutMs);
         mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_2_General, 2, Constants.kLongCANTimeoutMs);
         mPeriodicInputs = new PeriodicInputs();
     }

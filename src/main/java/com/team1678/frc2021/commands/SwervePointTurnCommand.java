@@ -71,6 +71,6 @@ public class SwervePointTurnCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_pose.get().getRotation().minus(m_desiredRotation.get()).getDegrees()) < 5.0;
+    return Math.abs(m_pose.get().getRotation().minus(m_desiredRotation.get()).getDegrees()) < 10.0;
   }
 }
