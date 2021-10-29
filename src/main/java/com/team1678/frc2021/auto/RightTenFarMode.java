@@ -6,7 +6,9 @@ import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
-
+import com.team1678.frc2021.commands.WaitToAutoAimCommand;
+import com.team1678.frc2021.commands.WaitToIntakeCommand;
+import com.team1678.frc2021.commands.WaitToSpinUpCommand;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -163,15 +165,26 @@ public class RightTenFarMode extends SequentialCommandGroup {
 
         AutoAimCommand aim =
             new AutoAimCommand(mSuperstructure, 180);
+
+        WaitToSpinUpCommand waitToSpinUp = 
+            new WaitToSpinUpCommand(mSuperstructure, 1.5);
+
+        WaitToAutoAimCommand waitToAutoAim = 
+            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+
+        WaitToIntakeCommand waitToFirstIntake = 
+            new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
         
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),
             new SequentialCommandGroup(
                 driveToFirstShotCommand.deadlineWith(new SequentialCommandGroup(
-                    new WaitCommand(4.0),
-                    aim,
-                    firstSpinUp
-                )),
+                    waitToAutoAim,
+                    waitToFirstIntake,
+                    waitToSpinUp
+                ))
+            ),
+            new SequentialCommandGroup(
                 firstShoot,
                 driveToShieldGenerator.deadlineWith(secondSpinUp),
                 driveFirstIntakeCommand,

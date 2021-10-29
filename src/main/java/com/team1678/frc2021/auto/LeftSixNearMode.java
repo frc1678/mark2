@@ -117,7 +117,6 @@ public class LeftSixNearMode extends SequentialCommandGroup{
         AutoAimCommand secondAim =
             new AutoAimCommand(mSuperstructure, 200);
 
-        
         WaitToSpinUpCommand waitToSpinUp = 
             new WaitToSpinUpCommand(mSuperstructure, 1.5);
 
