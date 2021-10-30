@@ -35,7 +35,7 @@ public class Superstructure extends Subsystem {
 
     private Rotation2d mFieldRelativeTurretGoal = null;
 
-    enum TurretControlModes {
+    public enum TurretControlModes {
         FIELD_RELATIVE, VISION_AIMED, OPEN_LOOP, JOGGING
     }
 
@@ -65,7 +65,7 @@ public class Superstructure extends Subsystem {
     private double mCurrentHood = 0.0;
 
     private double mTurretSetpoint = 0.0;
-    private double mHoodSetpoint = 60.0;
+    private double mHoodSetpoint = 70.5;
     private double mShooterSetpoint = 4000.0;
     private boolean mGotSpunUp = false;
     private boolean mEnableIndexer = true;
@@ -393,6 +393,10 @@ public class Superstructure extends Subsystem {
     public synchronized void setTurretOpenLoop(double throttle) {
         mTurretMode = TurretControlModes.OPEN_LOOP;
         mTurretThrottle = throttle;
+    }
+
+    public boolean isAutoAiming(){
+        return mTurretMode == TurretControlModes.VISION_AIMED;
     }
 
     public synchronized void followSetpoint() {

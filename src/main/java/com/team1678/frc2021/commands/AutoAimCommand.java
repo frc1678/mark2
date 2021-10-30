@@ -25,9 +25,14 @@ public class AutoAimCommand extends CommandBase{
         // }
 
         mSuperstructure.setWantTuck(false);
-        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
+        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));
     }
 
+    @Override 
+    public void execute(){
+        mSuperstructure.setWantTuck(false);
+        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
+    }
     @Override 
     public boolean isFinished(){
         return true;
