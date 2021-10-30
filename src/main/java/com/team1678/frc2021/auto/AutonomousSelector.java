@@ -31,6 +31,7 @@ public class AutonomousSelector {
         autonomousModeChooser.addOption("Shot Left Back", AutonomousMode.SHOT_LEFT_BACK);
         autonomousModeChooser.addOption("Shot Left Front", AutonomousMode.SHOT_LEFT_FRONT);
         autonomousModeChooser.addOption("Shot Center Back", AutonomousMode.SHOT_CENTER_BACK);
+        autonomousModeChooser.addOption("Shot Center Front", AutonomousMode.SHOT_CENTER_FRONT);
 
 
         autoTab.add("Mode", autonomousModeChooser);
@@ -64,6 +65,8 @@ public class AutonomousSelector {
                 return new ShotLeftFront(s_Swerve);
             case SHOT_CENTER_BACK:
                 return new ShotCenterBack(s_Swerve);
+            case SHOT_CENTER_FRONT:
+                return new ShotCenterFront(s_Swerve);
             case AIM_TEST_AUTO:
                 return new AimTestAuto(s_Swerve);
             default:
@@ -89,6 +92,7 @@ public class AutonomousSelector {
         SHOT_LEFT_BACK,
         SHOT_LEFT_FRONT,
         SHOT_CENTER_BACK,
+        SHOT_CENTER_FRONT,
         AIM_TEST_AUTO
     }
 
