@@ -142,7 +142,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(180.0)))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)))),
             leftEightFirstShotCommand.deadlineWith(
                 waitToFirstIntake,
                 waitToSpinUp,
@@ -153,8 +153,8 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             leftEightIntakeCommand.deadlineWith(intake),
             leftEightSecondShotCommand,
             secondTuck,
-            secondShot,
-            endAdjustCommand
+            secondShot
+            // endAdjustCommand
         ); 
 
     }

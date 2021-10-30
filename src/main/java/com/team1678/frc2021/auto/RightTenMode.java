@@ -253,8 +253,8 @@ public class RightTenMode extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 firstShoot, 
                 driveToShieldGenerator.deadlineWith(secondSpinUp),
-                driveFirstIntakeCommand,
-                endAdjustCommand
+                driveFirstIntakeCommand
+                // endAdjustCommand
                 // driveFirstToSecondIntakeCommand,
                 // driveSecondIntakeCommand,
                 // driveToSceondShotCommand,
