@@ -23,15 +23,11 @@ public class AutonomousSelector {
         autoTab.add("Starting Orientation", orientationChooser);
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.addOption("Test Straight", AutonomousMode.TEST_STRAIGHT_PATH);
-        autonomousModeChooser.addOption("Right Ten Ball", AutonomousMode.RIGHT_TEN_BALL);
-        autonomousModeChooser.addOption("Right Ten Near Ball", AutonomousMode.RIGHT_TEN_NEAR_BALL);
         autonomousModeChooser.addOption("Right Ten Far Ball", AutonomousMode.RIGHT_TEN_FAR_BALL);
         autonomousModeChooser.addOption("Left Eight Near Ball", AutonomousMode.LEFT_EIGHT_NEAR_BALL);
         autonomousModeChooser.addOption("Left Eight Far Ball", AutonomousMode.LEFT_EIGHT_FAR_BALL);
         autonomousModeChooser.addOption("Left Six Far Ball", AutonomousMode.LEFT_SIX_FAR_BALL);
         autonomousModeChooser.addOption("Left Six Near Ball", AutonomousMode.LEFT_SIX_NEAR_BALL);
-        autonomousModeChooser.addOption("Aiming Test", AutonomousMode.AIM_TEST_AUTO);
 
         autoTab.add("Mode", autonomousModeChooser);
 
