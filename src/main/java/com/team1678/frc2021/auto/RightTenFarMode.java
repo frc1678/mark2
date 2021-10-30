@@ -148,6 +148,17 @@ public class RightTenFarMode extends SequentialCommandGroup {
                 () -> Rotation2d.fromDegrees(0),
                 s_Swerve::setModuleStates,
                 s_Swerve);
+        
+        SwervePointTurnCommand endAdjustCommand =
+            new SwervePointTurnCommand(
+                s_Swerve::getPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController,
+                () -> Rotation2d.fromDegrees(180),
+                s_Swerve::setModuleStates,
+                s_Swerve);
                     
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
@@ -181,7 +192,7 @@ public class RightTenFarMode extends SequentialCommandGroup {
             new WaitToIntakeCommand(mIntake, mSuperstructure, 0.05);
         
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(getTofirstShot.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(270.0)))),
             new SequentialCommandGroup(
                 driveToFirstShotCommand.deadlineWith(
                     waitToAutoAim,
@@ -196,7 +207,8 @@ public class RightTenFarMode extends SequentialCommandGroup {
                 headingAdjustCommand,
                 driveSecondIntakeCommand,
                 driveToSceondShotCommand.deadlineWith(pulseIntake),
-                secondShoot
+                secondShoot,
+                endAdjustCommand
             ).deadlineWith(intake)
         );
     }

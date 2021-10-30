@@ -19,6 +19,7 @@ import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.TuckCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
@@ -99,6 +100,17 @@ public class LeftEightNearMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
+        SwervePointTurnCommand endAdjustCommand =
+            new SwervePointTurnCommand(
+                s_Swerve::getPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController,
+                () -> Rotation2d.fromDegrees(180),
+                s_Swerve::setModuleStates,
+                s_Swerve);
+        
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
 
@@ -130,7 +142,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0)))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(90.0)))),
             leftEightFirstShotCommand.deadlineWith(
                 waitToFirstIntake,
                 waitToSpinUp,
@@ -141,7 +153,8 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             leftEightIntakeCommand.deadlineWith(intake),
             leftEightSecondShotCommand,
             secondTuck,
-            secondShot
+            secondShot,
+            endAdjustCommand
         ); 
 
     }

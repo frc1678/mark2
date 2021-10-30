@@ -20,6 +20,7 @@ import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
+import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.TuckCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
@@ -97,6 +98,17 @@ public class LeftSixFarMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
+        SwervePointTurnCommand endAdjustCommand =
+            new SwervePointTurnCommand(
+                s_Swerve::getPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController,
+                () -> Rotation2d.fromDegrees(180),
+                s_Swerve::setModuleStates,
+                s_Swerve);
+
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
 
@@ -125,7 +137,7 @@ public class LeftSixFarMode extends SequentialCommandGroup{
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(leftSixFirstShot.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(270.0)))),
             new SequentialCommandGroup(
                 leftSixFirstShotCommand.deadlineWith(
                     waitToAutoAim,
