@@ -32,9 +32,9 @@ public class ShotCenterBack extends SequentialCommandGroup{
 
         Trajectory moveBack =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(2.90, 5.84, Rotation2d.fromDegrees(0.0)),
+                new Pose2d(2.90, 5.84, Rotation2d.fromDegrees(180.0)),
                 List.of(),
-                new Pose2d(1.52, 5.84 , Rotation2d.fromDegrees(0.0)),
+                new Pose2d(1.52, 5.84 , Rotation2d.fromDegrees(180.0)),
                 Constants.AutoConstants.defaultConfig);
 
         SwerveControllerCommand moveBackCommand =
