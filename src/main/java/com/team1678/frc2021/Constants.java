@@ -181,7 +181,7 @@ public class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 5*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 	
 		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
@@ -192,7 +192,7 @@ public class Constants {
 		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
-        public static final double kPThetaController = 1.5;
+        public static final double kPThetaController = 1;
     
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
