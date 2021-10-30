@@ -241,7 +241,7 @@ public class RightTenMode extends SequentialCommandGroup {
             new WaitToIntakeCommand(mIntake, mSuperstructure, 0.0);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(270.0)))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)))),
             new SequentialCommandGroup(
                 firstIntakeCommand.deadlineWith(
                     waitToSpinUp,

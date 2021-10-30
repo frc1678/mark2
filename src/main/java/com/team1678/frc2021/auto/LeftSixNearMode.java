@@ -139,7 +139,7 @@ public class LeftSixNearMode extends SequentialCommandGroup{
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(90.0)))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(180.0)))),
             new SequentialCommandGroup(
                 leftSixFirstShotCommand.deadlineWith(
                     waitToSpinUp,
