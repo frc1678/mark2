@@ -7,6 +7,7 @@ import com.team1678.frc2021.commands.PulseIntakeCommand;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
+import com.team1678.frc2021.commands.TuckCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
@@ -148,21 +149,9 @@ public class RightTenFarMode extends SequentialCommandGroup {
                 () -> Rotation2d.fromDegrees(0),
                 s_Swerve::setModuleStates,
                 s_Swerve);
-        
-        SwervePointTurnCommand endAdjustCommand =
-            new SwervePointTurnCommand(
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(180),
-                s_Swerve::setModuleStates,
-                s_Swerve);
                     
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
-
 
         PulseIntakeCommand pulseIntake = 
             new PulseIntakeCommand(mIntake, mSuperstructure);
@@ -190,25 +179,33 @@ public class RightTenFarMode extends SequentialCommandGroup {
 
         WaitToIntakeCommand waitToFirstIntake = 
             new WaitToIntakeCommand(mIntake, mSuperstructure, 0.05);
+
+        TuckCommand tuck =
+            new TuckCommand(mSuperstructure, true);
+
+        TuckCommand untuck =
+            new TuckCommand(mSuperstructure, false);
         
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(getToFirstIntake.getInitialPose())),
             new SequentialCommandGroup(
                 driveToFirstShotCommand.deadlineWith(
-                    waitToAutoAim,
+                    tuck,
                     waitToFirstIntake,
                     waitToSpinUp
                 )
             ),
             new SequentialCommandGroup(
+                untuck,
+                aim,
                 firstShoot,
                 driveToShieldGenerator.deadlineWith(secondSpinUp),
                 driveFirstIntakeCommand,
                 headingAdjustCommand,
                 driveSecondIntakeCommand,
                 driveToSceondShotCommand.deadlineWith(pulseIntake),
-                secondShoot,
-                endAdjustCommand
+                secondShoot
+                // endAdjustCommand
             ).deadlineWith(intake)
         );
     }
