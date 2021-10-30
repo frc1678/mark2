@@ -56,7 +56,7 @@ public class ShotLeftBack extends SequentialCommandGroup{
             new ShootCommand(mSuperstructure);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(moveBack.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(270.0)))),
             aim,
             shoot,
             moveBackCommand

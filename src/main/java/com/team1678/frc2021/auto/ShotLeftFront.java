@@ -56,7 +56,7 @@ public class ShotLeftFront extends SequentialCommandGroup{
             new AutoAimCommand(mSuperstructure, 200);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(moveFront.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(270.0)))),
             aim,
             shoot,
             moveFrontCommand

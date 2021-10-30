@@ -151,7 +151,7 @@ public class LeftEightFarMode extends SequentialCommandGroup{
             new IntakeCommand(mIntake, mSuperstructure);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(270.0)))),
             new SequentialCommandGroup(
                 leftEightFirstShotCommand.deadlineWith(
                     // new WaitAfterDrive(5.0),

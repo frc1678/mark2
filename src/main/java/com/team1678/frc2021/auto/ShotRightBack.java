@@ -56,7 +56,7 @@ public class ShotRightBack extends SequentialCommandGroup{
             new AutoAimCommand(mSuperstructure, 180);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(moveBack.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(270.0)))),
             aim,
             shoot,
             moveBackCommand
