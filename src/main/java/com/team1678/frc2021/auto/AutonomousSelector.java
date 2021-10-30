@@ -30,8 +30,7 @@ public class AutonomousSelector {
         autonomousModeChooser.addOption("Left Six Near Ball", AutonomousMode.LEFT_SIX_NEAR_BALL);
         autonomousModeChooser.addOption("Shot Left Back", AutonomousMode.SHOT_LEFT_BACK);
         autonomousModeChooser.addOption("Shot Left Front", AutonomousMode.SHOT_LEFT_FRONT);
-        autonomousModeChooser.addOption("Shot Right Back", AutonomousMode.SHOT_RIGHT_BACK);
-        autonomousModeChooser.addOption("Shot Right Front", AutonomousMode.SHOT_RIGHT_FRONT);
+        autonomousModeChooser.addOption("Shot Center Back", AutonomousMode.SHOT_CENTER_BACK);
 
 
         autoTab.add("Mode", autonomousModeChooser);
@@ -63,10 +62,8 @@ public class AutonomousSelector {
                 return new ShotLeftBack(s_Swerve);
             case SHOT_LEFT_FRONT:
                 return new ShotLeftFront(s_Swerve);
-            case SHOT_RIGHT_BACK:
-                return new ShotRightBack(s_Swerve);
-            case SHOT_RIGHT_FRONT:
-                return new ShotRightFront(s_Swerve);
+            case SHOT_CENTER_BACK:
+                return new ShotCenterBack(s_Swerve);
             case AIM_TEST_AUTO:
                 return new AimTestAuto(s_Swerve);
             default:
@@ -91,8 +88,7 @@ public class AutonomousSelector {
         LEFT_SIX_NEAR_BALL,
         SHOT_LEFT_BACK,
         SHOT_LEFT_FRONT,
-        SHOT_RIGHT_BACK,
-        SHOT_RIGHT_FRONT,
+        SHOT_CENTER_BACK,
         AIM_TEST_AUTO
     }
 
