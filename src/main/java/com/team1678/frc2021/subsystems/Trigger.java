@@ -43,8 +43,9 @@ public class Trigger extends Subsystem {
 
     private Trigger() {
         mTrigger = TalonFXFactory.createDefaultTalon(Constants.kTriggerWheelID);
-        mTrigger.changeMotionControlFramePeriod(200);
-        mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 200, 100);
+        mTrigger.changeMotionControlFramePeriod(255);
+        mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
+        mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
 
         mTrigger.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
         mTrigger.set(ControlMode.PercentOutput, 0);

@@ -56,8 +56,9 @@ public class Intake extends Subsystem {
 
     private Intake() {
         mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
-        mMaster.changeMotionControlFramePeriod(60);
-        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 60, 100);
+        mMaster.changeMotionControlFramePeriod(255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
         mMaster.setInverted(true);
         mDeploySolenoid = Constants.makeSolenoidForId(Constants.kDeploySolenoidId);
     }
