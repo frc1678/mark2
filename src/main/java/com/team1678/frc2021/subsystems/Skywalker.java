@@ -50,8 +50,9 @@ public class Skywalker extends Subsystem {
 
     private Skywalker() {
         mMaster = TalonSRXFactory.createDefaultTalon(Constants.kSkywalkerMasterId);
-        mMaster.changeMotionControlFramePeriod(100);
-        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100, 100);
+        mMaster.changeMotionControlFramePeriod(255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
         mMaster.setNeutralMode(NeutralMode.Brake);
     }
 

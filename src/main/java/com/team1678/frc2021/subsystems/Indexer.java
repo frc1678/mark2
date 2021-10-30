@@ -85,8 +85,9 @@ public class Indexer extends Subsystem {
 
     private Indexer() {
         mMaster = TalonFXFactory.createDefaultTalon(Constants.kIndexerId);
-        mMaster.changeMotionControlFramePeriod(200);
-        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 200, 100);
+        mMaster.changeMotionControlFramePeriod(255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
+        mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
 
         mMaster.config_kP(0, Constants.kIndexerKp, Constants.kLongCANTimeoutMs);
         mMaster.config_kI(0, Constants.kIndexerKi, Constants.kLongCANTimeoutMs);
