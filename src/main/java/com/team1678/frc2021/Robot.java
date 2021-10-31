@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
 
 	public static CTREConfigs ctreConfigs;
   	private Command m_autonomousCommand;
-	private RobotContainer m_robotContainer;
+    private RobotContainer m_robotContainer;
 
     private final Looper mEnabledLooper = new Looper();
     private final Looper mDisabledLooper = new Looper();
@@ -166,6 +166,7 @@ public class Robot extends TimedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
+            Swerve.getInstance().resetOdometry(AutonomousSelector.getStartingPose());
 			m_autonomousCommand.schedule();
 		}
 
