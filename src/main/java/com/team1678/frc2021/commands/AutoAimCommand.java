@@ -19,11 +19,6 @@ public class AutoAimCommand extends CommandBase{
 
     @Override
     public void initialize() {
-
-        // if (!mSuperstructure.isAimed()) {
-        //     mSuperstructure.setWantHoodScan(true );
-        // }
-
         mSuperstructure.setWantTuck(false);
         mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));
     }
@@ -31,10 +26,10 @@ public class AutoAimCommand extends CommandBase{
     @Override 
     public void execute(){
         mSuperstructure.setWantTuck(false);
-        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));;
+        mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));
     }
     @Override 
     public boolean isFinished(){
-        return true;
+        return mSuperstructure.isAutoAiming() && Math.abs(mSuperstructure.mFieldRelativeTurretGoal.getDegrees() - mTurretAngle) < 10;
     }
 }

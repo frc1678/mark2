@@ -1,5 +1,6 @@
 package com.team1678.frc2021.auto;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -12,7 +13,7 @@ public class AutonomousSelector {
 
     private static SendableChooser<Rotation2d> orientationChooser;
     private static SendableChooser<AutonomousMode> autonomousModeChooser;
-
+    private static Pose2d startingPose;
     static {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
         orientationChooser = new SendableChooser<>();
@@ -40,45 +41,57 @@ public class AutonomousSelector {
 
 
         autoTab.add("Mode", autonomousModeChooser);
-
-        
     }
 
     public Command getCommand(Swerve s_Swerve){
         AutonomousMode mode = autonomousModeChooser.getSelected();
+        
 
         switch (mode) {
             case TEST_STRAIGHT_PATH:
                 return new TestStraightPath(s_Swerve);
-
             case RIGHT_TEN_BALL:
+                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightTenMode(s_Swerve);
             case RIGHT_TEN_NEAR_BALL:
+                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightTenNearMode(s_Swerve);
             case RIGHT_TEN_FAR_BALL:
+                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightTenFarMode(s_Swerve);
+
             case RIGHT_FIVE_NEAR_BALL:
+                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightFiveNearMode(s_Swerve);
             case RIGHT_FIVE_FAR_BALL:
+                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightFiveFarMode(s_Swerve);
-            
+
             case LEFT_EIGHT_NEAR_BALL:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftEightNearMode(s_Swerve);
             case LEFT_EIGHT_FAR_BALL:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftEightFarMode(s_Swerve);
 
             case LEFT_SIX_FAR_BALL:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftSixFarMode(s_Swerve);
             case LEFT_SIX_NEAR_BALL:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftSixNearMode(s_Swerve);
 
             case SHOT_LEFT_BACK:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new ShotLeftBack(s_Swerve);
             case SHOT_LEFT_FRONT:
+                startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new ShotLeftFront(s_Swerve);
             case SHOT_CENTER_BACK:
+                startingPose = new Pose2d(2.90, 5.84, Rotation2d.fromDegrees(0.0));
                 return new ShotCenterBack(s_Swerve);
             case SHOT_CENTER_FRONT:
+                startingPose = new Pose2d(2.90, 5.84, Rotation2d.fromDegrees(0.0));
                 return new ShotCenterFront(s_Swerve);
 
             case AIM_TEST_AUTO:
@@ -118,4 +131,7 @@ public class AutonomousSelector {
         AIM_TEST_AUTO
     }
 
+    public static Pose2d getStartingPose(){
+        return startingPose;
+    }
 }

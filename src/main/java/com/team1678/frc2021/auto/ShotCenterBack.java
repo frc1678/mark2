@@ -20,7 +20,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class ShotCenterBack extends SequentialCommandGroup{
 
+    private final Swerve mSwerve;
+
     public ShotCenterBack(Swerve s_Swerve) {
+
+        mSwerve = s_Swerve;
 
         final Superstructure mSuperstructure = Superstructure.getInstance();
         
@@ -61,8 +65,6 @@ public class ShotCenterBack extends SequentialCommandGroup{
             shoot,
             moveBackCommand
         );
-    
-
     }
-    
+
 }
