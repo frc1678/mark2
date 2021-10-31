@@ -163,6 +163,11 @@ public class Superstructure extends Subsystem {
 
         SmartDashboard.putString("Turret Mode", mTurretMode.toString());
 
+        if (SuperstructureConstants.kUseSmartdashboard) {
+            SmartDashboard.putNumber("Shooting RPM", mShooterSetpoint);
+            SmartDashboard.putNumber("Hood Angle", mHoodSetpoint);
+        }
+
     }
 
     @Override
