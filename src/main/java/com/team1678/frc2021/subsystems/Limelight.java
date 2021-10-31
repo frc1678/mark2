@@ -167,7 +167,7 @@ public class Limelight extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (mPeriodicIO.givenLedMode != mPeriodicIO.ledMode || mPeriodicIO.givenPipeline != mPeriodicIO.pipeline) {
-            System.out.println("Table has changed from expected, retrigger!!");
+            // System.out.println("Table has changed from expected, retrigger!!");
             mOutputsHaveChanged = true;
         }
         if (mOutputsHaveChanged) {
