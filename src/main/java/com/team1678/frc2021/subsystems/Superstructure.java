@@ -33,7 +33,7 @@ public class Superstructure extends Subsystem {
     private final RobotState mRobotState = RobotState.getInstance();
     private boolean mAutoIndex = false;
 
-    private Rotation2d mFieldRelativeTurretGoal = null;
+    public Rotation2d mFieldRelativeTurretGoal = null;
 
     public enum TurretControlModes {
         FIELD_RELATIVE, VISION_AIMED, OPEN_LOOP, JOGGING
