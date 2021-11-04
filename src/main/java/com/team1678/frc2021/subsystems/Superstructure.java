@@ -65,7 +65,7 @@ public class Superstructure extends Subsystem {
     private double mCurrentHood = 0.0;
 
     private double mTurretSetpoint = 0.0;
-    private double mHoodSetpoint = 70.5;
+    private double mHoodSetpoint = 60.5;
     private double mShooterSetpoint = 4000.0;
     private boolean mGotSpunUp = false;
     private boolean mEnableIndexer = true;

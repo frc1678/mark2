@@ -149,9 +149,7 @@ public class LeftSixNearMode extends SequentialCommandGroup{
                 firstShoot,
                 leftSixIntakeCommand.deadlineWith(intake),
                 leftSixSecondShotCommand.deadlineWith(new SequentialCommandGroup(
-                    intake,
-                    new WaitCommand(1.0),
-                    (secondAim)
+                    secondAim
                 )),
                 secondShoot
                 // endAdjustCommand
