@@ -33,9 +33,9 @@ public class Superstructure extends Subsystem {
     private final RobotState mRobotState = RobotState.getInstance();
     private boolean mAutoIndex = false;
 
-    private Rotation2d mFieldRelativeTurretGoal = null;
+    public Rotation2d mFieldRelativeTurretGoal = null;
 
-    enum TurretControlModes {
+    public enum TurretControlModes {
         FIELD_RELATIVE, VISION_AIMED, OPEN_LOOP, JOGGING
     }
 
@@ -144,6 +144,7 @@ public class Superstructure extends Subsystem {
     public void outputTelemetry() {
         SmartDashboard.putBoolean("Shooting", mWantsShoot);
         SmartDashboard.putBoolean("Spinning Up", mWantsSpinUp);
+        SmartDashboard.putBoolean("System Spun Up", mGotSpunUp);
         SmartDashboard.putBoolean("Pre Shot", mWantsPreShot);
 
         SmartDashboard.putBoolean("Test Spit", mWantsTestSpit);
@@ -161,6 +162,11 @@ public class Superstructure extends Subsystem {
         SmartDashboard.putNumber("Distance to Target", mCorrectedRangeToTarget);
 
         SmartDashboard.putString("Turret Mode", mTurretMode.toString());
+
+        if (SuperstructureConstants.kUseSmartdashboard) {
+            SmartDashboard.putNumber("Shooting RPM", mShooterSetpoint);
+            SmartDashboard.putNumber("Hood Angle", mHoodSetpoint);
+        }
 
     }
 
@@ -394,6 +400,10 @@ public class Superstructure extends Subsystem {
         mTurretThrottle = throttle;
     }
 
+    public boolean isAutoAiming(){
+        return mTurretMode == TurretControlModes.VISION_AIMED;
+    }
+
     public synchronized void followSetpoint() {
 
         if (SuperstructureConstants.kUseSmartdashboard) {
@@ -511,10 +521,6 @@ public class Superstructure extends Subsystem {
 
     public synchronized Optional<AimingParameters> getLatestAimingParameters() {
         return mLatestAimingParameters;
-    }
-
-    public synchronized boolean isOnTarget() {
-        return mOnTarget;
     }
 
     public synchronized void setWantUnjam(boolean unjam) {

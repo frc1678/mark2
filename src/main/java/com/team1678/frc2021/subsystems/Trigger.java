@@ -6,6 +6,7 @@ import com.team1678.frc2021.loops.Loop;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
@@ -42,6 +43,9 @@ public class Trigger extends Subsystem {
 
     private Trigger() {
         mTrigger = TalonFXFactory.createDefaultTalon(Constants.kTriggerWheelID);
+        mTrigger.changeMotionControlFramePeriod(255);
+        mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 125);
+        mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
 
         mTrigger.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
         mTrigger.set(ControlMode.PercentOutput, 0);

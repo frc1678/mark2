@@ -40,6 +40,9 @@ public class Shooter extends Subsystem {
     private Shooter() {
         mMaster = TalonFXFactory.createDefaultTalon(Constants.kMasterFlywheelID);
         mSlave = TalonFXFactory.createPermanentSlaveTalon(Constants.kSlaveFlywheelID, Constants.kMasterFlywheelID);
+        mSlave.changeMotionControlFramePeriod(255);
+        mSlave.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 125);
+        mSlave.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
 
         mMaster.set(ControlMode.PercentOutput, 0);
         mMaster.setInverted(false); //TODO: check value

@@ -10,8 +10,10 @@ import com.lib.util.SwerveModuleConstants;
 import com.team254.lib.drivers.TalonFXFactory;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
 public class SwerveModule {
     public int moduleNumber;
@@ -32,6 +34,8 @@ public class SwerveModule {
         /* Angle Encoder Config */
         angleEncoder = new CANCoder(moduleConstants.cancoderID);
         configAngleEncoder();
+        angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+        angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255);
 
         /* Angle Motor Config */
         mAngleMotor = new TalonFX(moduleConstants.angleMotorID);

@@ -21,6 +21,7 @@ import com.team254.lib.util.*;
 import java.util.Optional;
 
 import com.team1678.frc2021.SubsystemManager;
+import com.team1678.frc2021.auto.AutonomousSelector;
 import com.team1678.frc2021.subsystems.*;
 import com.team254.lib.util.*;
 import com.team254.lib.vision.AimingParameters;
@@ -56,7 +57,7 @@ public class Robot extends TimedRobot {
 
 	public static CTREConfigs ctreConfigs;
   	private Command m_autonomousCommand;
-	private RobotContainer m_robotContainer;
+    private RobotContainer m_robotContainer;
 
     private final Looper mEnabledLooper = new Looper();
     private final Looper mDisabledLooper = new Looper();
@@ -148,20 +149,24 @@ public class Robot extends TimedRobot {
             // Robot starts forwards.
             mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
 
-			mLimelight.setLed(Limelight.LedMode.OFF);
-			
+            // mLimelight.setLed(Limelight.LedMode.OFF);
+            
+            
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+        // System.out.println("Ended robot init method: " + Timer.getFPGATimestamp());
+			
     }
 
     @Override
     public void autonomousInit() {
-		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+        // System.out.println("Starting auto init: " + Timer.getFPGATimestamp());
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
+            Swerve.getInstance().resetOdometry(AutonomousSelector.getStartingPose());
 			m_autonomousCommand.schedule();
 		}
 
@@ -191,12 +196,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        
         SmartDashboard.putString("Match Cycle", "AUTONOMOUS");
-        //mLimelight.setLed(Limelight.LedMode.ON);
+        mLimelight.setLed(Limelight.LedMode.ON);
+
 
         if (!mLimelight.limelightOK()) {
             mLEDs.conformToState(LEDs.State.EMERGENCY);
-        } else if (mSuperstructure.isOnTarget()) {
+        } else if (mSuperstructure.isAimed()) {
             mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
         } else if (mSuperstructure.getLatestAimingParameters().isPresent()) {
             mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
@@ -210,10 +217,12 @@ public class Robot extends TimedRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+        
     }
 
     @Override
     public void teleopInit() {
+        // System.out.println("Starting teleop init: " + Timer.getFPGATimestamp());
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
@@ -245,6 +254,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
+        // System.out.println("Starting teleop periodic:" + Timer.getFPGATimestamp());
         try {
             double timestamp = Timer.getFPGATimestamp();
             double hood_jog = mControlBoard.getJogHood();
@@ -255,9 +265,9 @@ public class Robot extends TimedRobot {
                     mLEDs.conformToState(LEDs.State.EMERGENCY);
                 } else if (mSuperstructure.getTucked()) {
                     mLEDs.conformToState(LEDs.State.HOOD_TUCKED);
-                } else if (mSuperstructure.isOnTarget() && mLimelight.seesTarget()) {
+                } else if (mSuperstructure.isAimed() && mLimelight.seesTarget()) {
                     mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
-                } else if (mSuperstructure.isOnTarget()) {
+                } else if (mSuperstructure.isAimed()) {
                     mLEDs.conformToState(LEDs.State.INVISIBLE_TARGET_TRACKING);
                 } else if (mSuperstructure.getLatestAimingParameters().isPresent() && !mLimelight.seesTarget() && !mSuperstructure.getScanningHood()) {
                     mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);

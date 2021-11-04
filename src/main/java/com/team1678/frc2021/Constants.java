@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import com.lib.util.SwerveModuleConstants;
@@ -110,11 +111,16 @@ public class Constants {
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = false;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
+
+        /* Controller Invert */
+        public static final boolean invertXAxis = false;
+        public static final boolean invertYAxis = false;
+        public static final boolean invertRAxis = false;
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
@@ -173,11 +179,17 @@ public class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
+	
+		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
+		public static final double kSlowMaxAccelerationMetersPerSecondSquared = 3;
+
+		public static final double kFastMaxSpeedMetersPerSecond = 4;
+		public static final double kFastMaxAccelerationMetersPerSecondSquared = 3;
+		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
@@ -185,7 +197,73 @@ public class Constants {
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+				kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+				
+		// Trajectory Speed Configs
+		public static final TrajectoryConfig defaultConfig = 
+		new TrajectoryConfig(
+				Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+
+		public static final TrajectoryConfig slowConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+		
+		public static final TrajectoryConfig fastConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+			
+		public static final TrajectoryConfig RTNfastConfig = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics);
+
+		public static final TrajectoryConfig RTNFastToZero = 
+			new TrajectoryConfig(
+				Constants.AutoConstants.kFastMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kFastMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)
+			.setStartVelocity(Constants.AutoConstants.kFastMaxSpeedMetersPerSecond)
+			.setEndVelocity(0);
+		
+		public static final TrajectoryConfig zeroToSlow =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)
+			.setStartVelocity(0)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+
+		public static final TrajectoryConfig slowToZero =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+            .setKinematics(Constants.Swerve.swerveKinematics)
+    		.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(0);
+			
+		public static final TrajectoryConfig zeroToMax =
+        	new TrajectoryConfig(
+            	Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+                Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)
+			.setStartVelocity(0.0)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+		    
+		public static final TrajectoryConfig maxToZero =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.Swerve.swerveKinematics)   
+			.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(0);
       }
 
 	 // Indexer
