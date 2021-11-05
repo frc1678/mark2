@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ReadyGyro extends CommandBase{
 
-    private final  Swerve mSwerve;
+    private final Swerve mSwerve;
+    private double adjustedGyroRead;
 
     public ReadyGyro(Swerve swerve) {
         mSwerve = swerve;
@@ -13,11 +14,12 @@ public class ReadyGyro extends CommandBase{
 
     @Override
     public void initialize() {
-        mSwerve.zeroGyro(mSwerve.getYaw().getDegrees());
+        adjustedGyroRead = mSwerve.getYaw().getDegrees() - 180;
     }
 
     @Override 
-    public boolean isFinished(){
-        return true;
+    public void execute(){
+        mSwerve.zeroGyro(adjustedGyroRead);
     }
+
 }

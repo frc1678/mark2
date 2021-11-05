@@ -63,7 +63,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(10.0, 7.22 , Rotation2d.fromDegrees(180.0)),
                 List.of(new Translation2d(2.9, 7.1)),
-                new Pose2d(1.52, 5.75, Rotation2d.fromDegrees(270.0)),
+                new Pose2d(1.7, 5.75, Rotation2d.fromDegrees(270.0)),
                 Constants.AutoConstants.fastConfig);
     
         SwerveControllerCommand leftSixFirstShotCommand =
