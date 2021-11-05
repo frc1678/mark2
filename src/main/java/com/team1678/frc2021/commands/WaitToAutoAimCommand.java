@@ -23,13 +23,13 @@ public class WaitToAutoAimCommand extends CommandBase{
 
     @Override
     public void initialize() {
-        mSuperstructure.setWantTuck(false);
         mStartTime = Timer.getFPGATimestamp();
     }
 
     @Override 
     public boolean isFinished() {
         if (Timer.getFPGATimestamp() - mStartTime >= mTimeToWait) {
+            mSuperstructure.setWantTuck(false);
             mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(mTurretAngle));
             return true;
         }

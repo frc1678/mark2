@@ -177,8 +177,6 @@ public class Robot extends TimedRobot {
             mDisabledLooper.stop();
             mLimelight.setLed(Limelight.LedMode.ON);
 
-            mLimelight.setPipeline(Constants.kPortPipeline);
-
             RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
 
             mTurret.setNeutralMode(NeutralMode.Brake);
@@ -188,6 +186,8 @@ public class Robot extends TimedRobot {
             mEnabledLooper.start();
 
             mTurret.cancelHoming();
+            
+            mLimelight.setPipeline(Constants.kPortPipeline);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
