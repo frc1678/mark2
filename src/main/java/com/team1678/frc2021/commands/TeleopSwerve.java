@@ -5,6 +5,7 @@ import com.team1678.frc2021.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TeleopSwerve extends CommandBase {
@@ -46,14 +47,14 @@ public class TeleopSwerve extends CommandBase {
 
     private Translation2d applyTranslationalDeadband(Translation2d input) {
         double deadband = Constants.stickDeadband;
-        if (input.getNorm() < deadband) {
+        if (Math.abs(input.getNorm()) < deadband) {
             return new Translation2d();
         } else {
             Rotation2d deadband_direction = new Rotation2d(input.getX(), input.getY());
-            Translation2d deadband_vector = new Translation2d(Constants.stickDeadband, deadband_direction);
+            Translation2d deadband_vector = new Translation2d(deadband, deadband_direction);
 
-            double scaled_x = input.getX() - (Math.signum(input.getX()) * deadband_vector.getX()) / (1 - deadband_vector.getX());
-            double scaled_y = input.getY() - (Math.signum(input.getY()) * deadband_vector.getY()) / (1 - deadband_vector.getY());
+            double scaled_x = input.getX() - (deadband_vector.getX()) / (1 - deadband_vector.getX());
+            double scaled_y = input.getY() - (deadband_vector.getY()) / (1 - deadband_vector.getY());
             return new Translation2d(scaled_x, scaled_y);
         }
 
@@ -96,6 +97,11 @@ public class TeleopSwerve extends CommandBase {
         translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
+
+        SmartDashboard.putNumber("X Controller Input", translation.getX());
+        SmartDashboard.putNumber("Y Controller Input", translation.getY());
+        SmartDashboard.putNumber("Rot Controller Input", rotation);
+
     }
 
     public Translation2d getChassisTranslation() {
