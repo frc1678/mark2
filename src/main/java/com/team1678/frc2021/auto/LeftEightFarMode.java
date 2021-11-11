@@ -23,6 +23,7 @@ import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
@@ -150,6 +151,9 @@ public class LeftEightFarMode extends SequentialCommandGroup{
         IntakeCommand secondIntake = 
             new IntakeCommand(mIntake, mSuperstructure);
 
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(leftEightFirstShot.getInitialPose())),
             new SequentialCommandGroup(
@@ -167,7 +171,8 @@ public class LeftEightFarMode extends SequentialCommandGroup{
                 secondAim,
                 secondShoot
                 // endAdjustCommand
-            )
+            ),
+            readyGyro
         );
     }
     

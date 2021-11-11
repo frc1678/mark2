@@ -89,6 +89,7 @@ public class Robot extends TimedRobot {
     private boolean climb_mode = false;
     private boolean buddy_climb = false;
     private boolean mPivoted = false;
+    private Rotation2d lastTurretJog;
 
     // private LoggingSystem mLogger = LoggingSystem.getInstance();
 
@@ -309,11 +310,13 @@ public class Robot extends TimedRobot {
                 if (turret_jog != null) {
                     mSuperstructure.setWantFieldRelativeTurret(
                        turret_jog.rotateBy(Rotation2d.fromDegrees(90.0)));
-                } else if (mControlBoard.getFendorShot()) {
-                    mSuperstructure.setWantFendor();
-                    //mSuperstructure.setWantFieldRelativeTurret(Rotation2d.fromDegrees(180.));
+                    lastTurretJog = turret_jog.rotateBy(Rotation2d.fromDegrees(90.0));
+                    
+                // } else if (mControlBoard.getFendorShot()) {
+                //     mSuperstructure.setWantFendor();
+                //     //mSuperstructure.setWantFieldRelativeTurret(Rotation2d.fromDegrees(180.));
                 } else {
-                    mSuperstructure.setWantAutoAim(Rotation2d.fromDegrees(180.0));
+                    mSuperstructure.setWantAutoAim(lastTurretJog);
                 }
 
                 if (mControlBoard.getShoot()) {

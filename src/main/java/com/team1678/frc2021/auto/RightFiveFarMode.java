@@ -4,6 +4,7 @@ import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.PulseIntakeCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
@@ -83,6 +84,9 @@ public class RightFiveFarMode extends SequentialCommandGroup {
 
         TuckCommand untuck =
             new TuckCommand(mSuperstructure, false);
+
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
         
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(getToFirstShot.getInitialPose())),
@@ -98,7 +102,8 @@ public class RightFiveFarMode extends SequentialCommandGroup {
                 aim,
                 shoot
                 // endAdjustCommand
-            ).deadlineWith(intake)
+            ).deadlineWith(intake),
+            readyGyro
         );
     }
 }

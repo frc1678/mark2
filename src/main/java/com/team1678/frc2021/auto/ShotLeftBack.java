@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.commands.AutoAimCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -55,11 +56,15 @@ public class ShotLeftBack extends SequentialCommandGroup{
         ShootCommand shoot =
             new ShootCommand(mSuperstructure);
 
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)))),
             aim,
             shoot,
-            moveBackCommand
+            moveBackCommand,
+            readyGyro
         );
     
 

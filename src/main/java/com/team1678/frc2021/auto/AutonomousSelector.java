@@ -50,15 +50,10 @@ public class AutonomousSelector {
         switch (mode) {
             case TEST_STRAIGHT_PATH:
                 return new TestStraightPath(s_Swerve);
+
             case RIGHT_TEN_BALL:
                 startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
                 return new RightTenMode(s_Swerve);
-            case RIGHT_TEN_NEAR_BALL:
-                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
-                return new RightTenNearMode(s_Swerve);
-            case RIGHT_TEN_FAR_BALL:
-                startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
-                return new RightTenFarMode(s_Swerve);
 
             case RIGHT_FIVE_NEAR_BALL:
                 startingPose = new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0));
@@ -73,7 +68,7 @@ public class AutonomousSelector {
             case LEFT_EIGHT_FAR_BALL:
                 startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftEightFarMode(s_Swerve);
-
+                
             case LEFT_SIX_FAR_BALL:
                 startingPose = new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0));
                 return new LeftSixFarMode(s_Swerve);
