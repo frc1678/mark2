@@ -68,7 +68,7 @@ public class RightFiveNearMode extends SequentialCommandGroup {
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(0), //Swerve Heading
+                () -> Rotation2d.fromDegrees(15), //Swerve Heading
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
