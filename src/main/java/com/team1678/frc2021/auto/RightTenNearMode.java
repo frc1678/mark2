@@ -4,6 +4,7 @@ import com.team1678.frc2021.Constants;
 
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
@@ -218,6 +219,8 @@ public class RightTenNearMode extends SequentialCommandGroup {
         WaitToIntakeCommand waitToFirstIntake =
             new WaitToIntakeCommand(mIntake, mSuperstructure, 0.0);
 
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)))),
             new SequentialCommandGroup(
@@ -236,7 +239,8 @@ public class RightTenNearMode extends SequentialCommandGroup {
                 driveSecondIntakeCommand,
                 driveToSceondShotCommand,
                 secondShoot
-            ).deadlineWith(intake)
+            ).deadlineWith(intake),
+            readyGyro
         );
     }
 }

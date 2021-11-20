@@ -9,14 +9,19 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.PulseIntakeCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
@@ -24,18 +29,15 @@ import com.team1678.frc2021.commands.TuckCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
-import com.team1678.frc2021.subsystems.Indexer;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
-import com.team1678.frc2021.subsystems.Swerve;
 
 public class LeftEightNearMode extends SequentialCommandGroup{
-
-    final Intake mIntake = Intake.getInstance();
-    final Indexer mIndexer = Indexer.getInstance();
-    final Superstructure mSuperstructure = Superstructure.getInstance();
     
     public LeftEightNearMode(Swerve s_Swerve){
+
+        final Intake mIntake = Intake.getInstance();
+        final Superstructure mSuperstructure = Superstructure.getInstance();
 
         var thetaController =
             new ProfiledPIDController(
@@ -43,30 +45,30 @@ public class LeftEightNearMode extends SequentialCommandGroup{
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        Trajectory leftEightFirstShot =
+        Trajectory leftSixFirstShot =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(180.0)),
-                List.of(),
-                new Pose2d(1.7, 5.8 , Rotation2d.fromDegrees(270.0)),
-                Constants.AutoConstants.defaultConfig);
+                List.of(new Translation2d(2.5, 7.3)),
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(270.0)),
+                Constants.AutoConstants.fastConfig);
 
-        Trajectory leftEightIntake =          
+        Trajectory leftSixIntake =          
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(1.5, 6.0 , Rotation2d.fromDegrees(90.0)),
-                List.of(new Translation2d(2.9, 7.0), new Translation2d(5.0, 7.0)),
-                new Pose2d(9.6, 7.3, Rotation2d.fromDegrees(0.0)),
-                Constants.AutoConstants.defaultConfig);
-
-        Trajectory leftEightSecondShot =          
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(9.6, 7.5 , Rotation2d.fromDegrees(180.0)),
+                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
                 List.of(new Translation2d(2.9, 7.0)),
-                new Pose2d(1.7, 5.8, Rotation2d.fromDegrees(270.0)),
-                Constants.AutoConstants.defaultConfig);
+                new Pose2d(10.0, 7.22, Rotation2d.fromDegrees(0.0)),
+                Constants.AutoConstants.fastConfig);
+
+        Trajectory leftSixSecondShot =          
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(10.0, 7.22 , Rotation2d.fromDegrees(180.0)),
+                List.of(new Translation2d(2.9, 7.1)),
+                new Pose2d(1.7, 5.75, Rotation2d.fromDegrees(270.0)),
+                Constants.AutoConstants.fastConfig);
     
-        SwerveControllerCommand leftEightFirstShotCommand =
+        SwerveControllerCommand leftSixFirstShotCommand =
             new SwerveControllerCommand(
-                leftEightFirstShot,
+                leftSixFirstShot,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -78,7 +80,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
 
         SwerveControllerCommand leftEightIntakeCommand =
             new SwerveControllerCommand(
-                leftEightIntake,
+                leftSixIntake,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -90,7 +92,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
 
         SwerveControllerCommand leftEightSecondShotCommand =
             new SwerveControllerCommand(
-                leftEightSecondShot,
+                leftSixSecondShot,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -100,63 +102,55 @@ public class LeftEightNearMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwervePointTurnCommand endAdjustCommand =
-            new SwervePointTurnCommand(
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(180),
-                s_Swerve::setModuleStates,
-                s_Swerve);
-        
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
-
-        SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
             
-        ShootCommand shoot =
-            new ShootCommand(mSuperstructure);
-            
-        ShootCommand secondShot =
+        ShootCommand firstShoot =
             new ShootCommand(mSuperstructure);
 
-        AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180);
+        ShootCommand secondShoot =
+            new ShootCommand(mSuperstructure);
 
-        TuckCommand firstTuck =
+        WaitToAutoAimCommand secondAim =
+            new WaitToAutoAimCommand(mSuperstructure, 200, 2.0);
+
+        TuckCommand tuck =
             new TuckCommand(mSuperstructure, true);
 
-        TuckCommand secondTuck =
-            new TuckCommand(mSuperstructure, false);
+        PulseIntakeCommand unjam = 
+            new PulseIntakeCommand(mIntake, mSuperstructure);
 
         WaitToSpinUpCommand waitToSpinUp = 
             new WaitToSpinUpCommand(mSuperstructure, 1.5);
 
         WaitToAutoAimCommand waitToAutoAim = 
-            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
+            new WaitToAutoAimCommand(mSuperstructure, 200, 1.0);
 
         WaitToIntakeCommand waitToFirstIntake = 
             new WaitToIntakeCommand(mIntake, mSuperstructure, 1.5);
 
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
+
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.9, 7.5, Rotation2d.fromDegrees(0.0)))),
-            leftEightFirstShotCommand.deadlineWith(
-                waitToFirstIntake,
-                waitToSpinUp,
-                waitToAutoAim
-            ),
-            shoot,
-            firstTuck,
-            leftEightIntakeCommand.deadlineWith(intake),
-            leftEightSecondShotCommand,
-            secondTuck,
-            secondShot
-            // endAdjustCommand
-        ); 
-
+            new SequentialCommandGroup(
+                leftSixFirstShotCommand.deadlineWith(
+                    waitToSpinUp,
+                    waitToAutoAim,
+                    waitToFirstIntake
+                ),
+                firstShoot,
+                leftEightIntakeCommand.deadlineWith(intake, tuck),
+                leftEightSecondShotCommand.deadlineWith(new SequentialCommandGroup(
+                    secondAim,
+                    unjam
+                )),
+                secondShoot,
+                readyGyro
+            )
+        );
     }
     
 }
+

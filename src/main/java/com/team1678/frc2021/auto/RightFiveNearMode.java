@@ -4,6 +4,7 @@ import com.team1678.frc2021.Constants;
 
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
+import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
@@ -41,19 +42,17 @@ public class RightFiveNearMode extends SequentialCommandGroup {
         Trajectory firstIntake =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)),
-                List.of(new Translation2d(5.0, 0.71)),
-                new Pose2d(6.50, 0.71, Rotation2d.fromDegrees(0.0)),
-                Constants.AutoConstants.defaultConfig);
+                List.of(new Translation2d(6.0, 0.4)),
+                new Pose2d(5.76, 0.71, Rotation2d.fromDegrees(135.0)),
+                Constants.AutoConstants.zeroToSlow);
 
         Trajectory closeShot =
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(6.10, 0.71, Rotation2d.fromDegrees(135.0)),
-                List.of(new Translation2d(5.10, 0.71),
-                        new Translation2d(2.54, 2.54),
-                        new Translation2d(1.52, 4.84)
-                        ),
-                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
-                Constants.AutoConstants.defaultConfig);
+                new Pose2d(5.9, 0.71, Rotation2d.fromDegrees(135.0)),
+                List.of(new Translation2d(2.54, 2.54),
+                        new Translation2d(1.52, 4.84)),
+                new Pose2d(1.52, 5.94, Rotation2d.fromDegrees(90.0)),
+                Constants.AutoConstants.slowToZero);
 
             var thetaController =
                 new ProfiledPIDController(
@@ -69,7 +68,7 @@ public class RightFiveNearMode extends SequentialCommandGroup {
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(0), //Swerve Heading
+                () -> Rotation2d.fromDegrees(15), //Swerve Heading
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
@@ -81,7 +80,7 @@ public class RightFiveNearMode extends SequentialCommandGroup {
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
-                () -> Rotation2d.fromDegrees(180), // Swerve Heading
+                () -> Rotation2d.fromDegrees(179), // Swerve Heading
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
@@ -105,6 +104,9 @@ public class RightFiveNearMode extends SequentialCommandGroup {
 
         TuckCommand untuck =
             new TuckCommand(mSuperstructure, false);
+        
+        ReadyGyro readyGyro = 
+            new ReadyGyro(s_Swerve);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(2.90, 0.71, Rotation2d.fromDegrees(0.0)))),
@@ -117,7 +119,8 @@ public class RightFiveNearMode extends SequentialCommandGroup {
                 closeShotCommand.deadlineWith(intake),
                 untuck,
                 aim,
-                shoot
+                shoot,
+                readyGyro
             )
         );
     }

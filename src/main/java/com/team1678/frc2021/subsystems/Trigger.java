@@ -39,7 +39,7 @@ public class Trigger extends Subsystem {
     private static double kUnjamSpeed = -1000.0;
     
     private static double kTriggerTolerance = 200.0;
-    private static final StatorCurrentLimitConfiguration CURR_LIM = new StatorCurrentLimitConfiguration(true, 40, 40, 0.3);
+    private static final StatorCurrentLimitConfiguration CURR_LIM = new StatorCurrentLimitConfiguration(true, 80, 120, 0.3);
 
     private Trigger() {
         mTrigger = TalonFXFactory.createDefaultTalon(Constants.kTriggerWheelID);
