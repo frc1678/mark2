@@ -28,7 +28,6 @@ import com.team1678.frc2021.subsystems.Trigger;
 import com.team1678.frc2021.subsystems.Turret;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
-import com.team254.lib.util.CheesyDriveHelper;
 import com.team254.lib.util.CrashTracker;
 import com.team254.lib.wpilib.TimedRobot;
 
@@ -57,7 +56,6 @@ public class Robot extends TimedRobot {
     private final Looper mDisabledLooper = new Looper();
 
     private final ControlBoard mControlBoard = ControlBoard.getInstance();
-    private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
 
     private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
     private final Indexer mIndexer = Indexer.getInstance();
@@ -81,7 +79,6 @@ public class Robot extends TimedRobot {
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
     private boolean climb_mode = false;
-    private boolean buddy_climb = false;
     private boolean mPivoted = false;
     private Rotation2d lastTurretJog;
 
@@ -249,10 +246,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-        // System.out.println("Starting teleop periodic:" + Timer.getFPGATimestamp());
         try {
-            double timestamp = Timer.getFPGATimestamp();
-            double hood_jog = mControlBoard.getJogHood();
             Rotation2d turret_jog = mControlBoard.getJogTurret();
 
             if (!climb_mode) {
@@ -288,7 +282,7 @@ public class Robot extends TimedRobot {
                 mPivoted = false;
             }
 
-            if (!climb_mode){ //TODO: turret preset stuff and jog turret and rumbles
+            if (!climb_mode){
                 mSuperstructure.enableIndexer(true);
                 mSuperstructure.setWantUnjam(mControlBoard.getWantUnjam());
                 mSuperstructure.setManualZoom(mControlBoard.getManualZoom());
@@ -337,7 +331,6 @@ public class Robot extends TimedRobot {
                         mIntake.setState(Intake.WantedAction.STAY_OUT);
                         // mIntake.setState(Intake.WantedAction.INTAKE);
                     }
-                    mSuperstructure.setAutoIndex(false);
                 } else if (mControlBoard.getRetractIntake()) {
                     mIntake.setState(Intake.WantedAction.RETRACT);
                 } else {
@@ -366,12 +359,8 @@ public class Robot extends TimedRobot {
                     climber_action = (Climber.WantedAction.JOG_UP);
                 } else if (mControlBoard.getLeaveClimbMode()) {
                     climb_mode = false;
-                    buddy_climb = false;
                     mClimber.setShift(false);
-                } else {
-					// TODO: Check if NONE state needs to be set
                 }
-
                 // Skywalker Control
                 switch(mControlBoard.getSkywalker()){
                     case 1:

@@ -5,8 +5,6 @@ import com.team254.lib.geometry.Rotation2d;
 
 public class ControlBoard {
     private static ControlBoard mInstance = null;
-
-    private CustomXboxController mController;
     
     public static ControlBoard getInstance() {
         if (mInstance == null) {

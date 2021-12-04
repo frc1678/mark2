@@ -26,7 +26,6 @@ public class Turret extends ServoMotorSubsystem {
     private double mOffset = 0;
     private DigitalInput mLimitSwitch = new DigitalInput(1);
 
-    private static Canifier mCanifier = Canifier.getInstance();
     private static final SupplyCurrentLimitConfiguration CURR_LIM = new SupplyCurrentLimitConfiguration(true, 40, 60, 0.01);
 
     public synchronized static Turret getInstance() {

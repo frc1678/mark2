@@ -24,8 +24,6 @@ public class Trigger extends Subsystem {
     private final TalonFX mTrigger;
     private final Solenoid mPopoutSolenoid;
 
-    private final Indexer mIndexer = Indexer.getInstance();
-
     private boolean mCurrentLimitTriggered = false;
     private double mCurrentLimitTimer = 0.0;
 

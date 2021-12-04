@@ -10,7 +10,6 @@ import com.team1678.frc2021.states.SuperstructureConstants;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.InterpolatingDouble;
-import com.team254.lib.util.TimeDelayedBoolean;
 import com.team254.lib.util.Util;
 import com.team254.lib.vision.AimingParameters;
 
@@ -29,7 +28,6 @@ public class Superstructure extends Subsystem {
     private final Hood mHood = Hood.getInstance();
     private final Indexer mIndexer = Indexer.getInstance();
     private final RobotState mRobotState = RobotState.getInstance();
-    private boolean mAutoIndex = false;
 
     public Rotation2d mFieldRelativeTurretGoal = null;
 
@@ -41,8 +39,6 @@ public class Superstructure extends Subsystem {
     private boolean mOnTarget = false;
     private int mTrackId = -1;
 
-    private double mHoodFeedforwardV = 0.0;
-    private double mTurretFeedforwardV = 0.0;
     private Optional<AimingParameters> mLatestAimingParameters = Optional.empty();
     private double mCorrectedRangeToTarget = 0.0;
     private boolean mEnforceAutoAimMinDistance = false;
@@ -57,7 +53,6 @@ public class Superstructure extends Subsystem {
     private boolean mWantsPreShot = false;
     private boolean mWantsUnjam = false;
     private boolean mWantsHoodScan = false;
-    private boolean mWantsShift = false;
 
     private double mCurrentTurret = 0.0;
     private double mCurrentHood = 0.0;
@@ -77,10 +72,6 @@ public class Superstructure extends Subsystem {
     }
 
     private TurretControlModes mTurretMode = TurretControlModes.FIELD_RELATIVE;
-
-    private double mTurretThrottle = 0.0;
-    private TimeDelayedBoolean trigger_popout = new TimeDelayedBoolean();
-    private boolean estim_popout = false;
 
     public synchronized boolean spunUp() {
         return mGotSpunUp;
@@ -213,7 +204,6 @@ public class Superstructure extends Subsystem {
     public synchronized void jogTurret(double delta) {
         mTurretMode = TurretControlModes.JOGGING;
         mTurretSetpoint += delta;
-        mTurretFeedforwardV = 0.0;
     }
 
     // Jog Hood
@@ -258,7 +248,6 @@ public class Superstructure extends Subsystem {
     public synchronized void resetAimingParameters() {
         mHasTarget = false;
         mOnTarget = false;
-        mTurretFeedforwardV = 0.0;
         mTrackId = -1;
         mLatestAimingParameters = Optional.empty();
     }
@@ -395,7 +384,6 @@ public class Superstructure extends Subsystem {
     // god mode on the turret
     public synchronized void setTurretOpenLoop(double throttle) {
         mTurretMode = TurretControlModes.OPEN_LOOP;
-        mTurretThrottle = throttle;
     }
 
     public boolean isAutoAiming(){
@@ -514,7 +502,6 @@ public class Superstructure extends Subsystem {
         }
         // mTurret.setOpenLoop(0);
         // mHood.setOpenLoop(0);
-        estim_popout = trigger_popout.update(real_popout, 0.2);
     }
 
     public synchronized Optional<AimingParameters> getLatestAimingParameters() {
@@ -535,10 +522,6 @@ public class Superstructure extends Subsystem {
 
     public synchronized void setWantAutoAim(Rotation2d field_to_turret_hint) {
         setWantAutoAim(field_to_turret_hint, false, 500);
-    }
-
-    public synchronized void setWantShift(boolean shift) {
-        mWantsShift = shift;
     }
 
     public synchronized void setWantShoot() {
@@ -608,10 +591,6 @@ public class Superstructure extends Subsystem {
 
     public synchronized void setWantInnerTarget(boolean inner) {
         mUseInnerTarget = inner;
-    }
-
-    public synchronized void setAutoIndex(boolean auto_index) {
-        mAutoIndex = auto_index;
     }
 
     public synchronized void setWantFieldRelativeTurret(Rotation2d field_to_turret) {

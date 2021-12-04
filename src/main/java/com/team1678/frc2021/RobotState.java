@@ -11,7 +11,6 @@ import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.geometry.Translation2d;
 import com.team254.lib.util.InterpolatingDouble;
 import com.team254.lib.util.InterpolatingTreeMap;
-import com.team254.lib.util.MovingAverageTwist2d;
 import com.team254.lib.vision.AimingParameters;
 import com.team254.lib.vision.GoalTracker;
 import com.team254.lib.vision.GoalTracker.TrackReportComparator;
@@ -78,7 +77,6 @@ public class RobotState {
     private InterpolatingTreeMap<InterpolatingDouble, Rotation2d> vehicle_to_hood_;
     private Pose2d vehicle_velocity_predicted_;
     private Pose2d vehicle_velocity_measured_;
-    private MovingAverageTwist2d vehicle_velocity_measured_filtered_;
     private double distance_driven_;
 
 
@@ -109,7 +107,6 @@ public class RobotState {
         field_to_vehicle_.put(new InterpolatingDouble(start_time), initial_field_to_vehicle);
         vehicle_velocity_predicted_ = Pose2d.identity();
         vehicle_velocity_measured_ = Pose2d.identity();
-        vehicle_velocity_measured_filtered_ = new MovingAverageTwist2d(25);
         distance_driven_ = 0.0;
     }
 
@@ -321,10 +318,7 @@ public class RobotState {
         Pose2d latestTurretFixedToField = getPredictedFieldToVehicle(Constants.kAutoAimPredictionTime)
                 .transformBy(kVehicleToTurretFixed).inverse();
         Pose2d latestTurretFixedToGoal = latestTurretFixedToField.transformBy(report.field_to_target);
-
-        Pose2d vehicleToGoal = getFieldToVehicle(timestamp).inverse().transformBy(report.field_to_target)
-                .transformBy(getVisionTargetToGoalOffset(inner_goal));
-
+        
         AimingParameters params = new AimingParameters(latestTurretFixedToGoal, report.field_to_target,
                 report.field_to_target.getRotation(), report.latest_timestamp, report.stability, report.id);
         return Optional.of(params);

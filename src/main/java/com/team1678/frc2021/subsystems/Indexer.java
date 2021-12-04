@@ -29,7 +29,6 @@ public class Indexer extends Subsystem {
     private static final boolean[] kFullSlots = {true, true, true, true, true };
     private static final boolean[] kEmptySlots = {false, false, false, false, false };
 
-    private double mIndexerStart = Timer.getFPGATimestamp();
     private static final double kAngleConversion = (2048.0 * kGearRatio) / 360.0;
 
     private static final double kJamCurrent = 150.0;
@@ -76,7 +75,6 @@ public class Indexer extends Subsystem {
     private DigitalInput mLimitSwitch = new DigitalInput(Constants.kIndexerLimitSwitch);
     private HallCalibration calibration = new HallCalibration(-37.0);
     private double mOffset = 0;
-    private double mAngleGoal = 0;
 
     private Indexer() {
         mMaster = TalonFXFactory.createDefaultTalon(Constants.kIndexerId);
@@ -349,7 +347,6 @@ public class Indexer extends Subsystem {
         }
 
         if (mState != prev_state && mState == State.PASSIVE_INDEXING) {
-            mIndexerStart = Timer.getFPGATimestamp();
             mBackwards = !mBackwards;
         }
 
