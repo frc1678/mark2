@@ -2,10 +2,7 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.CANifierStatusFrame;
-import edu.wpi.first.wpilibj.Timer;
 import com.team1678.frc2021.Constants;
-
-import java.util.ArrayList;
 
 public class Canifier extends Subsystem {
     private static Canifier mInstance;

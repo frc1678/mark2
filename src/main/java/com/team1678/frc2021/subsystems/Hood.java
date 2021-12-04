@@ -1,23 +1,17 @@
 package com.team1678.frc2021.subsystems;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.subsystems.Canifier;
-import com.team254.lib.drivers.MotorChecker;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.team1678.frc2021.Constants;
 import com.team254.lib.drivers.BaseTalonChecker;
-
-import com.team254.lib.drivers.TalonUtil;
+import com.team254.lib.drivers.MotorChecker;
 import com.team254.lib.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
 
 public class Hood extends ServoMotorSubsystem {
     private static Hood mInstance;

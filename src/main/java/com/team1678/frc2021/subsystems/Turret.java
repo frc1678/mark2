@@ -7,19 +7,15 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import com.team1678.frc2021.Constants;
-import com.team254.lib.drivers.TalonUtil;
+import com.team1678.lib.util.HallCalibration;
+import com.team254.lib.drivers.BaseTalonChecker;
+import com.team254.lib.drivers.MotorChecker;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.LatchedBoolean;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.team254.lib.drivers.MotorChecker;
-import com.team254.lib.drivers.BaseTalonChecker;
-import com.team1678.lib.util.HallCalibration;
 
 public class Turret extends ServoMotorSubsystem {
     private static Turret mInstance;

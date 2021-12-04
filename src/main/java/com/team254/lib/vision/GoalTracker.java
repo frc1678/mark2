@@ -6,9 +6,6 @@ import java.util.List;
 
 import com.team1678.frc2021.Constants;
 import com.team254.lib.geometry.Pose2d;
-import com.team254.lib.geometry.Pose2d;
-import com.team254.lib.geometry.Rotation2d;
-import com.team254.lib.geometry.Translation2d;
 
 /**
  * This is used in the event that multiple goals are detected to judge all goals based on timestamp, stability, and

@@ -4,9 +4,7 @@ import com.team1678.frc2021.subsystems.Shooter;
 import com.team1678.frc2021.subsystems.Superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 
 public class WaitToSpinUpCommand extends CommandBase {
 

@@ -7,40 +7,34 @@
 
 package com.team1678.frc2021;
 
-import java.util.Optional;
-
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.team1678.frc2021.auto.AutonomousSelector;
 import com.team1678.frc2021.controlboard.ControlBoard;
 import com.team1678.frc2021.loops.Looper;
-import com.team1678.frc2021.controlboard.ControlBoard;
-import com.team1678.frc2021.controlboard.GamepadButtonControlBoard;
-
-import com.team254.lib.wpilib.TimedRobot;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.team254.lib.util.*;
-
-import java.util.Optional;
-
-import com.team1678.frc2021.SubsystemManager;
-import com.team1678.frc2021.auto.AutonomousSelector;
-import com.team1678.frc2021.subsystems.*;
-import com.team254.lib.util.*;
-import com.team254.lib.vision.AimingParameters;
-import com.team254.lib.geometry.Rotation2d;
-import com.team1678.frc2021.subsystems.Indexer.WantedAction;
+import com.team1678.frc2021.subsystems.Canifier;
+import com.team1678.frc2021.subsystems.Climber;
+import com.team1678.frc2021.subsystems.Hood;
+import com.team1678.frc2021.subsystems.Indexer;
+import com.team1678.frc2021.subsystems.Infrastructure;
+import com.team1678.frc2021.subsystems.Intake;
+import com.team1678.frc2021.subsystems.LEDs;
+import com.team1678.frc2021.subsystems.Limelight;
+import com.team1678.frc2021.subsystems.RobotStateEstimator;
+import com.team1678.frc2021.subsystems.Shooter;
+import com.team1678.frc2021.subsystems.Skywalker;
+import com.team1678.frc2021.subsystems.Superstructure;
+import com.team1678.frc2021.subsystems.Swerve;
+import com.team1678.frc2021.subsystems.Trigger;
+import com.team1678.frc2021.subsystems.Turret;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
+import com.team254.lib.util.CheesyDriveHelper;
 import com.team254.lib.util.CrashTracker;
+import com.team254.lib.wpilib.TimedRobot;
 
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoMode;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the

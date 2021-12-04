@@ -1,22 +1,18 @@
 package com.team1678.frc2021.auto;
 
+import java.util.List;
+
 import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
-import com.team1678.frc2021.commands.PulseIntakeCommand;
 import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
-import com.team1678.frc2021.commands.SpinUpCommand;
-import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.TuckCommand;
-import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
-
-import java.util.List;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
@@ -28,7 +24,6 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RightFiveFarMode extends SequentialCommandGroup {
 

@@ -9,7 +9,6 @@ import com.team1678.frc2021.vision.TargetInfo;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimelightProcessor implements Loop{
 	static LimelightProcessor instance = new LimelightProcessor();

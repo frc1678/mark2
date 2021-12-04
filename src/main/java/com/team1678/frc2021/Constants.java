@@ -3,26 +3,21 @@ package com.team1678.frc2021;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.lib.util.SwerveModuleConstants;
 import com.team1323.lib.util.InterpolatingDouble;
 import com.team1323.lib.util.InterpolatingTreeMap;
 import com.team1678.frc2021.subsystems.Limelight.LimelightConstants;
 import com.team1678.frc2021.subsystems.ServoMotorSubsystem.ServoMotorSubsystemConstants;
-
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.util.Units;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
-import com.lib.util.SwerveModuleConstants;
 
 public class Constants {
 	/*All distance measurements are in inches, unless otherwise noted.*/

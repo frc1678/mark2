@@ -1,19 +1,17 @@
 package com.team1678.frc2021;
 
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-
-import com.lib.math.Conversions;
-import com.lib.util.CTREModuleState;
-import com.lib.util.SwerveModuleConstants;
-import com.team254.lib.drivers.TalonFXFactory;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.lib.math.Conversions;
+import com.lib.util.CTREModuleState;
+import com.lib.util.SwerveModuleConstants;
+
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 
 public class SwerveModule {
     public int moduleNumber;
