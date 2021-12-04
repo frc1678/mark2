@@ -12,7 +12,7 @@ import java.util.Optional;
 import com.team1678.frc2021.controlboard.ControlBoard;
 import com.team1678.frc2021.loops.Looper;
 import com.team1678.frc2021.controlboard.ControlBoard;
-import com.team1678.frc2021.controlboard.GamepadButtonControlBoard;
+import com.team1678.frc2021.controlboard.ControlBoard;
 
 import com.team254.lib.wpilib.TimedRobot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -25,9 +25,7 @@ import com.team1678.frc2021.auto.AutonomousSelector;
 import com.team1678.frc2021.subsystems.*;
 import com.team254.lib.util.*;
 import com.team254.lib.vision.AimingParameters;
-import com.team254.lib.geometry.Rotation2d;
 import com.team1678.frc2021.subsystems.Indexer.WantedAction;
-import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.CrashTracker;
 
@@ -39,8 +37,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
+import com.team1678.frc2021.auto.AutoModeExecutor;
+import com.team1678.frc2021.auto.AutoModeSelector;
+import com.team1678.frc2021.auto.modes.AutoModeBase;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -56,8 +59,6 @@ public class Robot extends TimedRobot {
      */
 
 	public static CTREConfigs ctreConfigs;
-  	private Command m_autonomousCommand;
-    private RobotContainer m_robotContainer;
 
     private final Looper mEnabledLooper = new Looper();
     private final Looper mDisabledLooper = new Looper();
@@ -66,21 +67,24 @@ public class Robot extends TimedRobot {
     private CheesyDriveHelper mCheesyDriveHelper = new CheesyDriveHelper();
 
     private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
-    private final Indexer mIndexer = Indexer.getInstance();
-    private final Infrastructure mInfrastructure = Infrastructure.getInstance();
-    private final Limelight mLimelight = Limelight.getInstance();
-
-    private final Intake mIntake = Intake.getInstance();
+    private final Swerve mSwerve = Swerve.getInstance();
     private final Superstructure mSuperstructure = Superstructure.getInstance();
+    private final Intake mIntake = Intake.getInstance();
+    private final Indexer mIndexer = Indexer.getInstance();
     private final Turret mTurret = Turret.getInstance();
-    private final Shooter mShooter = Shooter.getInstance();
     private final Trigger mTrigger = Trigger.getInstance();
+    private final Shooter mShooter = Shooter.getInstance();
+    private final Hood mHood = Hood.getInstance();
     private final Climber mClimber = Climber.getInstance();
     private final Skywalker mSkywalker = Skywalker.getInstance();
-    private final Hood mHood = Hood.getInstance();
-
+    private final Infrastructure mInfrastructure = Infrastructure.getInstance();
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
+    private final Limelight mLimelight = Limelight.getInstance(); 
+
+    // auto instances
+    private AutoModeExecutor mAutoModeExecutor;
+    private AutoModeSelector mAutoModeSelector = new AutoModeSelector();
 
     // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
 
@@ -103,6 +107,7 @@ public class Robot extends TimedRobot {
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
+        mAutoModeSelector.outputToSmartDashboard();
 
         SmartDashboard.putBoolean("Climb Mode", climb_mode);
         SmartDashboard.putBoolean("Pivoted", mPivoted);
@@ -115,7 +120,6 @@ public class Robot extends TimedRobot {
 		ctreConfigs = new CTREConfigs();
     	// Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     	// autonomous chooser on the dashboard.
- 	   	m_robotContainer = new RobotContainer();
 		
 		try {
 			/*
@@ -128,6 +132,7 @@ public class Robot extends TimedRobot {
             CrashTracker.logRobotInit();
 
             mSubsystemManager.setSubsystems(
+                mSwerve,
                 mRobotStateEstimator,
 				mCanifier,
 				mHood,
@@ -148,10 +153,11 @@ public class Robot extends TimedRobot {
             mSubsystemManager.registerDisabledLoops(mDisabledLooper);
 
             // Robot starts forwards.
-            mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
+            mRobotState.reset(Timer.getFPGATimestamp(), new com.team254.lib.geometry.Pose2d());
 
             // mLimelight.setLed(Limelight.LedMode.OFF);
-            
+
+            mSwerve.resetOdometry(new Pose2d());            
             
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
@@ -164,12 +170,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         // System.out.println("Starting auto init: " + Timer.getFPGATimestamp());
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-            Swerve.getInstance().resetOdometry(AutonomousSelector.getStartingPose());
-			m_autonomousCommand.schedule();
-		}
 
         SmartDashboard.putString("Match Cycle", "AUTONOMOUS");
 
@@ -178,7 +179,7 @@ public class Robot extends TimedRobot {
             mDisabledLooper.stop();
             mLimelight.setLed(Limelight.LedMode.ON);
 
-            RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
+            RobotState.getInstance().reset(Timer.getFPGATimestamp(), new com.team254.lib.geometry.Pose2d());
 
             mTurret.setNeutralMode(NeutralMode.Brake);
             mHood.setNeutralMode(NeutralMode.Brake);
@@ -189,6 +190,9 @@ public class Robot extends TimedRobot {
             mTurret.cancelHoming();
             
             mLimelight.setPipeline(Constants.kPortPipeline);
+
+            mAutoModeExecutor.start();
+
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -224,9 +228,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         // System.out.println("Starting teleop init: " + Timer.getFPGATimestamp());
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
-		}
 
         try {
             CrashTracker.logTeleopInit();
@@ -257,6 +258,15 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // System.out.println("Starting teleop periodic:" + Timer.getFPGATimestamp());
         try {
+            /* SWERVE DRIVE */
+            if (mControlBoard.zeroGyro()) {
+                mSwerve.zeroGyro();
+            }
+
+            Translation2d swerveTranslation = new Translation2d(mControlBoard.getSwerveTranslation().x(), mControlBoard.getSwerveTranslation().y());
+            double swerveRotation = mControlBoard.getSwerveRotation();
+            mSwerve.teleopDrive(swerveTranslation, swerveRotation, true, true);
+
             double timestamp = Timer.getFPGATimestamp();
             double hood_jog = mControlBoard.getJogHood();
             Rotation2d turret_jog = mControlBoard.getJogTurret();
@@ -333,7 +343,7 @@ public class Robot extends TimedRobot {
                     mSuperstructure.setWantTuck(false);
                 } else if (mControlBoard.getTurretReset()) {
                     mRobotState.resetVision();
-                    mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
+                    mRobotState.reset(Timer.getFPGATimestamp(), new com.team254.lib.geometry.Pose2d());
                 } else if (mControlBoard.getTestSpit()) {
                     mSuperstructure.setWantTestSpit();
                 } else if (mControlBoard.getRunIntake()) {
@@ -442,7 +452,7 @@ public class Robot extends TimedRobot {
 
             mInfrastructure.setIsDuringAuto(true);
 
-            RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
+            RobotState.getInstance().reset(Timer.getFPGATimestamp(), new com.team254.lib.geometry.Pose2d());
 
             // Reset all auto mode state.
 
@@ -459,6 +469,15 @@ public class Robot extends TimedRobot {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
+
+        if (mAutoModeExecutor != null) {
+            mAutoModeExecutor.stop();
+        }
+    
+        // Reset all auto mode state.
+        mAutoModeSelector.reset();
+        mAutoModeSelector.updateModeCreator();
+        mAutoModeExecutor = new AutoModeExecutor();    
     }
 
     @Override
@@ -480,6 +499,12 @@ public class Robot extends TimedRobot {
             }
 
             mLEDs.writePeriodicOutputs();
+
+            Optional<AutoModeBase> autoMode = mAutoModeSelector.getAutoMode();
+            if (autoMode.isPresent() && autoMode.get() != mAutoModeExecutor.getAutoMode()) {
+                System.out.println("Set auto mode to: " + autoMode.get().getClass().toString());
+                mAutoModeExecutor.setAutoMode(autoMode.get());
+            }
 
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);

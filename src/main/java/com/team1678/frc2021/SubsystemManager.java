@@ -5,8 +5,6 @@ import com.team1678.frc2021.loops.Loop;
 import com.team1678.frc2021.loops.Looper;
 import com.team1678.frc2021.subsystems.Subsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +65,6 @@ public class SubsystemManager implements ILooper {
             mAllSubsystems.forEach(Subsystem::readPeriodicInputs);
             mLoops.forEach(l -> l.onLoop(timestamp));
             mAllSubsystems.forEach(Subsystem::writePeriodicOutputs);
-            CommandScheduler.getInstance().run();
         }
 
         @Override
@@ -83,7 +80,6 @@ public class SubsystemManager implements ILooper {
         @Override
         public void onLoop(double timestamp) {
             mAllSubsystems.forEach(Subsystem::readPeriodicInputs);
-            CommandScheduler.getInstance().run();
         }
 
         @Override
