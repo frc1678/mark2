@@ -440,7 +440,7 @@ public class Superstructure extends Subsystem {
 
         
         if (mWantsUnjam) {
-            indexerAction = Indexer.WantedAction.PREP;
+            indexerAction = Indexer.WantedAction.NONE;
             real_popout = true;
             real_trigger = -5000;
         }
@@ -448,7 +448,7 @@ public class Superstructure extends Subsystem {
         if (mEnableIndexer) {
             mIndexer.setState(indexerAction);
         } else {
-            mIndexer.setState(Indexer.WantedAction.PREP);
+            mIndexer.setState(Indexer.WantedAction.NONE);
         }
 
         mTrigger.setPopoutSolenoid(real_popout);
