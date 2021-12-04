@@ -14,21 +14,12 @@ import com.team254.lib.util.ReflectingCSVWriter;
 import com.team254.lib.util.TimeDelayedBoolean;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber extends Subsystem  {
     private static Climber mInstance = null;
 
     private static final double kIdleVoltage = 0.0;
-    private static final double kExtendVoltage = 2.0;
-    private static final double kClimbVoltage = -4.0;
-    private static final double kBrakeVelocity = 500.0;
-    private double mInitialTime;
-
-    private static final int kExtendDelta = (2) - (174100);
-    private static final int kHugDelta = (157000 - (-27600));
-    private static final int kClimbDelta = 10000;
 
     private static boolean wasShifted;
 
@@ -36,24 +27,19 @@ public class Climber extends Subsystem  {
     private TimeDelayedBoolean mShiftSolenoidTimer = new TimeDelayedBoolean();
 
     public enum WantedAction {
-        NONE, EXTEND, HUG, CLIMB, BRAKE, STOP, JOG_UP, JOG_DOWN,
+        NONE, JOG_UP, JOG_DOWN,
     }
 
     private static WantedAction mWantedAction = WantedAction.NONE;
 
     public enum State {
-        IDLE, EXTENDING, HUGGING, CLIMBING, BRAKING, JOGGING_UP, JOGGING_DOWN,
+        IDLE, JOGGING_UP, JOGGING_DOWN,
     }
 
     private State mState = State.IDLE;
 
     private final TalonFX mMaster;
     private final Solenoid mShiftSolenoid;
-    
-    private double mHoldingPos = 0.0;
-    private double mZeroPos;
-    private boolean mExtended = false;
-    private TimeDelayedBoolean brake_activation = new TimeDelayedBoolean();
 
     public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80, 80, 1.0);
     private ReflectingCSVWriter<PeriodicIO> mCSVWriter = null;
@@ -187,26 +173,14 @@ public class Climber extends Subsystem  {
         mPeriodicIO.demand = percentage;
     }
 
-    public void setZeroPosition() {
-        mZeroPos = mPeriodicIO.position;
-    }
-
     public void setShift(boolean shift) {
         mPeriodicIO.shift_solenoid = shift;
     }
 
     public void runStateMachine() {
-        final double now = Timer.getFPGATimestamp();
         switch (mState) {
             case IDLE:
                 mPeriodicIO.demand = kIdleVoltage;
-                break;
-            case EXTENDING:
-                mPeriodicIO.demand = mZeroPos + kExtendDelta;
-                if ((mPeriodicIO.position - mZeroPos) > kExtendDelta - 2000) {
-                    mExtended = true;
-                }
-                mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_UP:
                 mPeriodicIO.shift_solenoid = true;
@@ -224,60 +198,22 @@ public class Climber extends Subsystem  {
                 // }
                 mPeriodicIO.brake_solenoid = false;
                 break;
-            case CLIMBING:
-                mPeriodicIO.demand = mZeroPos + kClimbDelta;
-                mPeriodicIO.brake_solenoid = false;
-
-                if ((Math.abs(mPeriodicIO.position - (mZeroPos + kClimbDelta)) < 5000 && Math.abs(mPeriodicIO.velocity) < kBrakeVelocity)) {
-                    mHoldingPos = mPeriodicIO.position;
-                    mState = State.BRAKING;
-                }
-                mPeriodicIO.brake_solenoid = false;
-                break;
-            case BRAKING:
-                mPeriodicIO.demand = mHoldingPos;
-                if (!mPeriodicIO.brake_solenoid) {
-                    if (mPeriodicIO.velocity < kBrakeVelocity) {
-                        mPeriodicIO.brake_solenoid = true;
-                    }
-                }
-                break;
             default:
                 System.out.println("Fell through on Climber states!");
         }
     }
 
     public void setState(WantedAction wanted_state) {
-        if (wanted_state == WantedAction.BRAKE && mState != State.BRAKING) {
-            mHoldingPos = mPeriodicIO.position;
-        }
-
         mWantedAction = wanted_state;
-
         switch (wanted_state) {
             case NONE:
                   mState = State.IDLE;
-                break;
-            case EXTEND:
-                mState = State.EXTENDING;
-                break;
-            case HUG:
-                mState = State.HUGGING;
                 break;
             case JOG_UP:
                 mState = State.JOGGING_UP;
                 break;
             case JOG_DOWN:
                 mState = State.JOGGING_DOWN;
-                break;
-            case CLIMB:
-                mState = State.CLIMBING;
-                break;
-            case BRAKE:
-                mState = State.BRAKING;
-                break;
-            case STOP:
-                mState = State.IDLE;
                 break;
         }
     }
@@ -298,7 +234,7 @@ public class Climber extends Subsystem  {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        if (mState == State.BRAKING || mState == State.EXTENDING || mState == State.HUGGING || mState == State.CLIMBING || mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
+        if (mState == State.JOGGING_DOWN || mState == State.JOGGING_UP) {
             mShiftSolenoid.set(mPeriodicIO.shift_solenoid);
             mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand > 12.0 ? 12.0/12.0 : mPeriodicIO.demand/12.0);
         } else {

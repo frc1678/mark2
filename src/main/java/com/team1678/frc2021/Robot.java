@@ -350,8 +350,6 @@ public class Robot extends TimedRobot {
                 Climber.WantedAction climber_action = Climber.WantedAction.NONE;
                 Skywalker.WantedAction skywalker_action = Skywalker.WantedAction.NONE;
                 mClimber.setShift(true);
-
-                mClimber.setZeroPosition();
                 mSuperstructure.enableIndexer(false);
                 mIntake.setState(Intake.WantedAction.NONE);
                 mSuperstructure.setWantSpinUp(false);
@@ -366,8 +364,6 @@ public class Robot extends TimedRobot {
                     climber_action = (Climber.WantedAction.JOG_DOWN);
                 } else if(mControlBoard.getClimberJog() == 1){
                     climber_action = (Climber.WantedAction.JOG_UP);
-                } else if (mControlBoard.getBrake()) { // Release Y
-                    climber_action = (Climber.WantedAction.BRAKE);
                 } else if (mControlBoard.getLeaveClimbMode()) {
                     climb_mode = false;
                     buddy_climb = false;
