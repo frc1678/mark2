@@ -45,7 +45,7 @@ public class Trigger extends Subsystem {
 
         mTrigger.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
         mTrigger.set(ControlMode.PercentOutput, 0);
-        mTrigger.setInverted(false); //TODO: check value
+        mTrigger.setInverted(false);
         mTrigger.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
         mTrigger.enableVoltageCompensation(true);
         mTrigger.configStatorCurrentLimit(CURR_LIM);

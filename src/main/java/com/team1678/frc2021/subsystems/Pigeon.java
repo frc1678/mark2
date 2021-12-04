@@ -80,11 +80,6 @@ public class Pigeon {
 		return Rotation2d.fromRadians(getAxis(Axis.YAW));
 	}
 
-	public double getUnadjustedRate() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public double getAxis(Axis axis) {
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);

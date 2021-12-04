@@ -117,13 +117,13 @@ public class Turret extends ServoMotorSubsystem {
     @Override
     public boolean checkSystem() {
         return BaseTalonChecker.checkMotors(this, new ArrayList<MotorChecker.MotorConfig<BaseTalon>>() {
-            private static final long serialVersionUID = 1636612675181038895L; // TODO find the right number
+            private static final long serialVersionUID = 1636612675181038895L;
 
             {
                 add(new MotorChecker.MotorConfig<>("master", mMaster));
             }
         }, new MotorChecker.CheckerConfig() {
-            { // TODO change to legit config
+            {
                 mRunOutputPercentage = 0.1;
                 mRunTimeSec = 1.0;
                 mCurrentFloor = 0.1;

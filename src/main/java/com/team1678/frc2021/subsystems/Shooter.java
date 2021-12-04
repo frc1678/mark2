@@ -39,7 +39,7 @@ public class Shooter extends Subsystem {
         mSlave.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
 
         mMaster.set(ControlMode.PercentOutput, 0);
-        mMaster.setInverted(false); //TODO: check value
+        mMaster.setInverted(false);
         mMaster.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
         mMaster.enableVoltageCompensation(true);
         
@@ -53,7 +53,7 @@ public class Shooter extends Subsystem {
         SupplyCurrentLimitConfiguration curr_lim = new SupplyCurrentLimitConfiguration(true, 40, 100, 0.02);
         mMaster.configSupplyCurrentLimit(curr_lim);
 
-        mSlave.setInverted(true); //TODO: check value
+        mSlave.setInverted(true);
         
         mMaster.set(ControlMode.PercentOutput, 0);
         mMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
