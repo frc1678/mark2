@@ -3,7 +3,6 @@ package com.team1678.frc2021.auto;
 import java.util.List;
 
 import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
@@ -188,9 +187,6 @@ public class RightTenNearMode extends SequentialCommandGroup {
 
         IntakeCommand intake =
             new IntakeCommand(mIntake, mSuperstructure);
-            
-        SpinUpCommand firstSpinUp =
-            new SpinUpCommand(mSuperstructure);
 
         SpinUpCommand secondSpinUp =
             new SpinUpCommand(mSuperstructure);
@@ -200,9 +196,6 @@ public class RightTenNearMode extends SequentialCommandGroup {
 
         ShootCommand secondShoot =
             new ShootCommand(mSuperstructure);
-
-        AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180);
 
         WaitToSpinUpCommand waitToSpinUp =
             new WaitToSpinUpCommand(mSuperstructure, 0.5);

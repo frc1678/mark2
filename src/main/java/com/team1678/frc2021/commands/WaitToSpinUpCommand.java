@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class WaitToSpinUpCommand extends CommandBase {
 
     private final Superstructure mSuperstructure;
-    private final Shooter mShooter;
-    private boolean isFinished = false;
 
     private double mTimeToWait;
     private double mStartTime;
@@ -18,7 +16,6 @@ public class WaitToSpinUpCommand extends CommandBase {
     public WaitToSpinUpCommand(Superstructure superstructure, double waitTime) {
         mSuperstructure = superstructure;
         mTimeToWait = waitTime;
-        mShooter = Shooter.getInstance();
     }
 
     @Override 

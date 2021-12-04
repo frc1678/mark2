@@ -54,8 +54,6 @@ public class SwervePointTurnCommand extends CommandBase {
   @Override
   @SuppressWarnings("LocalVariableName")
   public void execute() {
-    double curTime = m_timer.get();
-
     var targetChassisSpeeds =
         m_controller.calculate(m_pose.get(), new Pose2d(m_pose.get().getX(), m_pose.get().getY(), m_desiredRotation.get()), 0.0, m_desiredRotation.get());
     var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);

@@ -7,8 +7,6 @@ import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
-import com.team1678.frc2021.commands.SpinUpCommand;
-import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
@@ -97,31 +95,14 @@ public class LeftSixNearMode extends SequentialCommandGroup{
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-        SwervePointTurnCommand endAdjustCommand =
-            new SwervePointTurnCommand(
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                () -> Rotation2d.fromDegrees(180),
-                s_Swerve::setModuleStates,
-                s_Swerve);
-
         IntakeCommand intake = 
             new IntakeCommand(mIntake, mSuperstructure);
-
-        SpinUpCommand spinUp = 
-            new SpinUpCommand(mSuperstructure);
             
         ShootCommand firstShoot =
             new ShootCommand(mSuperstructure);
 
         ShootCommand secondShoot =
             new ShootCommand(mSuperstructure);
-
-        AutoAimCommand firstAim =
-            new AutoAimCommand(mSuperstructure, 200);
 
         AutoAimCommand secondAim =
             new AutoAimCommand(mSuperstructure, 200);

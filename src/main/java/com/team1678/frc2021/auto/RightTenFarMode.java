@@ -11,7 +11,6 @@ import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
 import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.TuckCommand;
-import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
 import com.team1678.frc2021.subsystems.Intake;
@@ -156,9 +155,6 @@ public class RightTenFarMode extends SequentialCommandGroup {
         PulseIntakeCommand pulseIntake = 
             new PulseIntakeCommand(mIntake, mSuperstructure);
 
-        SpinUpCommand firstSpinUp = 
-            new SpinUpCommand(mSuperstructure);
-
         SpinUpCommand secondSpinUp = 
             new SpinUpCommand(mSuperstructure);
             
@@ -173,9 +169,6 @@ public class RightTenFarMode extends SequentialCommandGroup {
 
         WaitToSpinUpCommand waitToSpinUp = 
             new WaitToSpinUpCommand(mSuperstructure, 1.5);
-
-        WaitToAutoAimCommand waitToAutoAim = 
-            new WaitToAutoAimCommand(mSuperstructure, 200, 1.5);
 
         WaitToIntakeCommand waitToFirstIntake = 
             new WaitToIntakeCommand(mIntake, mSuperstructure, 0.05);

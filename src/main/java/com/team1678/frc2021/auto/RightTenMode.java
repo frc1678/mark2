@@ -3,12 +3,10 @@ package com.team1678.frc2021.auto;
 import java.util.List;
 
 import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.commands.AutoAimCommand;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
-import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
@@ -44,17 +42,6 @@ public class RightTenMode extends SequentialCommandGroup {
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(6.10, 0.71, Rotation2d.fromDegrees(335.0)),
                 List.of(new Translation2d(5.10, 0.71),
-                        new Translation2d(2.54, 2.54),
-                        new Translation2d(1.52, 4.84)
-                        ),
-                new Pose2d(1.52, 5.84, Rotation2d.fromDegrees(90.0)),
-                Constants.AutoConstants.RTNfastConfig);
-
-        Trajectory getFirstShot =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(2.9, 0.71, Rotation2d.fromDegrees(0.0)),
-                List.of(new Translation2d(6.10, 0.71),
-                        new Translation2d(5.10, 0.71),
                         new Translation2d(2.54, 2.54),
                         new Translation2d(1.52, 4.84)
                         ),
@@ -149,83 +136,16 @@ public class RightTenMode extends SequentialCommandGroup {
                 thetaController,
                 () -> Rotation2d.fromDegrees(50),
                 s_Swerve::setModuleStates,
-                s_Swerve);
-
-        // SwervePointTurnCommand headingAdjustCommand =
-        //     new SwervePointTurnCommand(
-        //         s_Swerve::getPose,
-        //         Constants.Swerve.swerveKinematics,
-        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-        //         thetaController,
-        //         () -> Rotation2d.fromDegrees(140),
-        //         s_Swerve::setModuleStates,
-        //         s_Swerve);
-
-        // SwerveControllerCommand driveFirstToSecondIntakeCommand =
-        //     new SwerveControllerCommand(
-        //         getFirstToSecondIntake,
-        //         s_Swerve::getPose,
-        //         Constants.Swerve.swerveKinematics,
-        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-        //         thetaController,
-        //         () -> Rotation2d.fromDegrees(270),
-        //         s_Swerve::setModuleStates,
-        //         s_Swerve);
-
-        // SwerveControllerCommand driveSecondIntakeCommand =
-        //     new SwerveControllerCommand(
-        //         getToSecondIntake,
-        //         s_Swerve::getPose,
-        //         Constants.Swerve.swerveKinematics,
-        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-        //         thetaController,
-        //         () -> Rotation2d.fromDegrees(200),
-        //         s_Swerve::setModuleStates,
-        //         s_Swerve);
-
-        // SwerveControllerCommand driveToSceondShotCommand =
-        //     new SwerveControllerCommand(
-        //         getToSecondShot,
-        //         s_Swerve::getPose,
-        //         Constants.Swerve.swerveKinematics,
-        //         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-        //         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-        //         thetaController,
-        //         () -> Rotation2d.fromDegrees(200),
-        //         s_Swerve::setModuleStates,
-        //         s_Swerve);
-
-        SwervePointTurnCommand endAdjustCommand =
-        new SwervePointTurnCommand(
-            s_Swerve::getPose,
-            Constants.Swerve.swerveKinematics,
-            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-            thetaController,
-            () -> Rotation2d.fromDegrees(180),
-            s_Swerve::setModuleStates,
-            s_Swerve);      
+                s_Swerve);     
 
         IntakeCommand intake =
             new IntakeCommand(mIntake, mSuperstructure);
-            
-        SpinUpCommand firstSpinUp =
-            new SpinUpCommand(mSuperstructure);
 
         SpinUpCommand secondSpinUp =
             new SpinUpCommand(mSuperstructure);
 
         ShootCommand firstShoot =
             new ShootCommand(mSuperstructure);
-
-        ShootCommand secondShoot =
-            new ShootCommand(mSuperstructure);
-
-        AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180);
 
         WaitToSpinUpCommand waitToSpinUp =
             new WaitToSpinUpCommand(mSuperstructure, 0.5);
