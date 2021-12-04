@@ -76,7 +76,7 @@ public class Canifier extends Subsystem {
         mPeriodicInputs.turret_limit_ = !pins.LIMR;
         mPeriodicInputs.hood_limit_ = !pins.SPI_MOSI_PWM1;
 
-        mPeriodicInputs.front_proxy_ = pins.SPI_CLK_PWM0; // change these pins
+        mPeriodicInputs.front_proxy_ = pins.SPI_CLK_PWM0;
         mPeriodicInputs.right_proxy_ = pins.SPI_MOSI_PWM1;
         mPeriodicInputs.left_proxy_ =  pins.SPI_CS_PWM3;
         mPeriodicInputs.back_right_proxy_ = pins.SPI_MISO_PWM2;

@@ -332,18 +332,6 @@ public class Superstructure extends Subsystem {
                     .rotateBy(mLatestAimingParameters.get().getTurretToGoalRotation());
             
             mTurretSetpoint = mCurrentTurret + turret_error.getDegrees();
-            
-            /*
-            final Twist2d velocity = mRobotState.getMeasuredVelocity();
-            // Angular velocity component from tangential robot motion about the goal.
-            final double tangential_component = mLatestAimingParameters.get().getTurretToGoalRotation().sin()
-                    * velocity.dx / mLatestAimingParameters.get().getRange();
-            final double angular_component = Units.radians_to_degrees(velocity.dtheta);
-            // Add (opposite) of tangential velocity about goal + angular velocity in local
-            // frame.
-            mTurretFeedforwardV = -(angular_component + tangential_component);
-            */
-
             safetyReset();
 
             mHasTarget = true;
@@ -490,18 +478,11 @@ public class Superstructure extends Subsystem {
         } else {
             Limelight.getInstance().setPipeline(Limelight.kDefaultPipeline);
         }
-
-//        Limelight.getInstance().setPipeline(Limelight.kDefaultPipeline);
-
         if (mTurretMode == TurretControlModes.OPEN_LOOP || !mEnableIndexer) {
             mTurret.setOpenLoop(0);
-            // } else if (mTurretMode == TurretControlModes.VISION_AIMED) {
-            // mTurret.setSetpointPositionPID(mTurretSetpoint, mTurretFeedforwardV);
         } else {
             mTurret.setSetpointMotionMagic(mTurretSetpoint);
         }
-        // mTurret.setOpenLoop(0);
-        // mHood.setOpenLoop(0);
     }
 
     public synchronized Optional<AimingParameters> getLatestAimingParameters() {

@@ -74,19 +74,14 @@ public class Robot extends TimedRobot {
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
 
-    // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
-
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotStateEstimator mRobotStateEstimator = RobotStateEstimator.getInstance();
     private boolean climb_mode = false;
     private boolean mPivoted = false;
     private Rotation2d lastTurretJog;
 
-    // private LoggingSystem mLogger = LoggingSystem.getInstance();
-
     public Robot() {
         CrashTracker.logRobotConstruction();
-        // CommandScheduler.getInstance().setPeriod(0.04);
     }
 
     @Override
@@ -109,13 +104,6 @@ public class Robot extends TimedRobot {
  	   	m_robotContainer = new RobotContainer();
 		
 		try {
-			/*
-            UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-            camera.setVideoMode(VideoMode.PixelFormat.kMJPEG, 320, 240, 15);
-            MjpegServer cameraServer = new MjpegServer("serve_USB Camera 0", Constants.kCameraStreamPort);
-			cameraServer.setSource(camera);
-			*/
-
             CrashTracker.logRobotInit();
 
             mSubsystemManager.setSubsystems(
@@ -140,23 +128,15 @@ public class Robot extends TimedRobot {
 
             // Robot starts forwards.
             mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
-
-            // mLimelight.setLed(Limelight.LedMode.OFF);
-            
-            
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
         }
-        // System.out.println("Ended robot init method: " + Timer.getFPGATimestamp());
-			
     }
 
     @Override
     public void autonomousInit() {
-        // System.out.println("Starting auto init: " + Timer.getFPGATimestamp());
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
             Swerve.getInstance().resetOdometry(AutonomousSelector.getStartingPose());
 			m_autonomousCommand.schedule();
@@ -214,7 +194,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        // System.out.println("Starting teleop init: " + Timer.getFPGATimestamp());
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
@@ -223,12 +202,9 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             mDisabledLooper.stop();
             mClimber.setBrakeMode(true);
-            // mClimber.setShift(false);
-            // mShiftSolenoid.set(true);
 
             mInfrastructure.setIsDuringAuto(false);
 
-            //mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
             mEnabledLooper.start();
             mLimelight.setLed(Limelight.LedMode.ON);
             mLimelight.setPipeline(Constants.kPortPipeline);
@@ -273,8 +249,6 @@ public class Robot extends TimedRobot {
                 mSuperstructure.setAngleAdd(-1.0);
             }
 
-            //mLimelight.setLed(Limelight.LedMode.ON);        
-            
             mSuperstructure.setWantFieldRelativeTurret(Rotation2d.fromDegrees(180.0));//mControlBoard.getTurretCardinal().rotation);
 
             if (mControlBoard.climbMode()) {
@@ -300,9 +274,6 @@ public class Robot extends TimedRobot {
                        turret_jog.rotateBy(Rotation2d.fromDegrees(90.0)));
                     lastTurretJog = turret_jog.rotateBy(Rotation2d.fromDegrees(90.0));
                     
-                // } else if (mControlBoard.getFendorShot()) {
-                //     mSuperstructure.setWantFendor();
-                //     //mSuperstructure.setWantFieldRelativeTurret(Rotation2d.fromDegrees(180.));
                 } else {
                     mSuperstructure.setWantAutoAim(lastTurretJog);
                 }
@@ -329,17 +300,13 @@ public class Robot extends TimedRobot {
                         mIntake.setState(Intake.WantedAction.INTAKE);
                     } else {
                         mIntake.setState(Intake.WantedAction.STAY_OUT);
-                        // mIntake.setState(Intake.WantedAction.INTAKE);
                     }
                 } else if (mControlBoard.getRetractIntake()) {
                     mIntake.setState(Intake.WantedAction.RETRACT);
                 } else {
                     mIntake.setState(Intake.WantedAction.NONE);
-                    //mRoller.stop();
                 }
             } else {
-                // mShiftSolenoid.set(true);
-                
                 Climber.WantedAction climber_action = Climber.WantedAction.NONE;
                 Skywalker.WantedAction skywalker_action = Skywalker.WantedAction.NONE;
                 mClimber.setShift(true);
@@ -351,8 +318,6 @@ public class Robot extends TimedRobot {
                 mSuperstructure.setWantUnjam(false);
 
                 //Climber control
-
-                
                 if (mControlBoard.getClimberJog() == -1){
                     climber_action = (Climber.WantedAction.JOG_DOWN);
                 } else if(mControlBoard.getClimberJog() == 1){
@@ -389,8 +354,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-		// CommandScheduler.getInstance().cancelAll();
-
         SmartDashboard.putString("Match Cycle", "TEST");
 
         try {
@@ -416,14 +379,9 @@ public class Robot extends TimedRobot {
             mEnabledLooper.stop();
             mClimber.setBrakeMode(true);            
 
-
-          //  mRobotState.resetVision();
-
             mInfrastructure.setIsDuringAuto(true);
 
             RobotState.getInstance().reset(Timer.getFPGATimestamp(), Pose2d.identity());
-
-            // Reset all auto mode state.
 
             mDisabledLooper.start();
 
@@ -443,8 +401,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         SmartDashboard.putString("Match Cycle", "DISABLED");
-
-        // mLimelight.setStream(2);
 
         try {
             mLimelight.setLed(Limelight.LedMode.OFF);

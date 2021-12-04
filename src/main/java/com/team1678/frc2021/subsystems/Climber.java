@@ -21,8 +21,6 @@ public class Climber extends Subsystem  {
 
     private static final double kIdleVoltage = 0.0;
 
-    private static boolean wasShifted;
-
     private PeriodicIO mPeriodicIO = new PeriodicIO();
     private TimeDelayedBoolean mShiftSolenoidTimer = new TimeDelayedBoolean();
 
@@ -129,14 +127,6 @@ public class Climber extends Subsystem  {
             public void onLoop(double timestamp) {
                 synchronized (Climber.this) {
                     runStateMachine();
-
-                    if (mPeriodicIO.shift_out) {
-                        wasShifted = true;
-                    }
-
-                    if (wasShifted && !mPeriodicIO.shift_out) {    
-                    //     mPeriodicIO.shift_solenoid = true;
-                    }
                 }
             }
 
@@ -184,18 +174,12 @@ public class Climber extends Subsystem  {
                 break;
             case JOGGING_UP:
                 mPeriodicIO.shift_solenoid = true;
-                // if (mExtended) {
-                    // mPeriodicIO.demand += 20000;
-                    mPeriodicIO.demand = 12.0;
-                //}
+                mPeriodicIO.demand = 12.0;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             case JOGGING_DOWN:
                 mPeriodicIO.shift_solenoid = true;
-                //if (mExtended) {
-                    // mPeriodicIO.demand -= 20000;
-                    mPeriodicIO.demand = -12.0;
-                // }
+                mPeriodicIO.demand = -12.0;
                 mPeriodicIO.brake_solenoid = false;
                 break;
             default:
@@ -229,7 +213,6 @@ public class Climber extends Subsystem  {
         }
         mPeriodicIO.current = mMaster.getStatorCurrent();
         mPeriodicIO.voltage = mMaster.getMotorOutputVoltage();
-        //LogSend();
     }
 
     @Override

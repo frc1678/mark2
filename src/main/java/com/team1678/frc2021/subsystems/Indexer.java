@@ -239,24 +239,16 @@ public class Indexer extends Subsystem {
             if (mMotionPlanner.isAtGoal(mSlotGoal, indexer_angle, 0)) {
                 if (mCleanSlots[mSlotGoal]) {
                     mGeneratedGoal = false;
-                    // mSlotGoal = mMotionPlanner.findNearestOpenSlot(indexer_angle, mProxyStatus);
-                    // mPeriodicIO.indexer_demand = mMotionPlanner.findAngleGoalToIntake(mSlotGoal,
-                    // indexer_angle);
                 }
             }
             break;
         case PASSIVE_INDEXING:
             mPeriodicIO.indexer_control_mode = ControlMode.Velocity;
             mPeriodicIO.indexer_demand = mBackwards ? -kPassiveIndexingVelocity : kPassiveIndexingVelocity;
-
-            //if ((now - mIndexerStart) % 2 < .1) {
-            //    mPeriodicIO.indexer_demand *= -1;
-            //}
-            
             break;
         case PREPPING:
             mPeriodicIO.indexer_control_mode = ControlMode.Velocity;
-            mPeriodicIO.indexer_demand = 0;// mMotionPlanner.findAngleGoal(mSlotGoal, indexer_angle, turret_angle) + (36.0 * (mBackwards ? -1 : 1));
+            mPeriodicIO.indexer_demand = 0;
             break;
         case REVOLVING:
             mPeriodicIO.indexer_control_mode = ControlMode.MotionMagic;

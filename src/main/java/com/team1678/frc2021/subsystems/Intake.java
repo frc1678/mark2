@@ -127,12 +127,6 @@ public class Intake extends Subsystem {
     public void runStateMachine() {
         switch (mState) {
         case INTAKING:
-            /*
-            if (mPeriodicIO.intake_out) {    
-                mPeriodicIO.demand = kIntakingVoltage;
-            } else {
-                mPeriodicIO.demand = 0.0;
-            }*/
             mPeriodicIO.demand = kIntakingVoltage;
             mPeriodicIO.deploy = true;
             break;

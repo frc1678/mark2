@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Brings all da colors to da club
+ * Shiny Lights
  */
 public class LEDs extends Subsystem{
     private static LEDs instance = null;
