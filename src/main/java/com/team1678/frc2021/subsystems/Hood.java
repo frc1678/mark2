@@ -19,7 +19,7 @@ public class Hood extends ServoMotorSubsystem {
 
     public synchronized static Hood getInstance() {
         if (mInstance == null) {
-            mInstance = new Hood(Constants.kHoodConstants);
+            mInstance = new Hood(Constants.HoodConstants.kHoodServoConstants);
         }
 
         return mInstance;
@@ -48,7 +48,7 @@ public class Hood extends ServoMotorSubsystem {
     }
 
     public synchronized boolean getTucked() {
-        return Util.epsilonEquals(getAngle(), Constants.kHoodConstants.kMinUnitsLimit, 5.0); 
+        return Util.epsilonEquals(getAngle(), this.mConstants.kMinUnitsLimit, 5.0); 
     }
 
     @Override

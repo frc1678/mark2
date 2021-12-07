@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team254.lib.drivers.TalonFXFactory;
@@ -44,7 +45,7 @@ public class Climber extends Subsystem  {
 
 
     private Climber() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
+        mMaster = TalonFXFactory.createDefaultTalon(Ports.INTAKE_ROLLER);
         mMaster.changeMotionControlFramePeriod(60);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 60, 100);
 
@@ -68,7 +69,7 @@ public class Climber extends Subsystem  {
 
         mMaster.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
 
-        mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
+        mShiftSolenoid = Constants.makeSolenoidForId(Ports.CLIMBER_SOLENOID);
     }
 
     public synchronized static Climber getInstance() {

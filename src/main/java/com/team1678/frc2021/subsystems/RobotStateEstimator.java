@@ -63,7 +63,7 @@ public class RobotStateEstimator extends Subsystem {
             double swervePoseTranslation_x = Units.metersToInches(mSwervePose.getTranslation().getX());
             double swervePoseTranslation_y = Units.metersToInches(mSwervePose.getTranslation().getY());
 
-            ChassisSpeeds chassisVelocity = Constants.Swerve.swerveKinematics.toChassisSpeeds(mSwerve.mSwerveMods[0].getState(), mSwerve.mSwerveMods[1].getState(), mSwerve.mSwerveMods[2].getState(), mSwerve.mSwerveMods[3].getState());
+            ChassisSpeeds chassisVelocity = Constants.SwerveConstants.swerveKinematics.toChassisSpeeds(mSwerve.mSwerveMods[0].getState(), mSwerve.mSwerveMods[1].getState(), mSwerve.mSwerveMods[2].getState(), mSwerve.mSwerveMods[3].getState());
 
             mSwervePose = new Pose2d(swervePoseTranslation_x, swervePoseTranslation_y, mSwervePose.getRotation());
 

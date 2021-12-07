@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team254.lib.drivers.TalonFXFactory;
@@ -54,23 +55,23 @@ public class Indexer extends Subsystem {
     private double mOffset = 0;
 
     private Indexer() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kIndexerId);
+        mMaster = TalonFXFactory.createDefaultTalon(Ports.INDEXER);
         mMaster.changeMotionControlFramePeriod(255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 125);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
 
-        mMaster.config_kP(0, Constants.kIndexerKp, Constants.kLongCANTimeoutMs);
-        mMaster.config_kI(0, Constants.kIndexerKi, Constants.kLongCANTimeoutMs);
-        mMaster.config_kD(0, Constants.kIndexerKd, Constants.kLongCANTimeoutMs);
-        mMaster.config_kF(0, Constants.kIndexerKf, Constants.kLongCANTimeoutMs);
-        mMaster.config_kP(1, Constants.kIndexerVelocityKp, Constants.kLongCANTimeoutMs);
-        mMaster.config_kI(1, Constants.kIndexerVelocityKi, Constants.kLongCANTimeoutMs);
-        mMaster.config_kD(1, Constants.kIndexerVelocityKd, Constants.kLongCANTimeoutMs);
-        mMaster.config_kF(1, Constants.kIndexerVelocityKf, Constants.kLongCANTimeoutMs);
+        mMaster.config_kP(0, Constants.IndexerConstants.kIndexerKp, Constants.kLongCANTimeoutMs);
+        mMaster.config_kI(0, Constants.IndexerConstants.kIndexerKi, Constants.kLongCANTimeoutMs);
+        mMaster.config_kD(0, Constants.IndexerConstants.kIndexerKd, Constants.kLongCANTimeoutMs);
+        mMaster.config_kF(0, Constants.IndexerConstants.kIndexerKf, Constants.kLongCANTimeoutMs);
+        mMaster.config_kP(1, Constants.IndexerConstants.kIndexerVelocityKp, Constants.kLongCANTimeoutMs);
+        mMaster.config_kI(1, Constants.IndexerConstants.kIndexerVelocityKi, Constants.kLongCANTimeoutMs);
+        mMaster.config_kD(1, Constants.IndexerConstants.kIndexerVelocityKd, Constants.kLongCANTimeoutMs);
+        mMaster.config_kF(1, Constants.IndexerConstants.kIndexerVelocityKf, Constants.kLongCANTimeoutMs);
 
         mMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
-        mMaster.configMotionCruiseVelocity(Constants.kIndexerMaxVelocity);
-        mMaster.configMotionAcceleration(Constants.kIndexerMaxAcceleration);
+        mMaster.configMotionCruiseVelocity(Constants.IndexerConstants.kIndexerMaxVelocity);
+        mMaster.configMotionAcceleration(Constants.IndexerConstants.kIndexerMaxAcceleration);
 
         mMaster.set(ControlMode.PercentOutput, 0);
         mMaster.setInverted(false);

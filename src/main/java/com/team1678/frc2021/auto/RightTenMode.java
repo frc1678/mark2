@@ -94,7 +94,7 @@ public class RightTenMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 firstIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -106,7 +106,7 @@ public class RightTenMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 closeShot,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -118,7 +118,7 @@ public class RightTenMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToShieldGen,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -130,7 +130,7 @@ public class RightTenMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToSecondIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,

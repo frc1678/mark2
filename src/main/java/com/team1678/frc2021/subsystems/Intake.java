@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team254.lib.drivers.TalonFXFactory;
@@ -51,12 +52,12 @@ public class Intake extends Subsystem {
     }
 
     private Intake() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
+        mMaster = TalonFXFactory.createDefaultTalon(Ports.INTAKE_ROLLER);
         mMaster.changeMotionControlFramePeriod(255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
         mMaster.setInverted(true);
-        mDeploySolenoid = Constants.makeSolenoidForId(Constants.kDeploySolenoidId);
+        mDeploySolenoid = Constants.makeSolenoidForId(Ports.INTAKE_SOLENOID);
     }
 
     public synchronized static Intake getInstance() {

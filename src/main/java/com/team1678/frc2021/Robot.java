@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
 
             mTurret.cancelHoming();
             
-            mLimelight.setPipeline(Constants.kPortPipeline);
+            mLimelight.setPipeline(Constants.VisionConstants.kPortPipeline);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -207,7 +207,7 @@ public class Robot extends TimedRobot {
 
             mEnabledLooper.start();
             mLimelight.setLed(Limelight.LedMode.ON);
-            mLimelight.setPipeline(Constants.kPortPipeline);
+            mLimelight.setPipeline(Constants.VisionConstants.kPortPipeline);
             mTurret.setNeutralMode(NeutralMode.Brake);
             mHood.setNeutralMode(NeutralMode.Brake);
             mLEDs.conformToState(LEDs.State.ENABLED);

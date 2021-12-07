@@ -64,7 +64,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new SwerveControllerCommand(
                 leftSixFirstShot,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -76,7 +76,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new SwerveControllerCommand(
                 leftSixIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -88,7 +88,7 @@ public class LeftEightNearMode extends SequentialCommandGroup{
             new SwerveControllerCommand(
                 leftSixSecondShot,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,

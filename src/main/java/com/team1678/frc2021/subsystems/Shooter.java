@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team254.lib.drivers.TalonFXFactory;
@@ -32,8 +33,8 @@ public class Shooter extends Subsystem {
     private static double kShooterTolerance = 200.0;
 
     private Shooter() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kMasterFlywheelID);
-        mSlave = TalonFXFactory.createPermanentSlaveTalon(Constants.kSlaveFlywheelID, Constants.kMasterFlywheelID);
+        mMaster = TalonFXFactory.createDefaultTalon(Ports.SHOOTER_MASTER);
+        mSlave = TalonFXFactory.createPermanentSlaveTalon(Ports.SHOOTER_SLAVE, Ports.SHOOTER_MASTER);
         mSlave.changeMotionControlFramePeriod(255);
         mSlave.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 125);
         mSlave.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
@@ -43,10 +44,10 @@ public class Shooter extends Subsystem {
         mMaster.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
         mMaster.enableVoltageCompensation(true);
         
-        mMaster.config_kP(0, Constants.kShooterP, Constants.kLongCANTimeoutMs);
-        mMaster.config_kI(0, Constants.kShooterI, Constants.kLongCANTimeoutMs);
-        mMaster.config_kD(0, Constants.kShooterD, Constants.kLongCANTimeoutMs);
-        mMaster.config_kF(0, Constants.kShooterF, Constants.kLongCANTimeoutMs);
+        mMaster.config_kP(0, Constants.ShooterConstants.kShooterP, Constants.kLongCANTimeoutMs);
+        mMaster.config_kI(0, Constants.ShooterConstants.kShooterI, Constants.kLongCANTimeoutMs);
+        mMaster.config_kD(0, Constants.ShooterConstants.kShooterD, Constants.kLongCANTimeoutMs);
+        mMaster.config_kF(0, Constants.ShooterConstants.kShooterF, Constants.kLongCANTimeoutMs);
         mMaster.config_IntegralZone(0, (int) (200.0 / kFlywheelVelocityConversion));
         mMaster.selectProfileSlot(0, 0);
 

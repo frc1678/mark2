@@ -3,6 +3,7 @@ package com.team1678.frc2021.subsystems;
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.CANifierStatusFrame;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 
 public class Canifier extends Subsystem {
     private static Canifier mInstance;
@@ -10,7 +11,7 @@ public class Canifier extends Subsystem {
     private PeriodicInputs mPeriodicInputs;
 
     private Canifier() {
-        mCanifier = new CANifier(Constants.kCanifierId);
+        mCanifier = new CANifier(Ports.CANIFIER);
         mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_1_General, 255, Constants.kLongCANTimeoutMs);
         mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_2_General, 2, Constants.kLongCANTimeoutMs);
         mPeriodicInputs = new PeriodicInputs();

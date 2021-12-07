@@ -30,7 +30,7 @@ public class Turret extends ServoMotorSubsystem {
 
     public synchronized static Turret getInstance() {
         if (mInstance == null) {
-            mInstance = new Turret(Constants.kTurretConstants);
+            mInstance = new Turret(Constants.TurretConstants.kTurretServoConstants);
         }
         return mInstance;
     }

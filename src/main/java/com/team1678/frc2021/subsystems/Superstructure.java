@@ -210,7 +210,7 @@ public class Superstructure extends Subsystem {
     public synchronized void setWantHoodScan(boolean scan) {
         if (scan != mWantsHoodScan) {
             if (scan) {
-                mHoodSetpoint = Constants.kHoodConstants.kMinUnitsLimit + 10;
+                mHoodSetpoint = Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit + 10;
             } else {
                 mHoodSetpoint = mHood.getAngle();
             }
@@ -257,11 +257,11 @@ public class Superstructure extends Subsystem {
     }
 
     public void safetyReset() {
-        if (mTurretSetpoint < Constants.kTurretConstants.kMinUnitsLimit) {
+        if (mTurretSetpoint < Constants.TurretConstants.kTurretServoConstants.kMinUnitsLimit) {
             mTurretSetpoint += SuperstructureConstants.kTurretDOF;
             Limelight.getInstance().setLed(Limelight.LedMode.OFF);
             mDisableLimelight = true;
-        } else if (mTurretSetpoint > Constants.kTurretConstants.kMaxUnitsLimit) {
+        } else if (mTurretSetpoint > Constants.TurretConstants.kTurretServoConstants.kMaxUnitsLimit) {
             mTurretSetpoint -= SuperstructureConstants.kTurretDOF;
             Limelight.getInstance().setLed(Limelight.LedMode.OFF);
             mDisableLimelight = true;
@@ -270,12 +270,12 @@ public class Superstructure extends Subsystem {
             Limelight.getInstance().setLed(Limelight.LedMode.ON);
         }
 
-        if (mHoodSetpoint < Constants.kHoodConstants.kMinUnitsLimit) {
+        if (mHoodSetpoint < Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit) {
             // logic for when hood fully in
-            mHoodSetpoint = Constants.kHoodConstants.kMinUnitsLimit;
+            mHoodSetpoint = Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit;
         }
-        if (mHoodSetpoint > Constants.kHoodConstants.kMaxUnitsLimit) {
-            mHoodSetpoint = Constants.kHoodConstants.kMaxUnitsLimit;
+        if (mHoodSetpoint > Constants.HoodConstants.kHoodServoConstants.kMaxUnitsLimit) {
+            mHoodSetpoint = Constants.HoodConstants.kHoodServoConstants.kMaxUnitsLimit;
             // logic for when hood fully extended
         }
     }
@@ -285,10 +285,10 @@ public class Superstructure extends Subsystem {
             return;
         }
 
-        if (Util.epsilonEquals(mHood.getAngle(), Constants.kHoodConstants.kMinUnitsLimit + 10, 10.0)) {
-            mHoodSetpoint = Constants.kHoodConstants.kMaxUnitsLimit - 10;
-        } else if (Util.epsilonEquals(mHood.getAngle(), Constants.kHoodConstants.kMaxUnitsLimit - 10, 10.0)) {
-            mHoodSetpoint = Constants.kHoodConstants.kMinUnitsLimit + 10;
+        if (Util.epsilonEquals(mHood.getAngle(), Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit + 10, 10.0)) {
+            mHoodSetpoint = Constants.HoodConstants.kHoodServoConstants.kMaxUnitsLimit - 10;
+        } else if (Util.epsilonEquals(mHood.getAngle(), Constants.HoodConstants.kHoodServoConstants.kMaxUnitsLimit - 10, 10.0)) {
+            mHoodSetpoint = Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit + 10;
         }
     }
 
@@ -300,16 +300,16 @@ public class Superstructure extends Subsystem {
         }
 
         if (mWantsShoot && mGotSpunUp) {
-            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, mTrackId, Constants.kMaxGoalTrackAge);
+            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, mTrackId, Constants.VisionConstants.kMaxGoalTrackAge);
         } else {
-            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, -1, Constants.kMaxGoalTrackAge);
+            mLatestAimingParameters = mRobotState.getAimingParameters(mUseInnerTarget, -1, Constants.VisionConstants.kMaxGoalTrackAge);
         }
 
         if (mLatestAimingParameters.isPresent()) {
             mTrackId = mLatestAimingParameters.get().getTrackId();
 
             Pose2d robot_to_predicted_robot = mRobotState.getLatestFieldToVehicle().getValue().inverse()
-                    .transformBy(mRobotState.getPredictedFieldToVehicle(Constants.kAutoAimPredictionTime));
+                    .transformBy(mRobotState.getPredictedFieldToVehicle(Constants.VisionConstants.kAutoAimPredictionTime));
             Pose2d predicted_turret_to_goal = robot_to_predicted_robot.inverse()
                     .transformBy(mLatestAimingParameters.get().getTurretToGoal());
             mCorrectedRangeToTarget = predicted_turret_to_goal.getTranslation().norm();
@@ -386,12 +386,12 @@ public class Superstructure extends Subsystem {
         }
 
         if (mWantsTuck || !mEnableIndexer) {
-            mHood.setSetpointPositionPID(Constants.kHoodConstants.kMinUnitsLimit, 0);
+            mHood.setSetpointPositionPID(Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit, 0);
         } else if (mWantsFendor) {
             mHood.setSetpointMotionMagic(25.0);
             mTurretSetpoint = 180.0;
         } else if (mWantsTestSpit) {
-            mHood.setSetpointMotionMagic(Constants.kHoodConstants.kMinUnitsLimit);
+            mHood.setSetpointMotionMagic(Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit);
         } else {
             mHood.setSetpointMotionMagic(mHoodSetpoint);
         }
@@ -413,7 +413,7 @@ public class Superstructure extends Subsystem {
         } else if (mWantsPreShot) {
             real_shooter = mShooterSetpoint;
             indexerAction = Indexer.WantedAction.HELLA_ZOOM;
-            real_trigger = Constants.kTriggerRPM;
+            real_trigger = Constants.TriggerConstants.kTriggerRPM;
             real_popout = false;
         } else if (mWantsShoot) {
             real_shooter = mShooterSetpoint;
@@ -427,7 +427,7 @@ public class Superstructure extends Subsystem {
             } else {
                 indexerAction = Indexer.WantedAction.ZOOM;
             }
-            real_trigger = Constants.kTriggerRPM;
+            real_trigger = Constants.TriggerConstants.kTriggerRPM;
 
             if (mGotSpunUp) {
                 real_popout = true;
