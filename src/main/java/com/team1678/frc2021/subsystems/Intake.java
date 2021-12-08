@@ -25,11 +25,11 @@ public class Intake extends Subsystem {
     private Solenoid mDeploySolenoid;
 
     public enum WantedAction {
-        NONE, INTAKE, RETRACT, STAY_OUT,
+        NONE, INTAKE, OUTTAKE, STAY_OUT,
     }
 
     public enum State {
-        IDLE, INTAKING, RETRACTING, STAYING_OUT,
+        IDLE, INTAKING, OUTTAKING, STAYING_OUT,
     }
 
     private State mState = State.IDLE;
@@ -131,7 +131,7 @@ public class Intake extends Subsystem {
             mPeriodicIO.demand = kIntakingVoltage;
             mPeriodicIO.deploy = true;
             break;
-        case RETRACTING:
+        case OUTTAKING:
             if (mPeriodicIO.intake_out) {    
                 mPeriodicIO.demand = -kIntakingVoltage;
             } else {
@@ -166,8 +166,8 @@ public class Intake extends Subsystem {
         case INTAKE:
             mState = State.INTAKING;
             break;
-        case RETRACT:
-            mState = State.RETRACTING;
+        case OUTTAKE:
+            mState = State.OUTTAKING;
             break;
         case STAY_OUT:
             mState = State.STAYING_OUT;

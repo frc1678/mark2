@@ -345,10 +345,4 @@ public class GamepadButtonControlBoard {
     public boolean getRunIntake() {
         return mController.getTrigger(Side.RIGHT);
     }
-
-    public boolean getRetractIntake() {
-        return mController.getTrigger(Side.LEFT);
-    }
-    
-
 }

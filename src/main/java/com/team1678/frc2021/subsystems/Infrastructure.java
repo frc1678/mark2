@@ -37,11 +37,6 @@ public class Infrastructure extends Subsystem {
         // No-op.
     }
 
-    @Override
-    public void zeroSensors() {
-        // No-op.
-    }
-
     private void startCompressor() {
         mCompressor.start();
     }

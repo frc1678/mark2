@@ -19,9 +19,6 @@ public class ControlBoard {
     private ControlBoard() {
         mButtonControlBoard = GamepadButtonControlBoard.getInstance();
     }
-
-    public void reset() {
-    }
     
     public boolean getManualZoom() {
         return mButtonControlBoard.getManualZoom();
@@ -43,8 +40,8 @@ public class ControlBoard {
         return mButtonControlBoard.getRunIntake();
     }
 
-    public boolean getRetractIntake() {
-        return mButtonControlBoard.getRetractIntake();
+    public boolean getOuttake() {
+        return mButtonControlBoard.getOuttake();
     }
 
     public Rotation2d getJogTurret() {
@@ -159,8 +156,6 @@ public class ControlBoard {
     
     public boolean climbMode() {
         return mButtonControlBoard.climbMode();
-        //return mController.getButton(XboxController.Button.LB) && mController.getButton(XboxController.Button.RB)  && 
-        //mController.getTrigger(XboxController.Side.LEFT) &&  mController.getTrigger(XboxController.Side.RIGHT);
     }
 
     public TurretCardinal getTurretCardinal() {
