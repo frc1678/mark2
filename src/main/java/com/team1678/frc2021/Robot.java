@@ -321,7 +321,7 @@ public class Robot extends TimedRobot {
                     mLEDs.conformToState(LEDs.State.TARGET_TRACKING);
                 } else if (mSuperstructure.isAimed()) {
                     mLEDs.conformToState(LEDs.State.INVISIBLE_TARGET_TRACKING);
-                } else if (mSuperstructure.getLatestAimingParameters().isPresent() && !mLimelight.seesTarget() && !mSuperstructure.getScanningHood()) {
+                } else if (mSuperstructure.getLatestAimingParameters().isPresent() && !mLimelight.seesTarget() && !mSuperstructure.getWantHoodScan()) {
                     mLEDs.conformToState(LEDs.State.TARGET_VISIBLE);
                 } else if (mLimelight.seesTarget()) {
                     mLEDs.conformToState(LEDs.State.LIMELIGHT_SEES_ONLY);

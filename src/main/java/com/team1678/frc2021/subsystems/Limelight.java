@@ -72,9 +72,9 @@ public class Limelight extends Subsystem {
             public void onLoop(double timestamp) {
                 final double start = Timer.getFPGATimestamp();
                 synchronized (this) {
-                    if ((Hood.getInstance().getAtGoal() || Superstructure.getInstance().getScanningHood())
+                    if ((Hood.getInstance().getAtGoal() || Superstructure.getInstance().getWantHoodScan())
                             && !Superstructure.getInstance().getTucked() && !Superstructure.getInstance().getWantSpit()
-                            && mPeriodicIO.has_comms && !Superstructure.getInstance().getDisableLimelight()) {
+                            && mPeriodicIO.has_comms && !Superstructure.getInstance().getLimelightDisabled()) {
                         RobotState.getInstance().addVisionUpdate(timestamp - getLatency(), getTarget());
                     } else {
                         RobotState.getInstance().addVisionUpdate(timestamp - getLatency(), null);

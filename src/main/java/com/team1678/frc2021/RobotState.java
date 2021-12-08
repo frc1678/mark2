@@ -289,8 +289,7 @@ public class RobotState {
         return getFieldToVehicle(timestamp).inverse().transformBy(fieldToVisionTarget);
     }
 
-    public synchronized Optional<AimingParameters> getAimingParameters(boolean inner_goal, int prev_track_id,
-            double max_track_age) {
+    public synchronized Optional<AimingParameters> getAimingParameters(int prev_track_id, double max_track_age) {
         GoalTracker tracker = vision_target_;
         List<GoalTracker.TrackReport> reports = tracker.getTracks();
 
@@ -343,7 +342,7 @@ public class RobotState {
         SmartDashboard.putNumber("Robot Y", getLatestFieldToVehicle().getValue().getTranslation().y());
         SmartDashboard.putNumber("Robot Theta", getLatestFieldToVehicle().getValue().getRotation().getDegrees());
         SmartDashboard.putNumber("Limelight Pitch", getVehicleToHood(Timer.getFPGATimestamp()).getDegrees());
-        Optional<AimingParameters> params = getAimingParameters(false, -1, Constants.VisionConstants.kMaxGoalTrackAge);
+        Optional<AimingParameters> params = getAimingParameters(-1, Constants.VisionConstants.kMaxGoalTrackAge);
         SmartDashboard.putBoolean("Has Aiming Parameters", params.isPresent());
         if (params.isPresent()) {
             SmartDashboard.putNumber("Vehicle to Target", params.get().getRange());
