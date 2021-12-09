@@ -33,9 +33,9 @@ public class SmartdashInteractions {
     private final NetworkTableEntry mSeesTarget;
     private final NetworkTableEntry mLimelightOK;
     private final NetworkTableEntry mLimelightLatency;
-    private final NetworkTableEntry mkLimelightDT;
+    private final NetworkTableEntry mLimelightDT;
     private final NetworkTableEntry mLimelightTX;
-    private final NetworkTableEntry mkLimelightTY;
+    private final NetworkTableEntry mLimelightTY;
 
     /* Superstructure */
     private final NetworkTableEntry mTurretMode;
@@ -67,7 +67,7 @@ public class SmartdashInteractions {
             .withSize(2, 2)
             .withWidget(BuiltInWidgets.kGraph)
             .getEntry();
-        mkLimelightDT = VISION_TAB
+        mLimelightDT = VISION_TAB
             .add("Limelight Loop Time", -1.0)
             .withPosition(4, 0)
             .withSize(2, 2)
@@ -78,7 +78,7 @@ public class SmartdashInteractions {
             .withPosition(0, 1)
             .withSize(1, 1)
             .getEntry();
-        mkLimelightTY = VISION_TAB
+        mLimelightTY = VISION_TAB
             .add("Limelight TY", 0.0)
             .withPosition(1, 1)
             .withSize(1, 1)
@@ -100,9 +100,9 @@ public class SmartdashInteractions {
         mSeesTarget.setBoolean(mLimelight.seesTarget());
         mLimelightOK.setBoolean(mLimelight.limelightOK());
         mLimelightLatency.setDouble(mLimelight.getLatency());
-        mkLimelightDT.setDouble(mLimelight.getDt());
+        mLimelightDT.setDouble(mLimelight.getDt());
         mLimelightTX.setDouble(mLimelight.getOffset()[0]);
-        mkLimelightTY.setDouble(mLimelight.getOffset()[1]);
+        mLimelightTY.setDouble(mLimelight.getOffset()[1]);
 
         /* Superstructure */
         mOnTarget.setBoolean(mSuperstructure.isAimed());
