@@ -25,7 +25,7 @@ public class SmartdashInteractions {
     private final Superstructure mSuperstructure;
 
     /* Tabs */
-    private final ShuffleboardTab VISION_TAB;
+    private ShuffleboardTab VISION_TAB;
 
     /* Entries */
 
@@ -65,13 +65,13 @@ public class SmartdashInteractions {
             .add("Limelight Latency", -1.0)
             .withPosition(2, 0)
             .withSize(2, 2)
-            .withWidget(BuiltInWidgets.kGraph)
+            .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
         mLimelightDT = VISION_TAB
             .add("Limelight Loop Time", -1.0)
             .withPosition(4, 0)
             .withSize(2, 2)
-            .withWidget(BuiltInWidgets.kGraph)
+            .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
         mLimelightTX = VISION_TAB
             .add("Limelight TX", 0.0)
@@ -92,10 +92,11 @@ public class SmartdashInteractions {
             .add("On Target", false)
             .withPosition(0, 2)
             .withSize(1, 1)
-            .getEntry();    
+            .getEntry();
     }
 
     public void update() {
+        
         /* Vision */
         mSeesTarget.setBoolean(mLimelight.seesTarget());
         mLimelightOK.setBoolean(mLimelight.limelightOK());
