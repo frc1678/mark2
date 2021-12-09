@@ -374,7 +374,7 @@ public class Limelight extends Subsystem {
         return mPeriodicIO.latency;
     }
 
-    public double getDT() {
+    public double getDt() {
         return mPeriodicIO.dt;
     }
 

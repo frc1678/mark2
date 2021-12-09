@@ -21,74 +21,74 @@ public class SmartdashInteractions {
     }
 
     /* Subsystem Dependencies */
-    private final Limelight kLimelight;
-    private final Superstructure kSuperstructure;
+    private final Limelight mLimelight;
+    private final Superstructure mSuperstructure;
 
     /* Tabs */
-    private final ShuffleboardTab kVisionTab;
+    private final ShuffleboardTab VISION_TAB;
 
     /* Entries */
 
     /* Vision */
-    private final NetworkTableEntry kSeesTarget;
-    private final NetworkTableEntry kLimelightOK;
-    private final NetworkTableEntry kLimelightLatency;
-    private final NetworkTableEntry kLimelightDT;
-    private final NetworkTableEntry kLimelightTX;
-    private final NetworkTableEntry kLimelightTY;
+    private final NetworkTableEntry mSeesTarget;
+    private final NetworkTableEntry mLimelightOK;
+    private final NetworkTableEntry mLimelightLatency;
+    private final NetworkTableEntry mkLimelightDT;
+    private final NetworkTableEntry mLimelightTX;
+    private final NetworkTableEntry mkLimelightTY;
 
     /* Superstructure */
-    private final NetworkTableEntry kTurretMode;
-    private final NetworkTableEntry kOnTarget;
+    private final NetworkTableEntry mTurretMode;
+    private final NetworkTableEntry mOnTarget;
 
 
     public SmartdashInteractions() {
         /* Get Subsystems */
-        kLimelight = Limelight.getInstance();
-        kSuperstructure = Superstructure.getInstance();
+        mLimelight = Limelight.getInstance();
+        mSuperstructure = Superstructure.getInstance();
 
         /* Get Tabs */
-        kVisionTab = Shuffleboard.getTab("Vision");
+        VISION_TAB = Shuffleboard.getTab("Vision");
         
         /* Create Entries */
-        kLimelightOK = kVisionTab
+        mLimelightOK = VISION_TAB
             .add("Limelight OK", false)
             .withPosition(0, 0)
             .withSize(1, 1)
             .getEntry();        
-        kSeesTarget = kVisionTab
+        mSeesTarget = VISION_TAB
             .add("Limelight Sees Target", false)
             .withPosition(1, 0)
             .withSize(1, 1)
             .getEntry();
-        kLimelightLatency = kVisionTab
+        mLimelightLatency = VISION_TAB
             .add("Limelight Latency", -1.0)
             .withPosition(2, 0)
             .withSize(2, 2)
             .withWidget(BuiltInWidgets.kGraph)
             .getEntry();
-        kLimelightDT = kVisionTab
+        mkLimelightDT = VISION_TAB
             .add("Limelight Loop Time", -1.0)
             .withPosition(4, 0)
             .withSize(2, 2)
             .withWidget(BuiltInWidgets.kGraph)
             .getEntry();
-        kLimelightTX = kVisionTab
+        mLimelightTX = VISION_TAB
             .add("Limelight TX", 0.0)
             .withPosition(0, 1)
             .withSize(1, 1)
             .getEntry();
-        kLimelightTY = kVisionTab
+        mkLimelightTY = VISION_TAB
             .add("Limelight TY", 0.0)
             .withPosition(1, 1)
             .withSize(1, 1)
             .getEntry();    
-        kTurretMode = kVisionTab
+        mTurretMode = VISION_TAB
             .add("Turret Mode", "N/A")
             .withPosition(1, 2)
             .withSize(1, 1)
             .getEntry(); 
-        kOnTarget = kVisionTab
+        mOnTarget = VISION_TAB
             .add("On Target", false)
             .withPosition(0, 2)
             .withSize(1, 1)
@@ -97,16 +97,16 @@ public class SmartdashInteractions {
 
     public void update() {
         /* Vision */
-        kSeesTarget.setBoolean(kLimelight.seesTarget());
-        kLimelightOK.setBoolean(kLimelight.limelightOK());
-        kLimelightLatency.setDouble(kLimelight.getLatency());
-        kLimelightDT.setDouble(kLimelight.getDT());
-        kLimelightTX.setDouble(kLimelight.getOffset()[0]);
-        kLimelightTY.setDouble(kLimelight.getOffset()[1]);
+        mSeesTarget.setBoolean(mLimelight.seesTarget());
+        mLimelightOK.setBoolean(mLimelight.limelightOK());
+        mLimelightLatency.setDouble(mLimelight.getLatency());
+        mkLimelightDT.setDouble(mLimelight.getDt());
+        mLimelightTX.setDouble(mLimelight.getOffset()[0]);
+        mkLimelightTY.setDouble(mLimelight.getOffset()[1]);
 
         /* Superstructure */
-        kOnTarget.setBoolean(kSuperstructure.isAimed());
-        kTurretMode.setString(kSuperstructure.getTurretControlMode().toString());
+        mOnTarget.setBoolean(mSuperstructure.isAimed());
+        mTurretMode.setString(mSuperstructure.getTurretControlMode().toString());
         
     }
 }
