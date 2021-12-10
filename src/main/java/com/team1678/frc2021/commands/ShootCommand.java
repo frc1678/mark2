@@ -4,7 +4,6 @@ import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Trigger;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ShootCommand extends CommandBase {

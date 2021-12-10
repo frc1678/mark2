@@ -1,8 +1,8 @@
 package com.team1678.frc2021.controlboard;
 
 import com.team1678.frc2021.Constants;
+
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class CustomXboxController {

@@ -86,16 +86,16 @@ public class TeleopSwerve extends CommandBase {
         Translation2d tAxes; // translational axis
 
         /* Inversions */
-        yAxis = Constants.Swerve.invertYAxis ? controller.getRawAxis(translationAxis) : -controller.getRawAxis(translationAxis);
-        xAxis = Constants.Swerve.invertXAxis ? controller.getRawAxis(strafeAxis) : -controller.getRawAxis(strafeAxis);
-        rAxis = Constants.Swerve.invertRAxis ? controller.getRawAxis(rotationAxis) : -controller.getRawAxis(rotationAxis);
+        yAxis = Constants.SwerveConstants.invertYAxis ? controller.getRawAxis(translationAxis) : -controller.getRawAxis(translationAxis);
+        xAxis = Constants.SwerveConstants.invertXAxis ? controller.getRawAxis(strafeAxis) : -controller.getRawAxis(strafeAxis);
+        rAxis = Constants.SwerveConstants.invertRAxis ? controller.getRawAxis(rotationAxis) : -controller.getRawAxis(rotationAxis);
 
         /* Deadbands */
         tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
         rAxis = applyRotationalDeadband(rAxis);
 
-        translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.Swerve.maxSpeed);
-        rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.SwerveConstants.maxSpeed);
+        rotation = rAxis * Constants.SwerveConstants.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
 
         SmartDashboard.putNumber("X Controller Input", translation.getX());
@@ -110,7 +110,7 @@ public class TeleopSwerve extends CommandBase {
         double yAxis = axes[0];
         double xAxis = axes[1];
 
-        translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
+        translation = new Translation2d(yAxis, xAxis).times(Constants.SwerveConstants.maxSpeed);
 
         return translation;
     }
@@ -120,7 +120,7 @@ public class TeleopSwerve extends CommandBase {
 
         double rAxis = axes[2];
         
-        rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        rotation = rAxis * Constants.SwerveConstants.maxAngularVelocity;
 
         return rotation;
     }

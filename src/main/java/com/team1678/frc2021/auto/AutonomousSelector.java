@@ -88,9 +88,6 @@ public class AutonomousSelector {
             case SHOT_CENTER_FRONT:
                 startingPose = new Pose2d(2.90, 5.84, Rotation2d.fromDegrees(0.0));
                 return new ShotCenterFront(s_Swerve);
-
-            case AIM_TEST_AUTO:
-                return new AimTestAuto(s_Swerve);
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
                 break; 

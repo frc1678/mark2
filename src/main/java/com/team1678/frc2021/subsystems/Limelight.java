@@ -47,7 +47,7 @@ public class Limelight extends Subsystem {
     private NetworkTable mNetworkTable;
 
     private Limelight() {
-        mConstants = Constants.kLimelightConstants;
+        mConstants = Constants.VisionConstants.kLimelightConstants;
         mNetworkTable = NetworkTableInstance.getDefault().getTable(mConstants.kTableName);
     }
 
@@ -72,9 +72,9 @@ public class Limelight extends Subsystem {
             public void onLoop(double timestamp) {
                 final double start = Timer.getFPGATimestamp();
                 synchronized (this) {
-                    if ((Hood.getInstance().getAtGoal() || Superstructure.getInstance().getScanningHood())
+                    if ((Hood.getInstance().getAtGoal() || Superstructure.getInstance().getWantHoodScan())
                             && !Superstructure.getInstance().getTucked() && !Superstructure.getInstance().getWantSpit()
-                            && mPeriodicIO.has_comms && !Superstructure.getInstance().getDisableLimelight()) {
+                            && mPeriodicIO.has_comms && !Superstructure.getInstance().getLimelightDisabled()) {
                         RobotState.getInstance().addVisionUpdate(timestamp - getLatency(), getTarget());
                     } else {
                         RobotState.getInstance().addVisionUpdate(timestamp - getLatency(), null);
@@ -142,7 +142,7 @@ public class Limelight extends Subsystem {
 
     @Override
     public synchronized void readPeriodicInputs() {
-        final double latency = mNetworkTable.getEntry("tl").getDouble(0) / 1000.0 + Constants.kImageCaptureLatency;
+        final double latency = mNetworkTable.getEntry("tl").getDouble(0) / 1000.0 + Constants.VisionConstants.kImageCaptureLatency;
         mPeriodicIO.givenLedMode = (int) mNetworkTable.getEntry("ledMode").getDouble(1.0);
         mPeriodicIO.givenPipeline = (int) mNetworkTable.getEntry("pipeline").getDouble(0);
         mPeriodicIO.xOffset = mNetworkTable.getEntry("tx").getDouble(0.0);
@@ -285,8 +285,8 @@ public class Limelight extends Subsystem {
             double nY = -((y_pixels - 160.0) / 160.0);
             double nZ = -((z_pixels - 120.0) / 120.0);
 
-            double y = Constants.kVPW / 2 * nY;
-            double z = Constants.kVPH / 2 * nZ;
+            double y = Constants.VisionConstants.kVPW / 2 * nY;
+            double z = Constants.VisionConstants.kVPH / 2 * nZ;
 
             TargetInfo target = new TargetInfo(y, z);
             target.setSkew(slope);

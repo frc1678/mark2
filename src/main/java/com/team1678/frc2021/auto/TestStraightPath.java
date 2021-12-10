@@ -38,7 +38,7 @@ public class TestStraightPath extends SequentialCommandGroup {
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
+                .setKinematics(Constants.SwerveConstants.swerveKinematics);
 
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
@@ -56,7 +56,7 @@ public class TestStraightPath extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 exampleTrajectory,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,

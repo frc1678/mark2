@@ -1,22 +1,18 @@
 package com.team1678.frc2021.auto;
 
-import com.team1678.frc2021.Constants;
+import java.util.List;
 
-import com.team1678.frc2021.commands.AutoAimCommand;
+import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.commands.IntakeCommand;
 import com.team1678.frc2021.commands.ReadyGyro;
 import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.commands.SpinUpCommand;
-import com.team1678.frc2021.commands.SwervePointTurnCommand;
 import com.team1678.frc2021.commands.WaitToAutoAimCommand;
 import com.team1678.frc2021.commands.WaitToIntakeCommand;
 import com.team1678.frc2021.commands.WaitToSpinUpCommand;
-
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
-
-import java.util.List;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
@@ -25,12 +21,9 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RightTenNearMode extends SequentialCommandGroup {
 
@@ -101,7 +94,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 firstIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -113,7 +106,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 closeShot,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -125,7 +118,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToShieldGen,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -137,7 +130,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToFirstIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -160,7 +153,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getFirstToSecondIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -172,7 +165,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToSecondIntake,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -184,7 +177,7 @@ public class RightTenNearMode extends SequentialCommandGroup {
             new SwerveControllerCommand(
                 getToSecondShot,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
@@ -194,9 +187,6 @@ public class RightTenNearMode extends SequentialCommandGroup {
 
         IntakeCommand intake =
             new IntakeCommand(mIntake, mSuperstructure);
-            
-        SpinUpCommand firstSpinUp =
-            new SpinUpCommand(mSuperstructure);
 
         SpinUpCommand secondSpinUp =
             new SpinUpCommand(mSuperstructure);
@@ -206,9 +196,6 @@ public class RightTenNearMode extends SequentialCommandGroup {
 
         ShootCommand secondShoot =
             new ShootCommand(mSuperstructure);
-
-        AutoAimCommand aim =
-            new AutoAimCommand(mSuperstructure, 180);
 
         WaitToSpinUpCommand waitToSpinUp =
             new WaitToSpinUpCommand(mSuperstructure, 0.5);

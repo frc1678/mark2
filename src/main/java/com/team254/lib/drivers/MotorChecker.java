@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
-// TODO are these the right configurations?
 public abstract class MotorChecker<T> {
     public static class CheckerConfig {
         public double mCurrentFloor = 5;

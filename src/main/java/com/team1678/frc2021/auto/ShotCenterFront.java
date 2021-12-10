@@ -42,7 +42,7 @@ public class ShotCenterFront extends SequentialCommandGroup{
             new SwerveControllerCommand(
                 moveFront,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,

@@ -21,11 +21,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class ShotCenterBack extends SequentialCommandGroup{
 
-    private final Swerve mSwerve;
-
     public ShotCenterBack(Swerve s_Swerve) {
-
-        mSwerve = s_Swerve;
 
         final Superstructure mSuperstructure = Superstructure.getInstance();
         
@@ -46,7 +42,7 @@ public class ShotCenterBack extends SequentialCommandGroup{
             new SwerveControllerCommand(
                 moveBack,
                 s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
+                Constants.SwerveConstants.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                 thetaController,
