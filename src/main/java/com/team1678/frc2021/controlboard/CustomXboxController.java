@@ -39,6 +39,13 @@ public class CustomXboxController {
         return handleDeadband((y ? -1 : 1) * mController.getRawAxis((left ? 0 : 4) + (y ? 1 : 0)), deadband);
     }
 
+    double getAxis(Side side, Axis axis) {
+        boolean left = side == Side.LEFT;
+        boolean y = axis == Axis.Y;
+        // multiplies by -1 if y-axis (inverted normally)
+        return y ? -1 : 1 * mController.getRawAxis((left ? 0 : 4) + (y ? 1 : 0));
+    }
+
     boolean getTrigger(Side side) {
         return mController.getRawAxis(side == Side.LEFT ? 2 : 3) > Constants.kJoystickThreshold;
     }

@@ -135,7 +135,7 @@ public class Constants {
         public static final class Mod3 {
             public static final double angleOffset = 60;
             public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(Ports.BR_DRIVE, Ports.BR_ROTATION, Ports.BL_CANCODER, angleOffset);
+                new SwerveModuleConstants(Ports.BR_DRIVE, Ports.BR_ROTATION, Ports.BR_CANCODER, angleOffset);
         }
 
 	}
