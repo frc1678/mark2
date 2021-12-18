@@ -7,6 +7,7 @@ import com.team1678.frc2021.RobotState;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team1678.frc2021.states.SuperstructureConstants;
+import com.team1678.frc2021.subsystems.ServoMotorSubsystem.ControlState;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.InterpolatingDouble;
@@ -254,7 +255,7 @@ public class Superstructure extends Subsystem {
             mTurretSetpoint = 180.0;
         } else if (mWantsTestSpit) {
             mHood.setSetpointMotionMagic(Constants.HoodConstants.kHoodServoConstants.kMinUnitsLimit);
-        } else {
+        } else if (mHood.mControlState != ControlState.OPEN_LOOP) {
             mHood.setSetpointMotionMagic(mHoodSetpoint);
         }
 

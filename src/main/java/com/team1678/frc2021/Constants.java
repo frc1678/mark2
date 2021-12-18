@@ -341,6 +341,7 @@ public class Constants {
 			kHoodServoConstants.kKi = 0;
 			kHoodServoConstants.kKd = 0;
 			kHoodServoConstants.kKf = 0.05;
+			
 			kHoodServoConstants.kMaxIntegralAccumulator = 0;
 			kHoodServoConstants.kIZone = 0; // Ticks
 			kHoodServoConstants.kDeadband = 0; // Ticks

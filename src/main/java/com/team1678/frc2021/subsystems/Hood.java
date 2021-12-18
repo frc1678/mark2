@@ -17,6 +17,8 @@ public class Hood extends ServoMotorSubsystem {
     private static Hood mInstance;
     private boolean mHoming = true;
 
+    private final double kCalibratingVoltage = -2;
+
     public synchronized static Hood getInstance() {
         if (mInstance == null) {
             mInstance = new Hood(Constants.HoodConstants.kHoodServoConstants);
@@ -51,11 +53,18 @@ public class Hood extends ServoMotorSubsystem {
         return Util.epsilonEquals(getAngle(), this.mConstants.kMinUnitsLimit, 5.0); 
     }
 
+    public synchronized void calibrateHood() {
+        mControlState = ControlState.MOTION_MAGIC;
+        mMaster.setSelectedSensorPosition((int) unitsToTicks(17.66));
+        mMaster.overrideSoftLimitsEnable(true);
+        mHoming = false;
+    }
+
     @Override
     public synchronized void writePeriodicOutputs() {
         if (mHoming) {
             if (mControlState == ControlState.OPEN_LOOP) {
-                mMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand, DemandType.ArbitraryFeedForward, 0.0);
+                mMaster.set(ControlMode.PercentOutput, kCalibratingVoltage);
             } else {
                 mMaster.set(ControlMode.PercentOutput, 0.0, DemandType.ArbitraryFeedForward, 0.0);
             }
@@ -66,12 +75,16 @@ public class Hood extends ServoMotorSubsystem {
 
     @Override
     public synchronized void readPeriodicInputs() {
-        if (mHoming && atHomingLocation()) {
-            mMaster.setSelectedSensorPosition((int) unitsToTicks(17.66));
-            mMaster.overrideSoftLimitsEnable(true);
-            mHoming = false;
-        }
         super.readPeriodicInputs();
+
+        if (mHoming) {
+            mControlState = ControlState.OPEN_LOOP;
+            
+            if (mPeriodicIO.master_stator_current > 15 /*|| atHomingLocation()*/) {
+                calibrateHood();
+            }
+
+        }
     }
 
     @Override
@@ -100,8 +113,10 @@ public class Hood extends ServoMotorSubsystem {
         super.outputTelemetry();
 
         SmartDashboard.putBoolean(mConstants.kName + " Calibrated", !mHoming);
+        SmartDashboard.putString("Hood Control State", mControlState.toString());
         SmartDashboard.putBoolean("Hood at Homing Location", atHomingLocation());
         SmartDashboard.putNumber("Hood Demand", mPeriodicIO.demand);
+        SmartDashboard.putNumber("Hood Current", mPeriodicIO.master_stator_current);
     }
 
     public void setCoastMode() {
