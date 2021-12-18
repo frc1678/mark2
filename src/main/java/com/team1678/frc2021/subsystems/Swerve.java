@@ -82,11 +82,14 @@ public class Swerve extends Subsystem {
     
     @Override
     public void outputTelemetry() {
+        SmartDashboard.putNumber("Odometry Pose X", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Odometry Pose Y", swerveOdometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Odometry Pose Rot", swerveOdometry.getPoseMeters().getRotation().getDegrees());
         SmartDashboard.putBoolean("Is Snapping", isSnapping);
         SmartDashboard.putNumber("Pigeon Heading", getYaw().getDegrees());
         SmartDashboard.putNumber("Snap Target", Math.toRadians(snapPidController.getGoal().position));
         for(SwerveModule mod : mSwerveMods){
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", MathUtil.inputModulus(mod.getCanCoder().getDegrees() - mod.angleOffset, 0, 360));
+            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", MathUtil.inputModulus(mod.getCanCoder().getDegrees() - mod.angleOffset, 0, 360));
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
@@ -198,7 +201,7 @@ public class Swerve extends Subsystem {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
     }
 
-    public void periodic(){
+    public void updateSwerveOdometry(){
         swerveOdometry.update(getYaw(), getStates());  
     }
 

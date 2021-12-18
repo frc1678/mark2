@@ -34,8 +34,8 @@ public class SwerveModule {
         /* Angle Encoder Config */
         angleEncoder = new CANCoder(moduleConstants.cancoderID);
         configAngleEncoder();
-        angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-        angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255);
+        // angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+        // angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255);
 
         /* Angle Motor Config */
         mAngleMotor = new TalonFX(moduleConstants.angleMotorID);

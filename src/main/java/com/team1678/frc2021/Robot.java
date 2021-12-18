@@ -21,7 +21,7 @@ import com.team254.lib.util.*;
 import java.util.Optional;
 
 import com.team1678.frc2021.SubsystemManager;
-import com.team1678.frc2021.auto.AutonomousSelector;
+import com.team1678.frc2021.auto.AutoModeSelector;
 import com.team1678.frc2021.subsystems.*;
 import com.team254.lib.util.*;
 import com.team254.lib.vision.AimingParameters;
@@ -205,6 +205,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Match Cycle", "AUTONOMOUS");
         mLimelight.setLed(Limelight.LedMode.ON);
 
+        mSwerve.updateSwerveOdometry();
 
         if (!mLimelight.limelightOK()) {
             mLEDs.conformToState(LEDs.State.EMERGENCY);
@@ -262,6 +263,9 @@ public class Robot extends TimedRobot {
             if (mControlBoard.zeroGyro()) {
                 mSwerve.zeroGyro();
             }
+
+            mSwerve.updateSwerveOdometry();
+
 
             Translation2d swerveTranslation = new Translation2d(mControlBoard.getSwerveTranslation().x(), mControlBoard.getSwerveTranslation().y());
             double swerveRotation = mControlBoard.getSwerveRotation();
@@ -487,6 +491,8 @@ public class Robot extends TimedRobot {
         // mLimelight.setStream(2);
 
         try {
+            mAutoModeSelector.updateModeCreator();
+
             mLimelight.setLed(Limelight.LedMode.OFF);
 			mLimelight.writePeriodicOutputs();
 			
