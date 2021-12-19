@@ -19,7 +19,7 @@ public class AutoModeSelector {
         // LEFT_SIX_NEAR_BALL_AUTO,
         // LEFT_SIX_FAR_BALL_AUTO,
         // SHOT_CENTER_BACK_AUTO,
-        // SHOT_CENTER_FRONT_AUTO,
+        SHOT_CENTER_FORWARD_AUTO,
         // SHOT_LEFT_BACK_AUTO,
         // SHOT_LEFT_FRONT_AUTO,
         // AIM_TEST_AUTO
@@ -35,6 +35,7 @@ public class AutoModeSelector {
         mModeChooser = new SendableChooser<>();
         mModeChooser.setDefaultOption("Do Nothing", DesiredMode.DO_NOTHING);
         mModeChooser.addOption("Test Path", DesiredMode.TEST_PATH_AUTO);
+        mModeChooser.addOption("Shot Center Forward", DesiredMode.SHOT_CENTER_FORWARD_AUTO);
         SmartDashboard.putData("Auto mode", mModeChooser);
     }
 
@@ -79,8 +80,8 @@ public class AutoModeSelector {
         // case SHOT_CENTER_BACK_AUTO:
         //     return Optional.of(new ShotCenterBackMode());
 
-        // case SHOT_CENTER_FRONT_AUTO:
-        //     return Optional.of(new ShotCenterFrontMode());
+        case SHOT_CENTER_FORWARD_AUTO:
+            return Optional.of(new ShotCenterForwardMode());
         
         // case SHOT_LEFT_BACK_AUTO:
         //     return Optional.of(new ShotLeftBackMode());

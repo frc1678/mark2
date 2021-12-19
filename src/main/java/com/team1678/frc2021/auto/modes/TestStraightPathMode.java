@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 public class TestStraightPathMode extends AutoModeBase {
     
     // Swerve instance 
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = Swerve.getInstance();
 
     // trajectory actions
     SwerveTrajectoryAction swerveTrajectoryAction;
