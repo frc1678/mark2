@@ -54,7 +54,7 @@ public class AutoModeSelector {
             return Optional.of(new DoNothingMode());
         
         case TEST_PATH_AUTO:
-            return Optional.of(new TestStraightPathMode());
+            return Optional.of(new TestPathMode());
         
         // case RIGHT_TEN_BALL_AUTO:
         //     return Optional.of(new RightTenMode());

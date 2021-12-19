@@ -8,9 +8,6 @@ import com.team1678.frc2021.auto.actions.LambdaAction;
 import com.team1678.frc2021.auto.actions.ReadyGyroAction;
 import com.team1678.frc2021.auto.actions.SwerveTrajectoryAction;
 import com.team1678.frc2021.auto.actions.WaitAction;
-import com.team1678.frc2021.commands.AutoAimCommand;
-import com.team1678.frc2021.commands.ReadyGyro;
-import com.team1678.frc2021.commands.ShootCommand;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
@@ -20,9 +17,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class ShotCenterForwardMode extends AutoModeBase {
     // Swerve instance 
@@ -32,8 +26,6 @@ public class ShotCenterForwardMode extends AutoModeBase {
     SwerveTrajectoryAction moveForwardAction;
 
     public ShotCenterForwardMode() {
-
-        final Superstructure mSuperstructure = Superstructure.getInstance();
 
         var thetaController = new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
                 Constants.AutoConstants.kThetaControllerConstraints);

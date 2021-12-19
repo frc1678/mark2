@@ -109,21 +109,21 @@ public class Robot extends TimedRobot {
             CrashTracker.logRobotInit();
 
             mSubsystemManager.setSubsystems(
-                mSwerve,
-                mRobotStateEstimator,
-				mCanifier,
-				mHood,
-                mLimelight, 
-                mIntake, 
-                mIndexer, 
-                mShooter,
-                mTrigger,
-                mSuperstructure,
-                mTurret,
-                mInfrastructure,
-                mSkywalker,
-                mClimber,
-                mLEDs
+                mSwerve //,
+                // mRobotStateEstimator,
+				// mCanifier,
+				// mHood,
+                // mLimelight, 
+                // mIntake, 
+                // mIndexer, 
+                // mShooter,
+                // mTrigger,
+                // mSuperstructure,
+                // mTurret,
+                // mInfrastructure,
+                // mSkywalker,
+                // mClimber,
+                // mLEDs
             );
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
