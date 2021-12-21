@@ -5,8 +5,12 @@ import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.auto.AutoModeEndedException;
 import com.team1678.frc2021.auto.actions.LambdaAction;
+import com.team1678.frc2021.auto.actions.ParallelAction;
+import com.team1678.frc2021.auto.actions.SeriesAction;
 import com.team1678.frc2021.auto.actions.SwerveTrajectoryAction;
+import com.team1678.frc2021.auto.actions.WaitAction;
 
+import java.util.Arrays;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -34,13 +38,13 @@ public class TestPathMode extends AutoModeBase {
 
         Trajectory straightTrajectory = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(new Translation2d(1, 0)),
-                new Pose2d(2, 0, new Rotation2d(0)), Constants.AutoConstants.zeroToSlow);
+                List.of(new Translation2d(1.5, 0)),
+                new Pose2d(3, 0, new Rotation2d(0)), Constants.AutoConstants.zeroToSlow);
         
         Trajectory rotatingTrajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(2, 0, new Rotation2d(0)),
-                List.of(new Translation2d(3, 0)),
-                new Pose2d(4, 0, new Rotation2d(0)), Constants.AutoConstants.slowToZero);
+                new Pose2d(3, 0, new Rotation2d(0)),
+                List.of(new Translation2d(4.5, 0)),
+                new Pose2d(6, 0, new Rotation2d(0)), Constants.AutoConstants.slowToZero);
 
 
         var thetaController = new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
@@ -70,9 +74,29 @@ public class TestPathMode extends AutoModeBase {
         // reset odometry at the start of the trajectory
         runAction(new LambdaAction(() -> s_Swerve.resetOdometry(straightTrajectoryAction.getInitialPose())));
 
-        runAction(straightTrajectoryAction);
-        runAction(rotatingTrajectoryAction);
+        // runAction(straightTrajectoryAction);
+        // runAction(rotatingTrajectoryAction);
 
+        runAction(
+                new ParallelAction(Arrays.asList(
+                        straightTrajectoryAction,
+                        new SeriesAction(Arrays.asList(
+                                new WaitAction(.5),
+                                new LambdaAction(() -> Intake.getInstance().setState(Intake.WantedAction.INTAKE))
+                        ))
+                ))
+        );
+
+        runAction(
+                new ParallelAction(Arrays.asList(
+                        rotatingTrajectoryAction,
+                        new SeriesAction(Arrays.asList(
+                                new WaitAction(.5),
+                                new LambdaAction(() -> Intake.getInstance().setState(Intake.WantedAction.NONE))
+                        ))
+                ))       
+        );
+        
         System.out.println("Finished auto!");
     }
 }

@@ -11,6 +11,7 @@ public class AutoModeSelector {
     enum DesiredMode {
         DO_NOTHING, 
         TEST_PATH_AUTO,
+        FIGURE_EIGHT_AUTO,
         // RIGHT_TEN_BALL_AUTO,
         // RIGHT_FIVE_NEAR_BALL_AUTO,
         // RIGHT_FIVE_FAR_BALL_AUTO,
@@ -35,6 +36,7 @@ public class AutoModeSelector {
         mModeChooser = new SendableChooser<>();
         mModeChooser.setDefaultOption("Do Nothing", DesiredMode.DO_NOTHING);
         mModeChooser.addOption("Test Path", DesiredMode.TEST_PATH_AUTO);
+        mModeChooser.addOption("Figure Eight Path", DesiredMode.FIGURE_EIGHT_AUTO);
         mModeChooser.addOption("Shot Center Forward", DesiredMode.SHOT_CENTER_FORWARD_AUTO);
         SmartDashboard.putData("Auto mode", mModeChooser);
     }
@@ -55,6 +57,9 @@ public class AutoModeSelector {
         
         case TEST_PATH_AUTO:
             return Optional.of(new TestPathMode());
+
+        case FIGURE_EIGHT_AUTO:
+            return Optional.of(new FigureEightTestMode());
         
         // case RIGHT_TEN_BALL_AUTO:
         //     return Optional.of(new RightTenMode());
