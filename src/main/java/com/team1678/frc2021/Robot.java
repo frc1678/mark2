@@ -109,21 +109,21 @@ public class Robot extends TimedRobot {
             CrashTracker.logRobotInit();
 
             mSubsystemManager.setSubsystems(
-                mSwerve //,
-                // mRobotStateEstimator,
-				// mCanifier,
-				// mHood,
-                // mLimelight, 
-                // mIntake, 
-                // mIndexer, 
-                // mShooter,
-                // mTrigger,
-                // mSuperstructure,
-                // mTurret,
-                // mInfrastructure,
-                // mSkywalker,
-                // mClimber,
-                // mLEDs
+                mSwerve,
+                mRobotStateEstimator,
+				mCanifier,
+				mHood,
+                mLimelight, 
+                mIntake, 
+                mIndexer, 
+                mShooter,
+                mTrigger,
+                mSuperstructure,
+                mTurret,
+                mInfrastructure,
+                mSkywalker,
+                mClimber,
+                mLEDs
             );
 
             mSubsystemManager.registerEnabledLoops(mEnabledLooper);
@@ -447,6 +447,9 @@ public class Robot extends TimedRobot {
                 System.out.println("Set auto mode to: " + autoMode.get().getClass().toString());
                 mAutoModeExecutor.setAutoMode(autoMode.get());
             }
+
+            SmartDashboard.putNumber("Desired Position X", 0.0);
+            SmartDashboard.putNumber("Desired Position Y", 0.0);
 
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);

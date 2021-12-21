@@ -159,10 +159,10 @@ public class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 4*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 0.5*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 	
-		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
+		public static final double kSlowMaxSpeedMetersPerSecond = 1.0;
 		public static final double kSlowMaxAccelerationMetersPerSecondSquared = 3;
 
 		public static final double kFastMaxSpeedMetersPerSecond = 4;
@@ -217,6 +217,16 @@ public class Constants {
 			.setKinematics(Constants.SwerveConstants.swerveKinematics)
 			.setStartVelocity(0)
 			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+		public static final TrajectoryConfig intermediateSlow =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.SwerveConstants.swerveKinematics)
+			.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+
 
 		public static final TrajectoryConfig slowToZero =
 			new TrajectoryConfig(

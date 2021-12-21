@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -151,6 +153,9 @@ public class SwerveTrajectoryAction implements Action {
     var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
     m_outputModuleStates.accept(targetModuleStates);
+
+    SmartDashboard.putNumber("Desired Position X", desiredState.poseMeters.getX());
+    SmartDashboard.putNumber("Desired Position Y", desiredState.poseMeters.getY());
   }
 
   @Override
