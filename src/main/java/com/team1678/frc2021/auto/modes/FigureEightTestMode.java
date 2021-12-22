@@ -45,7 +45,7 @@ public class FigureEightTestMode extends AutoModeBase {
                         .setKinematics(Constants.SwerveConstants.swerveKinematics);
 
         Trajectory figureEight = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(90)),
+                new Pose2d(0, 0, new Rotation2d(Math.PI/2)),
                 List.of(new Translation2d(0.114, 0.574),
                         new Translation2d(0.439, 1.061),
                         new Translation2d(0.926, 1.386),
@@ -77,7 +77,7 @@ public class FigureEightTestMode extends AutoModeBase {
                         new Translation2d(0.926, -1.386),
                         new Translation2d(0.439, -1.061),
                         new Translation2d(0.114, -0.574)),
-                new Pose2d(0, 0, new Rotation2d(90)), Constants.AutoConstants.defaultConfig);
+                new Pose2d(0, 0, new Rotation2d(Math.PI/2)), Constants.AutoConstants.defaultConfig);
 
 
         Trajectory first = TrajectoryGenerator.generateTrajectory(
