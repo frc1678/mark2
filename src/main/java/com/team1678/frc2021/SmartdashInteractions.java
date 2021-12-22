@@ -50,7 +50,7 @@ public class SmartdashInteractions {
     private final NetworkTableEntry mOnTarget;
 
     /* Swerve Modules */
-    private final String[] kSwervePlacements = {"FL", "FR", "RL", "RR"};
+    private final String[] kSwervePlacements = {"Front Left", "Front Right", "Back Left", "Back Right"};
     private final ShuffleboardLayout[] mSwerveAngles = new ShuffleboardLayout[4];
     private final NetworkTableEntry[] mSwerveCancoders = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveAdjustedAngle = new NetworkTableEntry[4];
