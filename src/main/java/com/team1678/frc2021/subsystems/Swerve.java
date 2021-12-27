@@ -144,6 +144,16 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    public void setAnglePIDValues(double kP, double kI, double kD) {
+        for (SwerveModule swerveModule : mSwerveMods) {
+            swerveModule.updateAnglePID(kP, kI, kD);
+        }
+    }
+
+    public double[] getAnglePIDValues(int index) {
+        return mSwerveMods[index].getAnglePIDValues();
+    }
+
     public void zeroGyro(){
         zeroGyro(0);
     }

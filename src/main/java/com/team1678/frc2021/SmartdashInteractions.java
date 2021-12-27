@@ -1,5 +1,6 @@
 package com.team1678.frc2021;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.team1678.frc2021.subsystems.Limelight;
 import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
@@ -33,7 +34,7 @@ public class SmartdashInteractions {
     /* Tabs */
     private ShuffleboardTab VISION_TAB;
     private ShuffleboardTab SWERVE_TAB;
-    //private ShuffleboardTab ANGLES_TAB;
+    private ShuffleboardTab PID_TAB;
 
     /* Entries */
 
@@ -55,10 +56,16 @@ public class SmartdashInteractions {
     private final NetworkTableEntry[] mSwerveCancoders = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveAdjustedAngle = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveDrivePercent = new NetworkTableEntry[4];
-    //private final NetworkTableEntry[] mSwerveModuleAngleDials = new NetworkTableEntry[4];
     private final NetworkTableEntry mSwerveOdometryX;
     private final NetworkTableEntry mSwerveOdometryY;
     private final NetworkTableEntry mSwerveOdometryRot;
+    private final NetworkTableEntry mPIDEnableToggle;
+    private final NetworkTableEntry mDesiredAngleP;
+    private final NetworkTableEntry mDesiredAngleI;
+    private final NetworkTableEntry mDesiredAngleD;
+    private final NetworkTableEntry mCurrentAngleP;
+    private final NetworkTableEntry mCurrentAngleI;
+    private final NetworkTableEntry mCurrentAngleD;
 
     public SmartdashInteractions() {
         /* Get Subsystems */
@@ -70,7 +77,7 @@ public class SmartdashInteractions {
         /* Get Tabs */
         VISION_TAB = Shuffleboard.getTab("Vision");
         SWERVE_TAB = Shuffleboard.getTab("Swerve");
-        //ANGLES_TAB = Shuffleboard.getTab("Module Angles");
+        PID_TAB = Shuffleboard.getTab("Module PID");
         
         /* Create Entries */
         mLimelightOK = VISION_TAB
@@ -144,13 +151,6 @@ public class SmartdashInteractions {
                 .withPosition(i * 2, 2)
                 .withSize(2, 1)
                 .getEntry();
-
-            // mSwerveModuleAngleDials[i] = ANGLES_TAB
-            //     .add("Swerve Module " + i + " Angle", 0.0)
-            //     .withWidget(BuiltInWidgets.kGyro)
-            //     .withPosition(i * 2, 0)
-            //     .withSize(2, 2)
-            //     .getEntry();
         }
 
         mSwerveOdometryX = SWERVE_TAB
@@ -169,6 +169,51 @@ public class SmartdashInteractions {
             .add("Pigeon Angle", 0)
             .withPosition(4, 3)
             .withSize(2, 1)
+            .getEntry();
+
+        mPIDEnableToggle = PID_TAB
+            .add("Enable Override", false)
+            .withWidget(BuiltInWidgets.kToggleButton)
+            .withPosition(3, 0)
+            .withSize(2, 1)
+            .getEntry();
+
+        TalonFXConfiguration currentAngleValues = CTREConfigs.swerveAngleFXConfig();
+
+        mDesiredAngleP = PID_TAB
+            .add("Wanted P", currentAngleValues.slot0.kP)
+            .withPosition(0,0)
+            .withSize(1, 1)
+            .getEntry();
+
+        mDesiredAngleI = PID_TAB
+            .add("Wanted I", currentAngleValues.slot0.kI)
+            .withPosition(1,0)
+            .withSize(1, 1)
+            .getEntry();
+
+        mDesiredAngleD = PID_TAB
+            .add("Wanted D", currentAngleValues.slot0.kD)
+            .withPosition(2,0)
+            .withSize(1, 1)
+            .getEntry();
+
+        mCurrentAngleP = PID_TAB
+            .add("Current P", 0.0)
+            .withPosition(0,1)
+            .withSize(1, 1)
+            .getEntry();
+
+        mCurrentAngleI = PID_TAB
+            .add("Current I", 0.0)
+            .withPosition(1,1)
+            .withSize(1, 1)
+            .getEntry();
+
+        mCurrentAngleD = PID_TAB
+            .add("Current D", 0.0)
+            .withPosition(2,1)
+            .withSize(1, 1)
             .getEntry();
     }
 
@@ -196,6 +241,14 @@ public class SmartdashInteractions {
         mSwerveOdometryX.setDouble(truncate(mSwerve.getPose().getX()));
         mSwerveOdometryY.setDouble(truncate(mSwerve.getPose().getY()));
         mSwerveOdometryRot.setDouble(truncate(mSwerve.getPose().getRotation().getDegrees()));
+
+        if(mPIDEnableToggle.getValue().getBoolean()) {
+            mSwerve.setAnglePIDValues(mDesiredAngleP.getValue().getDouble(), mDesiredAngleI.getValue().getDouble(), mDesiredAngleD.getValue().getDouble());
+        }
+        double[] currentPIDVals = mSwerve.getAnglePIDValues(0);
+        mCurrentAngleP.setDouble(currentPIDVals[0]);
+        mCurrentAngleI.setDouble(currentPIDVals[1]);
+        mCurrentAngleD.setDouble(currentPIDVals[2]);
     }
 
     private double truncate(double number) {
