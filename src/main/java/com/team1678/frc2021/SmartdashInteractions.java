@@ -54,7 +54,7 @@ public class SmartdashInteractions {
     private final String[] kSwervePlacements = {"Front Left", "Front Right", "Back Left", "Back Right"};
     private final ShuffleboardLayout[] mSwerveAngles = new ShuffleboardLayout[4];
     private final NetworkTableEntry[] mSwerveCancoders = new NetworkTableEntry[4];
-    private final NetworkTableEntry[] mSwerveAdjustedAngle = new NetworkTableEntry[4];
+    private final NetworkTableEntry[] mSwerveIntegrated = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveDrivePercent = new NetworkTableEntry[4];
     private final NetworkTableEntry mSwerveOdometryX;
     private final NetworkTableEntry mSwerveOdometryY;
@@ -66,6 +66,8 @@ public class SmartdashInteractions {
     private final NetworkTableEntry mCurrentAngleP;
     private final NetworkTableEntry mCurrentAngleI;
     private final NetworkTableEntry mCurrentAngleD;
+    private final NetworkTableEntry[] mModuleAngleCurrent = new NetworkTableEntry[4];
+    private final NetworkTableEntry[] mModuleAngleGoals = new NetworkTableEntry[4];
 
     public SmartdashInteractions() {
         /* Get Subsystems */
@@ -137,10 +139,12 @@ public class SmartdashInteractions {
                 .withPosition(1, 0)
                 .withSize(5, 1)
                 .getEntry();
-            mSwerveAdjustedAngle[i] = mSwerveAngles[i].add("Integrated", 0.0)
+            mSwerveIntegrated[i] = mSwerveAngles[i].add("Integrated", 0.0)
                 .withPosition(0, 1)
                 .withSize(5, 1)
                 .getEntry();
+
+            
             mSwerveAngles[i].add("Offset", mSwerve.mSwerveMods[i].angleOffset)
                 .withPosition(0, 2)
                 .withSize(5, 1)
@@ -150,6 +154,16 @@ public class SmartdashInteractions {
                 .add("Swerve Module " + i + " MPS ", 0.0)
                 .withPosition(i * 2, 2)
                 .withSize(2, 1)
+                .getEntry();
+
+            mModuleAngleCurrent[i] = PID_TAB.add("Module " + i + " Current", 0.0)
+                .withPosition(i, 2)
+                .withSize(1, 1)
+                .getEntry();
+
+            mModuleAngleGoals[i] = PID_TAB.add("Module " + i + " Target", 0.0)
+                .withPosition(i, 3)
+                .withSize(1, 1)
                 .getEntry();
         }
 
@@ -234,9 +248,12 @@ public class SmartdashInteractions {
         /* Swerve */
         for (int i = 0; i < mSwerveCancoders.length; i++) {
             mSwerveCancoders[i].setDouble(truncate(Math.floor(mSwerveModules[i].getCanCoder().getDegrees()* 100) / 100));
-            mSwerveAdjustedAngle[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
-            //mSwerveModuleAngleDials[i].forceSetDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
+            mSwerveIntegrated[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
             mSwerveDrivePercent[i].setDouble(truncate(mSwerveModules[i].getState().speedMetersPerSecond));
+
+            mModuleAngleCurrent[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
+            mModuleAngleGoals[i].setDouble(truncate(mSwerveModules[i].getTargetAngle()));
+
         }
         mSwerveOdometryX.setDouble(truncate(mSwerve.getPose().getX()));
         mSwerveOdometryY.setDouble(truncate(mSwerve.getPose().getY()));
