@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
      */
 
 	public static CTREConfigs ctreConfigs;
-
+  
     private final Looper mEnabledLooper = new Looper();
     private final Looper mDisabledLooper = new Looper();
 
@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
     // Called periodically during every robot mode
     @Override
     public void robotPeriodic() {		
+        m_sSmartdashInteractions.update();
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
@@ -94,10 +95,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
 
-		ctreConfigs = new CTREConfigs();
-    	// Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    	// autonomous chooser on the dashboard.
-		
+      ctreConfigs = new CTREConfigs();
+       m_sSmartdashInteractions = SmartdashInteractions.getInstance();
+
 		try {
 			/*
             UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
