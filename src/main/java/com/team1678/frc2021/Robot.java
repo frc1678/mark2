@@ -79,9 +79,10 @@ public class Robot extends TimedRobot {
     private final Climber mClimber = Climber.getInstance();
     private final Skywalker mSkywalker = Skywalker.getInstance();
     private final Hood mHood = Hood.getInstance();
-
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
+    
+    private SmartdashInteractions mSmartdashInteractions;
 
     // Solenoid mShiftSolenoid = Constants.makeSolenoidForId(Constants.kShiftSolenoidId);
 

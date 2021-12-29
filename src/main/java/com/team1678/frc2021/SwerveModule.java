@@ -82,7 +82,7 @@ public class SwerveModule {
 
     private void configAngleMotor(TalonFXConfiguration config){
         mAngleMotor.configFactoryDefault();
-        mAngleMotor.configAllSettings(config);
+        mAngleMotor.configAllSettings(CTREConfigs.swerveAngleFXConfig());
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
         mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
         resetToAbsolute();
