@@ -48,9 +48,9 @@ public class SwerveModule {
         /* Angle Motor Config */
         mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
         configAngleMotor();
-        anglekP = angleConfiguration.slot0.kP;
-        anglekI = angleConfiguration.slot0.kI;
-        anglekD = angleConfiguration.slot0.kD;
+        anglekP = CTREConfigs.swerveAngleFXConfig().slot0.kP;
+        anglekI = CTREConfigs.swerveAngleFXConfig().slot0.kI;
+        anglekD = CTREConfigs.swerveAngleFXConfig().slot0.kD;
 
         /* Drive Motor Config */
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
@@ -89,16 +89,16 @@ public class SwerveModule {
     private void configAngleMotor(){
         mAngleMotor.configFactoryDefault();
         mAngleMotor.configAllSettings(CTREConfigs.swerveAngleFXConfig());
-        mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-        mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
+        mAngleMotor.setInverted(Constants.SwerveConstants.angleMotorInvert);
+        mAngleMotor.setNeutralMode(Constants.SwerveConstants.angleNeutralMode);
         resetToAbsolute();
     }
 
     private void configDriveMotor(){        
         mDriveMotor.configFactoryDefault();
         mDriveMotor.configAllSettings(CTREConfigs.swerveDriveFXConfig());
-        mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert);
-        mDriveMotor.setNeutralMode(Constants.Swerve.driveNeutralMode);
+        mDriveMotor.setInverted(Constants.SwerveConstants.driveMotorInvert);
+        mDriveMotor.setNeutralMode(Constants.SwerveConstants.driveNeutralMode);
         mDriveMotor.setSelectedSensorPosition(0);
     }
 

@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
     private final Limelight mLimelight = Limelight.getInstance(); 
+    private SmartdashInteractions mSmartdashInteractions;
 
     // auto instances
     private AutoModeExecutor mAutoModeExecutor;
@@ -81,7 +82,7 @@ public class Robot extends TimedRobot {
     // Called periodically during every robot mode
     @Override
     public void robotPeriodic() {		
-        m_sSmartdashInteractions.update();
+        mSmartdashInteractions.update();
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
@@ -96,7 +97,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
       ctreConfigs = new CTREConfigs();
-       m_sSmartdashInteractions = SmartdashInteractions.getInstance();
+       mSmartdashInteractions = SmartdashInteractions.getInstance();
 
 		try {
 			/*
