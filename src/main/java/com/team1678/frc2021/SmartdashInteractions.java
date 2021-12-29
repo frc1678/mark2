@@ -186,7 +186,7 @@ public class SmartdashInteractions {
             .getEntry();
 
         mPIDEnableToggle = PID_TAB
-            .add("Enable Override", false)
+            .add("Apply PID", false)
             .withWidget(BuiltInWidgets.kToggleButton)
             .withPosition(3, 0)
             .withSize(2, 1)
@@ -247,12 +247,12 @@ public class SmartdashInteractions {
         
         /* Swerve */
         for (int i = 0; i < mSwerveCancoders.length; i++) {
-            mSwerveCancoders[i].setDouble(truncate(Math.floor(mSwerveModules[i].getCanCoder().getDegrees()* 100) / 100));
+            mSwerveCancoders[i].setDouble(truncate(mSwerveModules[i].getCanCoder().getDegrees()));
             mSwerveIntegrated[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
             mSwerveDrivePercent[i].setDouble(truncate(mSwerveModules[i].getState().speedMetersPerSecond));
 
             mModuleAngleCurrent[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
-            mModuleAngleGoals[i].setDouble(truncate(mSwerveModules[i].getTargetAngle()));
+            mModuleAngleGoals[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getTargetAngle(), 0, 360)));
 
         }
         mSwerveOdometryX.setDouble(truncate(mSwerve.getPose().getX()));
