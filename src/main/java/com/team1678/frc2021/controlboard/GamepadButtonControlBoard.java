@@ -110,7 +110,7 @@ public class GamepadButtonControlBoard {
         return (jog - kDeadband * Math.signum(jog));
     }
 
-    public void setRumble(boolean on) { //TODO: all 5 power cells indexed
+    public void setRumble(boolean on) {
         mController.setRumble(on);
     }
 
@@ -345,10 +345,4 @@ public class GamepadButtonControlBoard {
     public boolean getRunIntake() {
         return mController.getTrigger(Side.RIGHT);
     }
-
-    public boolean getRetractIntake() {
-        return mController.getTrigger(Side.LEFT);
-    }
-    
-
 }

@@ -7,19 +7,15 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import com.team1678.frc2021.Constants;
-import com.team254.lib.drivers.TalonUtil;
+import com.team1678.lib.util.HallCalibration;
+import com.team254.lib.drivers.BaseTalonChecker;
+import com.team254.lib.drivers.MotorChecker;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.LatchedBoolean;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.team254.lib.drivers.MotorChecker;
-import com.team254.lib.drivers.BaseTalonChecker;
-import com.team1678.lib.util.HallCalibration;
 
 public class Turret extends ServoMotorSubsystem {
     private static Turret mInstance;
@@ -30,12 +26,11 @@ public class Turret extends ServoMotorSubsystem {
     private double mOffset = 0;
     private DigitalInput mLimitSwitch = new DigitalInput(1);
 
-    private static Canifier mCanifier = Canifier.getInstance();
     private static final SupplyCurrentLimitConfiguration CURR_LIM = new SupplyCurrentLimitConfiguration(true, 40, 60, 0.01);
 
     public synchronized static Turret getInstance() {
         if (mInstance == null) {
-            mInstance = new Turret(Constants.kTurretConstants);
+            mInstance = new Turret(Constants.TurretConstants.kTurretServoConstants);
         }
         return mInstance;
     }
@@ -122,13 +117,13 @@ public class Turret extends ServoMotorSubsystem {
     @Override
     public boolean checkSystem() {
         return BaseTalonChecker.checkMotors(this, new ArrayList<MotorChecker.MotorConfig<BaseTalon>>() {
-            private static final long serialVersionUID = 1636612675181038895L; // TODO find the right number
+            private static final long serialVersionUID = 1636612675181038895L;
 
             {
                 add(new MotorChecker.MotorConfig<>("master", mMaster));
             }
         }, new MotorChecker.CheckerConfig() {
-            { // TODO change to legit config
+            {
                 mRunOutputPercentage = 0.1;
                 mRunTimeSec = 1.0;
                 mCurrentFloor = 0.1;

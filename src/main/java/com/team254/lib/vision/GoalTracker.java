@@ -6,9 +6,6 @@ import java.util.List;
 
 import com.team1678.frc2021.Constants;
 import com.team254.lib.geometry.Pose2d;
-import com.team254.lib.geometry.Pose2d;
-import com.team254.lib.geometry.Rotation2d;
-import com.team254.lib.geometry.Translation2d;
 
 /**
  * This is used in the event that multiple goals are detected to judge all goals based on timestamp, stability, and
@@ -71,8 +68,8 @@ public class GoalTracker {
         double score(TrackReport report) {
             double stability_score = mStabilityWeight * report.stability;
             double age_score = mAgeWeight
-                    * Math.max(0, (Constants.kMaxGoalTrackAge - (mCurrentTimestamp - report.latest_timestamp))
-                    / Constants.kMaxGoalTrackAge);
+                    * Math.max(0, (Constants.VisionConstants.kMaxGoalTrackAge - (mCurrentTimestamp - report.latest_timestamp))
+                    / Constants.VisionConstants.kMaxGoalTrackAge);
             double switching_score = (report.id == mLastTrackId ? mSwitchingWeight : 0);
             return stability_score + age_score + switching_score;
         }

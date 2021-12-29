@@ -4,19 +4,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
-
 import com.team254.lib.drivers.TalonFXFactory;
+import com.team254.lib.util.ReflectingCSVWriter;
 import com.team254.lib.util.TimeDelayedBoolean;
 
-import com.team254.lib.util.ReflectingCSVWriter;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
 
 public class Intake extends Subsystem {
     private static double kIntakingVoltage = 12.0;
@@ -28,11 +25,11 @@ public class Intake extends Subsystem {
     private Solenoid mDeploySolenoid;
 
     public enum WantedAction {
-        NONE, INTAKE, RETRACT, STAY_OUT,
+        NONE, INTAKE, OUTTAKE, STAY_OUT,
     }
 
     public enum State {
-        IDLE, INTAKING, RETRACTING, STAYING_OUT,
+        IDLE, INTAKING, OUTTAKING, STAYING_OUT,
     }
 
     private State mState = State.IDLE;
@@ -55,12 +52,12 @@ public class Intake extends Subsystem {
     }
 
     private Intake() {
-        mMaster = TalonFXFactory.createDefaultTalon(Constants.kIntakeRollerId);
+        mMaster = TalonFXFactory.createDefaultTalon(Ports.INTAKE_ROLLER);
         mMaster.changeMotionControlFramePeriod(255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
         mMaster.setInverted(true);
-        mDeploySolenoid = Constants.makeSolenoidForId(Constants.kDeploySolenoidId);
+        mDeploySolenoid = Constants.makeSolenoidForId(Ports.INTAKE_SOLENOID);
     }
 
     public synchronized static Intake getInstance() {
@@ -131,16 +128,10 @@ public class Intake extends Subsystem {
     public void runStateMachine() {
         switch (mState) {
         case INTAKING:
-            /*
-            if (mPeriodicIO.intake_out) {    
-                mPeriodicIO.demand = kIntakingVoltage;
-            } else {
-                mPeriodicIO.demand = 0.0;
-            }*/
             mPeriodicIO.demand = kIntakingVoltage;
             mPeriodicIO.deploy = true;
             break;
-        case RETRACTING:
+        case OUTTAKING:
             if (mPeriodicIO.intake_out) {    
                 mPeriodicIO.demand = -kIntakingVoltage;
             } else {
@@ -175,8 +166,8 @@ public class Intake extends Subsystem {
         case INTAKE:
             mState = State.INTAKING;
             break;
-        case RETRACT:
-            mState = State.RETRACTING;
+        case OUTTAKE:
+            mState = State.OUTTAKING;
             break;
         case STAY_OUT:
             mState = State.STAYING_OUT;

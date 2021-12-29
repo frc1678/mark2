@@ -2,43 +2,50 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import com.team1678.frc2021.SwerveModule;
-import com.team254.lib.util.TimeDelayedBoolean;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
+import com.team1678.frc2021.SwerveModule;
+import com.team1678.frc2021.loops.ILooper;
+import com.team1678.frc2021.loops.Loop;
+import com.team254.lib.util.TimeDelayedBoolean;
 
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
-public class Swerve extends SubsystemBase {
+public class Swerve extends Subsystem {
+
+    private static Swerve mInstance;
+
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public PigeonIMU gyro;
+
     public boolean isSnapping;
     public ProfiledPIDController snapPidController;
     private double lastSnapInput;
-    
-    //Instance declaration
-	private static Swerve instance = null;
-	public static Swerve getInstance() {
-		if(instance == null)
-			instance = new Swerve();
-		return instance;
+
+
+    public static Swerve getInstance() {
+        if (mInstance == null) {
+            mInstance = new Swerve();
+        }
+        return mInstance;
     }
 
     public Swerve() {
-        gyro = new PigeonIMU(Constants.Swerve.pigeonID);
+        gyro = new PigeonIMU(Ports.PIGEON);
         gyro.configFactoryDefault();
         zeroGyro();
         
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw());
+        swerveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, getYaw());
         snapPidController = new ProfiledPIDController(Constants.SnapConstants.snapKP,
                                               Constants.SnapConstants.snapKI, 
                                               Constants.SnapConstants.snapKD,
@@ -46,14 +53,49 @@ public class Swerve extends SubsystemBase {
         snapPidController.enableContinuousInput(-Math.PI, Math.PI);
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
+            new SwerveModule(1, Constants.SwerveConstants.Mod1.constants),
+            new SwerveModule(2, Constants.SwerveConstants.Mod2.constants),
+            new SwerveModule(3, Constants.SwerveConstants.Mod3.constants)
         };
     }
 
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    @Override
+    public void registerEnabledLoops(ILooper mEnabledLooper) {
+        mEnabledLooper.register(new Loop() {
+            @Override
+            public void onStart(double timestamp) {
+
+            }
+
+            @Override
+            public void onLoop(double timestamp) {
+
+            }
+
+            @Override
+            public void onStop(double timestamp) {
+                stop();
+            }
+        });
+    }
+    
+    @Override
+    public void outputTelemetry() {
+        SmartDashboard.putNumber("Odometry Pose X", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Odometry Pose Y", swerveOdometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Odometry Pose Rot", swerveOdometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putBoolean("Is Snapping", isSnapping);
+        SmartDashboard.putNumber("Pigeon Heading", getYaw().getDegrees());
+        SmartDashboard.putNumber("Snap Target", Math.toRadians(snapPidController.getGoal().position));
+        for(SwerveModule mod : mSwerveMods){
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", MathUtil.inputModulus(mod.getCanCoder().getDegrees() - mod.angleOffset, 0, 360));
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+        }
+    }
+
+    public void teleopDrive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         if(isSnapping) {
             if(Math.abs(rotation) == 0.0) {
                 maybeStopSnap(false);
@@ -62,9 +104,8 @@ public class Swerve extends SubsystemBase {
                 maybeStopSnap(true);
             }
         } 
-
         SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+            Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 
@@ -76,18 +117,19 @@ public class Swerve extends SubsystemBase {
                                     translation.getY(), 
                                     rotation)
                                 );
-        SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
+            SmartDashboard.putNumber(mod.moduleNumber + " rot", swerveModuleStates[mod.moduleNumber].angle.getDegrees());
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }
+    }    
 
-    public double calculateSnapVectors(){
+    public double calculateSnapVectors() {
         return snapPidController.calculate(getYaw().getRadians(), lastSnapInput);
     }
 
-    public void startSnap(double snapAngle){
+    public void startSnap(double snapAngle) {
         lastSnapInput = Math.toRadians(snapAngle);
         snapPidController.reset(getYaw().getRadians());
         //snapPidController.setGoal(new TrapezoidProfile.State(Math.toRadians(snapAngle), 0.0));
@@ -95,33 +137,26 @@ public class Swerve extends SubsystemBase {
     }
     
     TimeDelayedBoolean delayedBoolean = new TimeDelayedBoolean();
-    private boolean snapComplete(){
+    private boolean snapComplete() {
         double error = lastSnapInput - getYaw().getRadians();
         //return delayedBoolean.update(Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon), Constants.SnapConstants.snapTimeout);
         return Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon);
     }
+
+    // TODO: Add proper documentation for what the snap methods are doing
     public void maybeStopSnap(boolean force){
         if(!isSnapping){
             return;
         } 
-        if(force || snapComplete()){
+        if(force || snapComplete()) {
             isSnapping = false;
             snapPidController.reset(getYaw().getRadians());
         }
     }
 
-    public ChassisSpeeds getChassisVelocity(Translation2d translation, double rotation) {
-        return ChassisSpeeds.fromFieldRelativeSpeeds(
-                                translation.getX(), 
-                                translation.getY(), 
-                                rotation, 
-                                getYaw()
-        );
-    }
-
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
@@ -136,6 +171,12 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(pose, getYaw());
     }
 
+    public void resetAnglesToAbsolute() {
+        for (SwerveModule mod : mSwerveMods) {
+            mod.resetToAbsolute();
+        }
+    }
+
     public SwerveModuleState[] getStates(){
         SwerveModuleState[] states = new SwerveModuleState[4];
         for(SwerveModule mod : mSwerveMods){
@@ -144,6 +185,11 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    @Override
+    public void zeroSensors(){
+        zeroGyro();
+    }
+    
     public void setAnglePIDValues(double kP, double kI, double kD) {
         for (SwerveModule swerveModule : mSwerveMods) {
             swerveModule.updateAnglePID(kP, kI, kD);
@@ -155,32 +201,31 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        zeroGyro(0);
+        gyro.setYaw(0);
     }
 
-    public void zeroGyro(double zeroValue){
-        gyro.setYaw(zeroValue);
+    public void zeroGyro(double reset){
+        gyro.setYaw(reset);
     }
 
     public Rotation2d getYaw() {
         double[] ypr = new double[3];
         gyro.getYawPitchRoll(ypr);
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+        return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+    }
+
+    public void updateSwerveOdometry(){
+        swerveOdometry.update(getYaw(), getStates());  
     }
 
     @Override
-    public void periodic(){
-        swerveOdometry.update(getYaw(), getStates());  
+    public void stop() {
+        // TODO Auto-generated method stub
+        
+    }
 
-        // for(SwerveModule mod : mSwerveMods){
-        //     // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-        // }
-
-        // SmartDashboard.putNumber("Pose Translation X", getPose().getX());
-        // SmartDashboard.putNumber("Pose Translation Y", getPose().getY());
-        // SmartDashboard.putNumber("Pose Rotation", getPose().getRotation().getDegrees());
-        // SmartDashboard.putNumber("Gyro Reading", getYaw().getDegrees());
+    @Override
+    public boolean checkSystem() {
+        return true;
     }
 }

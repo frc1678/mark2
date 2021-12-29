@@ -1,23 +1,17 @@
 package com.team1678.frc2021.subsystems;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.subsystems.Canifier;
-import com.team254.lib.drivers.MotorChecker;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.team1678.frc2021.Constants;
 import com.team254.lib.drivers.BaseTalonChecker;
-
-import com.team254.lib.drivers.TalonUtil;
+import com.team254.lib.drivers.MotorChecker;
 import com.team254.lib.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
 
 public class Hood extends ServoMotorSubsystem {
     private static Hood mInstance;
@@ -25,7 +19,7 @@ public class Hood extends ServoMotorSubsystem {
 
     public synchronized static Hood getInstance() {
         if (mInstance == null) {
-            mInstance = new Hood(Constants.kHoodConstants);
+            mInstance = new Hood(Constants.HoodConstants.kHoodServoConstants);
         }
 
         return mInstance;
@@ -54,7 +48,7 @@ public class Hood extends ServoMotorSubsystem {
     }
 
     public synchronized boolean getTucked() {
-        return Util.epsilonEquals(getAngle(), Constants.kHoodConstants.kMinUnitsLimit, 5.0); 
+        return Util.epsilonEquals(getAngle(), this.mConstants.kMinUnitsLimit, 5.0); 
     }
 
     @Override
@@ -73,7 +67,6 @@ public class Hood extends ServoMotorSubsystem {
     @Override
     public synchronized void readPeriodicInputs() {
         if (mHoming && atHomingLocation()) {
-            System.out.println("is homing");
             mMaster.setSelectedSensorPosition((int) unitsToTicks(17.66));
             mMaster.overrideSoftLimitsEnable(true);
             mHoming = false;

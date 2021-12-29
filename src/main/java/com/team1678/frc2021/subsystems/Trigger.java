@@ -1,22 +1,21 @@
 package com.team1678.frc2021.subsystems;
 
-import com.team1678.frc2021.Constants;
-import com.team1678.frc2021.loops.ILooper;
-import com.team1678.frc2021.loops.Loop;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
+import com.team1678.frc2021.loops.ILooper;
+import com.team1678.frc2021.loops.Loop;
+import com.team254.lib.drivers.TalonFXFactory;
+import com.team254.lib.util.ReflectingCSVWriter;
+import com.team254.lib.util.Util;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.team254.lib.drivers.TalonFXFactory;
-import com.team254.lib.util.ReflectingCSVWriter;
-import com.team254.lib.util.Util;
 
 public class Trigger extends Subsystem {
     private static Trigger mInstance;
@@ -25,8 +24,6 @@ public class Trigger extends Subsystem {
 
     private final TalonFX mTrigger;
     private final Solenoid mPopoutSolenoid;
-
-    private final Indexer mIndexer = Indexer.getInstance();
 
     private boolean mCurrentLimitTriggered = false;
     private double mCurrentLimitTimer = 0.0;
@@ -42,24 +39,24 @@ public class Trigger extends Subsystem {
     private static final StatorCurrentLimitConfiguration CURR_LIM = new StatorCurrentLimitConfiguration(true, 80, 120, 0.3);
 
     private Trigger() {
-        mTrigger = TalonFXFactory.createDefaultTalon(Constants.kTriggerWheelID);
+        mTrigger = TalonFXFactory.createDefaultTalon(Ports.TRIGGER_WHEEL);
         mTrigger.changeMotionControlFramePeriod(255);
         mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 125);
         mTrigger.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 125);
 
         mTrigger.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs);
         mTrigger.set(ControlMode.PercentOutput, 0);
-        mTrigger.setInverted(false); //TODO: check value
+        mTrigger.setInverted(false);
         mTrigger.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
         mTrigger.enableVoltageCompensation(true);
         mTrigger.configStatorCurrentLimit(CURR_LIM);
 
-        mTrigger.config_kP(0, Constants.kTriggerP, Constants.kLongCANTimeoutMs);
-        mTrigger.config_kI(0, Constants.kTriggerI, Constants.kLongCANTimeoutMs);
-        mTrigger.config_kD(0, Constants.kTriggerD, Constants.kLongCANTimeoutMs);
-        mTrigger.config_kF(0, Constants.kTriggerF, Constants.kLongCANTimeoutMs);
+        mTrigger.config_kP(0, Constants.TriggerConstants.kTriggerP, Constants.kLongCANTimeoutMs);
+        mTrigger.config_kI(0, Constants.TriggerConstants.kTriggerI, Constants.kLongCANTimeoutMs);
+        mTrigger.config_kD(0, Constants.TriggerConstants.kTriggerD, Constants.kLongCANTimeoutMs);
+        mTrigger.config_kF(0, Constants.TriggerConstants.kTriggerF, Constants.kLongCANTimeoutMs);
 
-        mPopoutSolenoid = Constants.makeSolenoidForId(Constants.kTriggerPopoutSolenoidID);
+        mPopoutSolenoid = Constants.makeSolenoidForId(Ports.TRIGGER_SOLENOID);
     }
 
     public synchronized static Trigger mInstance() {

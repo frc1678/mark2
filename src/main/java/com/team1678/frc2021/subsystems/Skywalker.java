@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import com.team254.lib.drivers.TalonSRXFactory;
@@ -49,7 +50,7 @@ public class Skywalker extends Subsystem {
     }
 
     private Skywalker() {
-        mMaster = TalonSRXFactory.createDefaultTalon(Constants.kSkywalkerMasterId);
+        mMaster = TalonSRXFactory.createDefaultTalon(Ports.SKYWALKER);
         mMaster.changeMotionControlFramePeriod(255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255);
         mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255);
@@ -63,13 +64,13 @@ public class Skywalker extends Subsystem {
     public void runStateMachine() {
         switch (mState) {
             case IDLE:
-                mPeriodicIO.demand = Constants.kIdleVoltage;
+                mPeriodicIO.demand = Constants.SkywalkerConstants.kIdleVoltage;
                 break;
             case SHIFTING_RIGHT:
-                mPeriodicIO.demand = Constants.kShiftingRightVoltage;
+                mPeriodicIO.demand = Constants.SkywalkerConstants.kShiftingRightVoltage;
                 break;
             case SHIFTING_LEFT:
-                mPeriodicIO.demand = Constants.kShiftingLeftVoltage;
+                mPeriodicIO.demand = Constants.SkywalkerConstants.kShiftingLeftVoltage;
                 break;
         }
     }
