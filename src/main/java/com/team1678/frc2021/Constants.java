@@ -141,15 +141,15 @@ public class Constants {
 	}
 	
 	public static final class SnapConstants {
-        public static final double snapKP = 1.0;
+        public static final double snapKP = 3.0;
         public static final double snapKI = 0;
-        public static final double snapKD = 0.05;
+        public static final double snapKD = 0.0;
         public static final double snapTimeout = 0.25;
         public static final double snapEpsilon = 1.0;
 
-        //Constraints for the profiled angle controller (vals stolen from AutoConstants)
-        public static final double kMaxAngularSpeedRadiansPerSecond = 8*Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 3);
+        //Constraints for the profiled angle controller
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2.0*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
@@ -159,7 +159,7 @@ public class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 0.5*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2.0*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 	
 		public static final double kSlowMaxSpeedMetersPerSecond = 1.0;

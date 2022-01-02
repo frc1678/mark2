@@ -9,6 +9,7 @@ package com.team1678.frc2021;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team1678.frc2021.controlboard.ControlBoard;
+import com.team1678.frc2021.controlboard.ControlBoard.SwerveCardinal;
 import com.team1678.frc2021.loops.Looper;
 
 import com.team254.lib.wpilib.TimedRobot;
@@ -229,6 +230,9 @@ public class Robot extends TimedRobot {
 
             mSwerve.updateSwerveOdometry();
 
+            if (mControlBoard.getSwerveSnap() != SwerveCardinal.NONE) {
+                mSwerve.startSnap(mControlBoard.getSwerveSnap().degrees);
+            }
 
             Translation2d swerveTranslation = new Translation2d(mControlBoard.getSwerveTranslation().x(), mControlBoard.getSwerveTranslation().y());
             double swerveRotation = mControlBoard.getSwerveRotation();

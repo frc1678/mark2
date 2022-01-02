@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class Swerve extends Subsystem {
@@ -30,7 +31,6 @@ public class Swerve extends Subsystem {
 
     public boolean isSnapping;
     public ProfiledPIDController snapPidController;
-    private double lastSnapInput;
 
 
     public static Swerve getInstance() {
@@ -87,7 +87,7 @@ public class Swerve extends Subsystem {
         SmartDashboard.putNumber("Odometry Pose Rot", swerveOdometry.getPoseMeters().getRotation().getDegrees());
         SmartDashboard.putBoolean("Is Snapping", isSnapping);
         SmartDashboard.putNumber("Pigeon Heading", getYaw().getDegrees());
-        SmartDashboard.putNumber("Snap Target", Math.toRadians(snapPidController.getGoal().position));
+        SmartDashboard.putNumber("Snap Target", Math.toDegrees(snapPidController.getGoal().position));
         for(SwerveModule mod : mSwerveMods){
             //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", MathUtil.inputModulus(mod.getCanCoder().getDegrees() - mod.angleOffset, 0, 360));
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
@@ -99,7 +99,7 @@ public class Swerve extends Subsystem {
         if(isSnapping) {
             if(Math.abs(rotation) == 0.0) {
                 maybeStopSnap(false);
-                rotation = calculateSnapVectors();
+                rotation = calculateSnapValue();
             } else {
                 maybeStopSnap(true);
             }
@@ -125,25 +125,24 @@ public class Swerve extends Subsystem {
         }
     }    
 
-    public double calculateSnapVectors() {
-        return snapPidController.calculate(getYaw().getRadians(), lastSnapInput);
+    public double calculateSnapValue() {
+        return snapPidController.calculate(getYaw().getRadians());
     }
 
     public void startSnap(double snapAngle) {
-        lastSnapInput = Math.toRadians(snapAngle);
         snapPidController.reset(getYaw().getRadians());
-        //snapPidController.setGoal(new TrapezoidProfile.State(Math.toRadians(snapAngle), 0.0));
+        snapPidController.setGoal(new TrapezoidProfile.State(Math.toRadians(snapAngle), 0.0));
         isSnapping = true;
     }
     
     TimeDelayedBoolean delayedBoolean = new TimeDelayedBoolean();
+
     private boolean snapComplete() {
-        double error = lastSnapInput - getYaw().getRadians();
-        //return delayedBoolean.update(Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon), Constants.SnapConstants.snapTimeout);
-        return Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon);
+        double error = snapPidController.getGoal().position - getYaw().getRadians();
+        return delayedBoolean.update(Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon), Constants.SnapConstants.snapTimeout);
+        //return Math.abs(error) < Math.toRadians(Constants.SnapConstants.snapEpsilon);
     }
 
-    // TODO: Add proper documentation for what the snap methods are doing
     public void maybeStopSnap(boolean force){
         if(!isSnapping){
             return;

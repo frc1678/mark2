@@ -77,6 +77,20 @@ public class ControlBoard {
         }
     }
 
+    public enum SwerveCardinal {
+        NONE(0),
+        FRONT(0),
+        LEFT(90),
+        RIGHT(-90),
+        BACk(180);
+
+        public final double degrees;
+
+        SwerveCardinal(double degrees) {
+            this.degrees = degrees;
+        }
+    }
+
     public static ControlBoard getInstance() {
         if (mInstance == null) {
             mInstance = new ControlBoard();
@@ -133,6 +147,22 @@ public class ControlBoard {
 
     public boolean zeroGyro() {
         return driver.getButton(Button.START) && driver.getButton(Button.BACK);
+    }
+
+    public SwerveCardinal getSwerveSnap() {
+        if (driver.getButton(Button.A)) {
+            return SwerveCardinal.BACk;
+        }
+        if (driver.getButton(Button.B)) {
+            return SwerveCardinal.RIGHT;
+        }
+        if (driver.getButton(Button.X)) {
+            return SwerveCardinal.LEFT;
+        }
+        if (driver.getButton(Button.Y)) {
+            return SwerveCardinal.FRONT;
+        }
+        return SwerveCardinal.NONE;
     }
 
     public Rotation2d getJogTurret() {
