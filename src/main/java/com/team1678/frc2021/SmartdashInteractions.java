@@ -6,6 +6,7 @@ import com.team1678.frc2021.subsystems.Superstructure;
 import com.team1678.frc2021.subsystems.Swerve;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -30,6 +31,8 @@ public class SmartdashInteractions {
     private final Superstructure mSuperstructure;
     private final Swerve mSwerve;
     private final SwerveModule[] mSwerveModules;
+
+    private double lastCancoderUpdate = 0.0;
 
     /* Tabs */
     private ShuffleboardTab VISION_TAB;
@@ -135,10 +138,11 @@ public class SmartdashInteractions {
                 .withPosition(0, 0)
                 .withSize(5, 1)
                 .getEntry();
-            mSwerveCancoders[i] = mSwerveAngles[i].add("Location", kSwervePlacements[i])
+
+            mSwerveAngles[i].add("Location", kSwervePlacements[i])
                 .withPosition(1, 0)
-                .withSize(5, 1)
-                .getEntry();
+                .withSize(5, 1);
+
             mSwerveIntegrated[i] = mSwerveAngles[i].add("Integrated", 0.0)
                 .withPosition(0, 1)
                 .withSize(5, 1)
@@ -246,8 +250,17 @@ public class SmartdashInteractions {
         mTurretMode.setString(mSuperstructure.getTurretControlMode().toString());
         
         /* Swerve */
+
+        // Update cancoders at a slower period to avoid stale can frames
+        double dt = Timer.getFPGATimestamp();
+        if (dt > lastCancoderUpdate + 0.1) {
+            for (int i = 0; i < mSwerveCancoders.length; i++) {
+                mSwerveCancoders[i].setDouble(truncate(mSwerveModules[i].getCanCoder().getDegrees()));
+            }
+            lastCancoderUpdate = dt;
+        }
+        
         for (int i = 0; i < mSwerveCancoders.length; i++) {
-            mSwerveCancoders[i].setDouble(truncate(mSwerveModules[i].getCanCoder().getDegrees()));
             mSwerveIntegrated[i].setDouble(truncate(MathUtil.inputModulus(mSwerveModules[i].getState().angle.getDegrees(), 0, 360)));
             mSwerveDrivePercent[i].setDouble(truncate(mSwerveModules[i].getState().speedMetersPerSecond));
 
