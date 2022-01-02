@@ -26,7 +26,7 @@ public class AutoModeSelector {
         // AIM_TEST_AUTO
     }
 
-    private DesiredMode mCachedDesiredMode = null;
+    private DesiredMode mCachedDesiredMode = DesiredMode.DO_NOTHING;
 
     private Optional<AutoModeBase> mAutoMode = Optional.empty();
 
@@ -43,6 +43,9 @@ public class AutoModeSelector {
 
     public void updateModeCreator() {
         DesiredMode desiredMode = mModeChooser.getSelected();
+        if (desiredMode == null) {
+            desiredMode = DesiredMode.DO_NOTHING;
+        }
         if (mCachedDesiredMode != desiredMode) {
             System.out.println("Auto selection changed, updating creator: desiredMode->" + desiredMode.name());
             mAutoMode = getAutoModeForParams(desiredMode);
