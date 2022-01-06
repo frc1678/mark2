@@ -135,20 +135,20 @@ public class Constants {
         public static final class Mod3 {
             public static final double angleOffset = 60;
             public static final SwerveModuleConstants constants =
-                new SwerveModuleConstants(Ports.BR_DRIVE, Ports.BR_ROTATION, Ports.BL_CANCODER, angleOffset);
+                new SwerveModuleConstants(Ports.BR_DRIVE, Ports.BR_ROTATION, Ports.BR_CANCODER, angleOffset);
         }
 
 	}
 	
 	public static final class SnapConstants {
-        public static final double snapKP = 1.0;
+        public static final double snapKP = 3.0;
         public static final double snapKI = 0;
-        public static final double snapKD = 0.05;
+        public static final double snapKD = 0.0;
         public static final double snapTimeout = 0.25;
         public static final double snapEpsilon = 1.0;
 
-        //Constraints for the profiled angle controller (vals stolen from AutoConstants)
-        public static final double kMaxAngularSpeedRadiansPerSecond = 4*Math.PI;
+        //Constraints for the profiled angle controller
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2.0*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
@@ -159,10 +159,10 @@ public class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2.0*Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
 	
-		public static final double kSlowMaxSpeedMetersPerSecond = 2.0;
+		public static final double kSlowMaxSpeedMetersPerSecond = 1.0;
 		public static final double kSlowMaxAccelerationMetersPerSecondSquared = 3;
 
 		public static final double kFastMaxSpeedMetersPerSecond = 4;
@@ -170,7 +170,7 @@ public class Constants {
 		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
+        public static final double kPThetaController = 2.5;
     
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
@@ -217,6 +217,16 @@ public class Constants {
 			.setKinematics(Constants.SwerveConstants.swerveKinematics)
 			.setStartVelocity(0)
 			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+		public static final TrajectoryConfig intermediateSlow =
+			new TrajectoryConfig(
+				Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond,
+				Constants.AutoConstants.kSlowMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(Constants.SwerveConstants.swerveKinematics)
+			.setStartVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond)
+			.setEndVelocity(Constants.AutoConstants.kSlowMaxSpeedMetersPerSecond);
+			
+
 
 		public static final TrajectoryConfig slowToZero =
 			new TrajectoryConfig(
