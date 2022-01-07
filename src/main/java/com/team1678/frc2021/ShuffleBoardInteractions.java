@@ -257,7 +257,7 @@ public class ShuffleBoardInteractions {
         }
         mSwerveOdometryX.setDouble(truncate(mSwerve.getPose().getX()));
         mSwerveOdometryY.setDouble(truncate(mSwerve.getPose().getY()));
-        mSwerveOdometryRot.setDouble(truncate(mSwerve.getPose().getRotation().getDegrees()));
+        mSwerveOdometryRot.setDouble(truncate(MathUtil.inputModulus(mSwerve.getPose().getRotation().getDegrees(), 0, 360)));
 
         if(mPIDEnableToggle.getValue().getBoolean()) {
             mSwerve.setAnglePIDValues(mDesiredAngleP.getValue().getDouble(), mDesiredAngleI.getValue().getDouble(), mDesiredAngleD.getValue().getDouble());
