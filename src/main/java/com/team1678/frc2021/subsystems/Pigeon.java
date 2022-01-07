@@ -2,9 +2,7 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
-import com.team254.lib.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -80,11 +78,6 @@ public class Pigeon {
 
 	public Rotation2d getUnadjustedAngle() {
 		return Rotation2d.fromRadians(getAxis(Axis.YAW));
-	}
-
-	public double getUnadjustedRate() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public double getAxis(Axis axis) {

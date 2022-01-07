@@ -1,8 +1,8 @@
 package com.team1678.frc2021.controlboard;
 
 import com.team1678.frc2021.Constants;
+
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class CustomXboxController {
@@ -37,6 +37,13 @@ public class CustomXboxController {
         boolean y = axis == Axis.Y;
         // multiplies by -1 if y-axis (inverted normally)
         return handleDeadband((y ? -1 : 1) * mController.getRawAxis((left ? 0 : 4) + (y ? 1 : 0)), deadband);
+    }
+
+    double getAxis(Side side, Axis axis) {
+        boolean left = side == Side.LEFT;
+        boolean y = axis == Axis.Y;
+        // multiplies by -1 if y-axis (inverted normally)
+        return y ? -1 : 1 * mController.getRawAxis((left ? 0 : 4) + (y ? 1 : 0));
     }
 
     boolean getTrigger(Side side) {

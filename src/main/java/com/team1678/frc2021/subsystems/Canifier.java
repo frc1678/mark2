@@ -2,10 +2,8 @@ package com.team1678.frc2021.subsystems;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.CANifierStatusFrame;
-import edu.wpi.first.wpilibj.Timer;
 import com.team1678.frc2021.Constants;
-
-import java.util.ArrayList;
+import com.team1678.frc2021.Ports;
 
 public class Canifier extends Subsystem {
     private static Canifier mInstance;
@@ -13,7 +11,7 @@ public class Canifier extends Subsystem {
     private PeriodicInputs mPeriodicInputs;
 
     private Canifier() {
-        mCanifier = new CANifier(Constants.kCanifierId);
+        mCanifier = new CANifier(Ports.CANIFIER);
         mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_1_General, 255, Constants.kLongCANTimeoutMs);
         mCanifier.setStatusFramePeriod(CANifierStatusFrame.Status_2_General, 2, Constants.kLongCANTimeoutMs);
         mPeriodicInputs = new PeriodicInputs();
@@ -79,7 +77,7 @@ public class Canifier extends Subsystem {
         mPeriodicInputs.turret_limit_ = !pins.LIMR;
         mPeriodicInputs.hood_limit_ = !pins.SPI_MOSI_PWM1;
 
-        mPeriodicInputs.front_proxy_ = pins.SPI_CLK_PWM0; // change these pins
+        mPeriodicInputs.front_proxy_ = pins.SPI_CLK_PWM0;
         mPeriodicInputs.right_proxy_ = pins.SPI_MOSI_PWM1;
         mPeriodicInputs.left_proxy_ =  pins.SPI_CS_PWM3;
         mPeriodicInputs.back_right_proxy_ = pins.SPI_MISO_PWM2;

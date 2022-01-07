@@ -69,8 +69,8 @@ public class GoalTracker {
         double score(TrackReport report) {
             double stability_score = mStabilityWeight * report.stability;
             double age_score = mAgeWeight
-                    * Math.max(0, (Constants.kMaxGoalTrackAge - (mCurrentTimestamp - report.latest_timestamp))
-                            / Constants.kMaxGoalTrackAge);
+                    * Math.max(0, (Constants.VisionConstants.kMaxGoalTrackAge - (mCurrentTimestamp - report.latest_timestamp))
+                            / Constants.VisionConstants.kMaxGoalTrackAge);
             double switching_score = (report.id == mLastTrackId ? mSwitchingWeight : 0);
             return stability_score + age_score + switching_score;
         }

@@ -1,7 +1,7 @@
 
 package com.team1678.frc2021.subsystems;
 
-import com.team1678.frc2021.Constants;
+import com.team1678.frc2021.Ports;
 import com.team1678.frc2021.loops.ILooper;
 import com.team1678.frc2021.loops.Loop;
 import edu.wpi.first.wpilibj.Compressor;
@@ -14,7 +14,7 @@ public class Infrastructure extends Subsystem {
     private boolean mIsDuringAuto = false;
 
     private Infrastructure() {
-        mCompressor = new Compressor(Constants.kPCMId);
+        mCompressor = new Compressor(Ports.PCM);
         mCompressor.start();
 
     }
@@ -34,11 +34,6 @@ public class Infrastructure extends Subsystem {
 
     @Override
     public void stop() {
-        // No-op.
-    }
-
-    @Override
-    public void zeroSensors() {
         // No-op.
     }
 
