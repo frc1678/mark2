@@ -44,7 +44,6 @@ public class Robot extends TimedRobot {
      */
 
 	public static CTREConfigs ctreConfigs;
-
     private final Looper mEnabledLooper = new Looper();
     private final Looper mDisabledLooper = new Looper();
 
@@ -60,10 +59,13 @@ public class Robot extends TimedRobot {
     private final Hood mHood = Hood.getInstance();
     private final Climber mClimber = Climber.getInstance();
     private final Skywalker mSkywalker = Skywalker.getInstance();
-    private final Infrastructure mInfrastructure = Infrastructure.getInstance();
     private final Canifier mCanifier = Canifier.getInstance();
     private final LEDs mLEDs = LEDs.getInstance();
+    private final Infrastructure mInfrastructure = Infrastructure.getInstance();
     private final Limelight mLimelight = Limelight.getInstance(); 
+
+    private ShuffleBoardInteractions mShuffleBoardInteractions;
+
 
     // auto instances
     private AutoModeExecutor mAutoModeExecutor;
@@ -82,6 +84,7 @@ public class Robot extends TimedRobot {
     // Called periodically during every robot mode
     @Override
     public void robotPeriodic() {		
+        mShuffleBoardInteractions.update();
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
@@ -96,9 +99,9 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
 		ctreConfigs = new CTREConfigs();
-    	// Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    	// autonomous chooser on the dashboard.
-		
+
+        mShuffleBoardInteractions = ShuffleBoardInteractions.getInstance();
+
 		try {
 			/*
             UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
