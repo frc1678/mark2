@@ -4,15 +4,20 @@ import com.team1678.frc2021.Constants;
 import com.team1678.frc2021.subsystems.Intake;
 import com.team1678.frc2021.subsystems.Swerve;
 import com.team1678.frc2021.auto.AutoModeEndedException;
+import com.team1678.frc2021.auto.WaypointReader;
 import com.team1678.frc2021.auto.actions.LambdaAction;
 import com.team1678.frc2021.auto.actions.ParallelAction;
 import com.team1678.frc2021.auto.actions.SeriesAction;
 import com.team1678.frc2021.auto.actions.SwerveTrajectoryAction;
 import com.team1678.frc2021.auto.actions.WaitAction;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -27,8 +32,15 @@ public class TestPathMode extends AutoModeBase {
     // Swerve instance 
     private final Swerve s_Swerve = Swerve.getInstance();
 
-    // trajectory actions
-    SwerveTrajectoryAction straightTrajectoryAction;
+    // required PathWeaver trajectory paths
+    String path_one = "paths/test-part-1.path";
+    String path_two = "paths/test-part-2.path";
+
+	// trajectories
+	Trajectory straightTrajectory;
+	SwerveTrajectoryAction straightTrajectoryAction;
+	
+	Trajectory rotatingTrajectory;
     SwerveTrajectoryAction rotatingTrajectoryAction;
 
     public TestPathMode() {
@@ -36,6 +48,21 @@ public class TestPathMode extends AutoModeBase {
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                         .setKinematics(Constants.SwerveConstants.swerveKinematics);
 
+        try {
+
+          Path traj_path_one = Filesystem.getDeployDirectory().toPath().resolve(path_one);
+          TrajectoryGenerator.ControlVectorList cv_one = WaypointReader.getControlVectors(traj_path_one);
+		  straightTrajectory = TrajectoryGenerator.generateTrajectory(cv_one, Constants.AutoConstants.zeroToSlow);
+		  
+		  Path traj_path_two = Filesystem.getDeployDirectory().toPath().resolve(path_two);
+          TrajectoryGenerator.ControlVectorList cv_two = WaypointReader.getControlVectors(traj_path_two);
+          rotatingTrajectory = TrajectoryGenerator.generateTrajectory(cv_two, Constants.AutoConstants.slowToZero);
+
+        } catch (IOException ex) {
+		  DriverStation.reportError("Unable to open trajectory: " + path_one, ex.getStackTrace());
+		  DriverStation.reportError("Unable to open trajectory: " + path_two, ex.getStackTrace());
+        }
+        /*
         Trajectory straightTrajectory = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(new Translation2d(1.5, 0)),
@@ -45,7 +72,7 @@ public class TestPathMode extends AutoModeBase {
                 new Pose2d(3, 0, new Rotation2d(0)),
                 List.of(new Translation2d(4.5, 0)),
                 new Pose2d(6, 0, new Rotation2d(0)), Constants.AutoConstants.slowToZero);
-
+        */
 
         var thetaController = new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
                 Constants.AutoConstants.kThetaControllerConstraints);
