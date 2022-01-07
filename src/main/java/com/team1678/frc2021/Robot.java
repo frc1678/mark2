@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     private final Infrastructure mInfrastructure = Infrastructure.getInstance();
     private final Limelight mLimelight = Limelight.getInstance(); 
 
-    private SmartdashInteractions mSmartdashInteractions;
+    private ShuffleBoardInteractions mShuffleBoardInteractions;
 
 
     // auto instances
@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
     // Called periodically during every robot mode
     @Override
     public void robotPeriodic() {		
-        mSmartdashInteractions.update();
+        mShuffleBoardInteractions.update();
         RobotState.getInstance().outputToSmartDashboard();
         mSubsystemManager.outputToSmartDashboard();
         mEnabledLooper.outputToSmartDashboard();
@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
 
 		ctreConfigs = new CTREConfigs();
 
-        mSmartdashInteractions = SmartdashInteractions.getInstance();
+        mShuffleBoardInteractions = ShuffleBoardInteractions.getInstance();
 
 		try {
 			/*

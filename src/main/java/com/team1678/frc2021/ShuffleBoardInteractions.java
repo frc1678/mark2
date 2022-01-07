@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
-public class SmartdashInteractions {
+public class ShuffleBoardInteractions {
 
-    /* SmartdashInteractions Instance */
-    private static SmartdashInteractions mInstance; 
+    /* ShuffleBoardInteractions Instance */
+    private static ShuffleBoardInteractions mInstance; 
 
-    public static SmartdashInteractions getInstance() {
+    public static ShuffleBoardInteractions getInstance() {
         if (mInstance == null) {
-            mInstance = new SmartdashInteractions();
+            mInstance = new ShuffleBoardInteractions();
         }
         return mInstance;
     }
@@ -32,6 +32,7 @@ public class SmartdashInteractions {
     private final Swerve mSwerve;
     private final SwerveModule[] mSwerveModules;
 
+    /* Status Variable */
     private double lastCancoderUpdate = 0.0;
 
     /* Tabs */
@@ -39,15 +40,15 @@ public class SmartdashInteractions {
     private ShuffleboardTab SWERVE_TAB;
     private ShuffleboardTab PID_TAB;
 
-    /* Entries */
+    /* ENTRIES */
 
     /* Vision */
     private final NetworkTableEntry mSeesTarget;
-    private final NetworkTableEntry mLimelightOK;
+    private final NetworkTableEntry mLimelightOk;
     private final NetworkTableEntry mLimelightLatency;
-    private final NetworkTableEntry mLimelightDT;
-    private final NetworkTableEntry mLimelightTX;
-    private final NetworkTableEntry mLimelightTY;
+    private final NetworkTableEntry mLimelightDt;
+    private final NetworkTableEntry mLimelightTx;
+    private final NetworkTableEntry mLimelightTy;
 
     /* Superstructure */
     private final NetworkTableEntry mTurretMode;
@@ -59,6 +60,9 @@ public class SmartdashInteractions {
     private final NetworkTableEntry[] mSwerveCancoders = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveIntegrated = new NetworkTableEntry[4];
     private final NetworkTableEntry[] mSwerveDrivePercent = new NetworkTableEntry[4];
+    private final NetworkTableEntry[] mModuleAngleCurrent = new NetworkTableEntry[4];
+    private final NetworkTableEntry[] mModuleAngleGoals = new NetworkTableEntry[4];
+    
     private final NetworkTableEntry mSwerveOdometryX;
     private final NetworkTableEntry mSwerveOdometryY;
     private final NetworkTableEntry mSwerveOdometryRot;
@@ -69,10 +73,9 @@ public class SmartdashInteractions {
     private final NetworkTableEntry mCurrentAngleP;
     private final NetworkTableEntry mCurrentAngleI;
     private final NetworkTableEntry mCurrentAngleD;
-    private final NetworkTableEntry[] mModuleAngleCurrent = new NetworkTableEntry[4];
-    private final NetworkTableEntry[] mModuleAngleGoals = new NetworkTableEntry[4];
 
-    public SmartdashInteractions() {
+
+    public ShuffleBoardInteractions() {
         /* Get Subsystems */
         mLimelight = Limelight.getInstance();
         mSuperstructure = Superstructure.getInstance();
@@ -85,7 +88,7 @@ public class SmartdashInteractions {
         PID_TAB = Shuffleboard.getTab("Module PID");
         
         /* Create Entries */
-        mLimelightOK = VISION_TAB
+        mLimelightOk = VISION_TAB
             .add("Limelight OK", false)
             .withPosition(0, 0)
             .withSize(1, 1)
@@ -101,18 +104,18 @@ public class SmartdashInteractions {
             .withSize(2, 2)
             .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
-        mLimelightDT = VISION_TAB
+        mLimelightDt = VISION_TAB
             .add("Limelight Loop Time", -1.0)
             .withPosition(4, 0)
             .withSize(2, 2)
             .withWidget(BuiltInWidgets.kTextView)
             .getEntry();
-        mLimelightTX = VISION_TAB
+        mLimelightTx = VISION_TAB
             .add("Limelight TX", 0.0)
             .withPosition(0, 1)
             .withSize(1, 1)
             .getEntry();
-        mLimelightTY = VISION_TAB
+        mLimelightTy = VISION_TAB
             .add("Limelight TY", 0.0)
             .withPosition(1, 1)
             .withSize(1, 1)
@@ -133,38 +136,30 @@ public class SmartdashInteractions {
                 .getLayout("Module " + i + " Angle", BuiltInLayouts.kGrid)
                 .withSize(2, 2)
                 .withPosition(i * 2, 0);
-
             mSwerveCancoders[i] = mSwerveAngles[i].add("Cancoder", 0.0)
                 .withPosition(0, 0)
                 .withSize(5, 1)
                 .getEntry();
-
             mSwerveAngles[i].add("Location", kSwervePlacements[i])
                 .withPosition(1, 0)
                 .withSize(5, 1);
-
             mSwerveIntegrated[i] = mSwerveAngles[i].add("Integrated", 0.0)
                 .withPosition(0, 1)
                 .withSize(5, 1)
                 .getEntry();
-
-            
             mSwerveAngles[i].add("Offset", mSwerve.mSwerveMods[i].angleOffset)
                 .withPosition(0, 2)
                 .withSize(5, 1)
                 .getEntry();
-
             mSwerveDrivePercent[i] = SWERVE_TAB
                 .add("Swerve Module " + i + " MPS ", 0.0)
                 .withPosition(i * 2, 2)
                 .withSize(2, 1)
                 .getEntry();
-
             mModuleAngleCurrent[i] = PID_TAB.add("Module " + i + " Current", 0.0)
                 .withPosition(i, 2)
                 .withSize(1, 1)
                 .getEntry();
-
             mModuleAngleGoals[i] = PID_TAB.add("Module " + i + " Target", 0.0)
                 .withPosition(i, 3)
                 .withSize(1, 1)
@@ -176,19 +171,16 @@ public class SmartdashInteractions {
             .withPosition(0, 3)
             .withSize(2, 1)
             .getEntry();
-
         mSwerveOdometryY = SWERVE_TAB
             .add("Odometry Y", 0)
             .withPosition(2, 3)
             .withSize(2, 1)
             .getEntry();
-
         mSwerveOdometryRot = SWERVE_TAB
             .add("Pigeon Angle", 0)
             .withPosition(4, 3)
             .withSize(2, 1)
             .getEntry();
-
         mPIDEnableToggle = PID_TAB
             .add("Apply PID", false)
             .withWidget(BuiltInWidgets.kToggleButton)
@@ -203,31 +195,26 @@ public class SmartdashInteractions {
             .withPosition(0,0)
             .withSize(1, 1)
             .getEntry();
-
         mDesiredAngleI = PID_TAB
             .add("Wanted I", currentAngleValues.slot0.kI)
             .withPosition(1,0)
             .withSize(1, 1)
             .getEntry();
-
         mDesiredAngleD = PID_TAB
             .add("Wanted D", currentAngleValues.slot0.kD)
             .withPosition(2,0)
             .withSize(1, 1)
             .getEntry();
-
         mCurrentAngleP = PID_TAB
             .add("Current P", 0.0)
             .withPosition(0,1)
             .withSize(1, 1)
             .getEntry();
-
         mCurrentAngleI = PID_TAB
             .add("Current I", 0.0)
             .withPosition(1,1)
             .withSize(1, 1)
             .getEntry();
-
         mCurrentAngleD = PID_TAB
             .add("Current D", 0.0)
             .withPosition(2,1)
@@ -239,17 +226,17 @@ public class SmartdashInteractions {
         
         /* Vision */
         mSeesTarget.setBoolean(mLimelight.seesTarget());
-        mLimelightOK.setBoolean(mLimelight.limelightOK());
+        mLimelightOk.setBoolean(mLimelight.limelightOK());
         mLimelightLatency.setDouble(mLimelight.getLatency());
-        mLimelightDT.setDouble(mLimelight.getDt());
-        mLimelightTX.setDouble(mLimelight.getOffset()[0]);
-        mLimelightTY.setDouble(mLimelight.getOffset()[1]);
+        mLimelightDt.setDouble(mLimelight.getDt());
+        mLimelightTx.setDouble(mLimelight.getOffset()[0]);
+        mLimelightTy.setDouble(mLimelight.getOffset()[1]);
 
         /* Superstructure */
         mOnTarget.setBoolean(mSuperstructure.isAimed());
         mTurretMode.setString(mSuperstructure.getTurretControlMode().toString());
         
-        /* Swerve */
+        /* SWERVE */
 
         // Update cancoders at a slower period to avoid stale can frames
         double dt = Timer.getFPGATimestamp();
@@ -281,6 +268,7 @@ public class SmartdashInteractions {
         mCurrentAngleD.setDouble(currentPIDVals[2]);
     }
 
+    /* Truncates number to 2 decimal places for cleaner numbers */
     private double truncate(double number) {
         return Math.floor(number * 100) / 100;
     }
